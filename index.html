@@ -3,55 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferramenta de Coordenadas - Mapa do Escritório Philips</title>
+    <title>Mapa Interativo do Escritório - Philips</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Ferramenta de Coordenadas - Mapa do Escritório</h1>
-            <p>Use o botão "Add" para ativar o modo de seleção e clique no mapa para adicionar coordenadas</p>
+            <h1>Mapa Interativo do Escritório</h1>
+            <p>Clique em uma sala na lista ou diretamente no mapa para localizar visualmente</p>
         </header>
         
         <main class="main-content">
-            <!-- Controls Sidebar -->
-            <aside class="controls-panel">
-                <div class="floor-selection">
-                    <h2>Seleção do Andar</h2>
-                    <div class="floor-buttons">
-                        <button id="terreo-btn" class="floor-btn active" data-floor="terreo">Térreo</button>
-                        <button id="mesanino-btn" class="floor-btn" data-floor="mesanino">Mezanino</button>
+            <!-- Room List Sidebar -->
+            <aside class="room-panel">
+                <div class="panel-header">
+                    <h2>Salas Disponíveis</h2>
+                    <button id="clear-selection-btn" class="clear-btn" title="Limpar seleção (ESC)">
+                        <span class="btn-icon">✕</span>
+                        Limpar Seleção
+                    </button>
+                </div>
+                
+                <div class="room-categories">
+                    <!-- Meeting Rooms -->
+                    <div class="room-category">
+                        <h3 class="category-title">🏢 Salas de Reunião</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="sala-reuniao-1" aria-label="Selecionar Sala de Reunião 1">
+                                Sala de Reunião 1
+                            </button>
+                            <button class="room-btn" data-room="sala-reuniao-2" aria-label="Selecionar Sala de Reunião 2">
+                                Sala de Reunião 2
+                            </button>
+                            <button class="room-btn" data-room="sala-reuniao-3" aria-label="Selecionar Sala de Reunião 3">
+                                Sala de Reunião 3
+                            </button>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="coordinate-controls">
-                    <h2>Controles</h2>
-                    <button id="add-coordinate-btn" class="control-btn add-btn">
-                        <span class="btn-icon">+</span>
-                        Add Coordenada
-                    </button>
-                    <button id="save-coordinates-btn" class="control-btn save-btn">
-                        <span class="btn-icon">💾</span>
-                        Salvar JSON
-                    </button>
-                </div>
-                
-                <div class="coordinates-list">
-                    <h2>Coordenadas Adicionadas</h2>
-                    <div id="coordinates-container" class="coordinates-container">
-                        <p class="empty-message">Nenhuma coordenada adicionada ainda.</p>
+                    
+                    <!-- Offices -->
+                    <div class="room-category">
+                        <h3 class="category-title">💼 Escritórios</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="escritorio-gerencia" aria-label="Selecionar Escritório Gerência">
+                                Escritório Gerência
+                            </button>
+                            <button class="room-btn" data-room="escritorio-diretoria" aria-label="Selecionar Escritório Diretoria">
+                                Escritório Diretoria
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Common Areas -->
+                    <div class="room-category">
+                        <h3 class="category-title">🏛️ Áreas Comuns</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="recepcao" aria-label="Selecionar Recepção">
+                                Recepção
+                            </button>
+                            <button class="room-btn" data-room="copa" aria-label="Selecionar Copa">
+                                Copa
+                            </button>
+                            <button class="room-btn" data-room="area-descanso" aria-label="Selecionar Área de Descanso">
+                                Área de Descanso
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Facilities -->
+                    <div class="room-category">
+                        <h3 class="category-title">🔧 Facilidades</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="banheiro-masculino" aria-label="Selecionar Banheiro Masculino">
+                                Banheiro Masculino
+                            </button>
+                            <button class="room-btn" data-room="banheiro-feminino" aria-label="Selecionar Banheiro Feminino">
+                                Banheiro Feminino
+                            </button>
+                            <button class="room-btn" data-room="almoxarifado" aria-label="Selecionar Almoxarifado">
+                                Almoxarifado
+                            </button>
+                        </div>
                     </div>
                 </div>
             </aside>
             
-            <!-- Floor Plan Map -->
+            <!-- Interactive Office Map -->
             <section class="map-container">
                 <div class="map-wrapper">
-                    <img id="floor-plan" class="floor-plan" src="terreo.png" alt="Planta Baixa do Escritório">
-                    <div id="coordinates-overlay" class="coordinates-overlay"></div>
+                    <svg id="office-map" class="office-map" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa interativo do escritório Philips">
+                        <title>Mapa do Escritório Philips</title>
+                        <desc>Layout interativo do escritório com salas clicáveis para localização visual</desc>
+                        
+                        <!-- Background -->
+                        <rect width="800" height="600" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+                        
+                        <!-- Meeting Rooms -->
+                        <g id="sala-reuniao-1" class="room meeting-room" data-category="meeting" role="button" tabindex="0" aria-label="Sala de Reunião 1">
+                            <rect x="50" y="50" width="120" height="80" fill="#f0f8e8" stroke="#28a745" stroke-width="2" rx="5"/>
+                            <text x="110" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Sala de</text>
+                            <text x="110" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Reunião 1</text>
+                        </g>
+                        
+                        <g id="sala-reuniao-2" class="room meeting-room" data-category="meeting" role="button" tabindex="0" aria-label="Sala de Reunião 2">
+                            <rect x="200" y="50" width="120" height="80" fill="#f0f8e8" stroke="#28a745" stroke-width="2" rx="5"/>
+                            <text x="260" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Sala de</text>
+                            <text x="260" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Reunião 2</text>
+                        </g>
+                        
+                        <g id="sala-reuniao-3" class="room meeting-room" data-category="meeting" role="button" tabindex="0" aria-label="Sala de Reunião 3">
+                            <rect x="350" y="50" width="120" height="80" fill="#f0f8e8" stroke="#28a745" stroke-width="2" rx="5"/>
+                            <text x="410" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Sala de</text>
+                            <text x="410" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Reunião 3</text>
+                        </g>
+                        
+                        <!-- Offices -->
+                        <g id="escritorio-gerencia" class="room office" data-category="office" role="button" tabindex="0" aria-label="Escritório Gerência">
+                            <rect x="500" y="50" width="120" height="80" fill="#f8f0e8" stroke="#fd7e14" stroke-width="2" rx="5"/>
+                            <text x="560" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Escritório</text>
+                            <text x="560" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Gerência</text>
+                        </g>
+                        
+                        <g id="escritorio-diretoria" class="room office" data-category="office" role="button" tabindex="0" aria-label="Escritório Diretoria">
+                            <rect x="650" y="50" width="120" height="80" fill="#f8f0e8" stroke="#fd7e14" stroke-width="2" rx="5"/>
+                            <text x="710" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Escritório</text>
+                            <text x="710" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Diretoria</text>
+                        </g>
+                        
+                        <!-- Common Areas -->
+                        <g id="recepcao" class="room common-area" data-category="common" role="button" tabindex="0" aria-label="Recepção">
+                            <rect x="50" y="200" width="150" height="100" fill="#e8f0f8" stroke="#007bff" stroke-width="2" rx="5"/>
+                            <text x="125" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333">Recepção</text>
+                        </g>
+                        
+                        <g id="copa" class="room common-area" data-category="common" role="button" tabindex="0" aria-label="Copa">
+                            <rect x="250" y="200" width="100" height="80" fill="#e8f0f8" stroke="#007bff" stroke-width="2" rx="5"/>
+                            <text x="300" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Copa</text>
+                        </g>
+                        
+                        <g id="area-descanso" class="room common-area" data-category="common" role="button" tabindex="0" aria-label="Área de Descanso">
+                            <rect x="400" y="200" width="150" height="100" fill="#e8f0f8" stroke="#007bff" stroke-width="2" rx="5"/>
+                            <text x="475" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Área de</text>
+                            <text x="475" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Descanso</text>
+                        </g>
+                        
+                        <!-- Facilities -->
+                        <g id="banheiro-masculino" class="room facility" data-category="facility" role="button" tabindex="0" aria-label="Banheiro Masculino">
+                            <rect x="50" y="350" width="100" height="60" fill="#f8e8f0" stroke="#6f42c1" stroke-width="2" rx="5"/>
+                            <text x="100" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Banheiro</text>
+                            <text x="100" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Masculino</text>
+                        </g>
+                        
+                        <g id="banheiro-feminino" class="room facility" data-category="facility" role="button" tabindex="0" aria-label="Banheiro Feminino">
+                            <rect x="180" y="350" width="100" height="60" fill="#f8e8f0" stroke="#6f42c1" stroke-width="2" rx="5"/>
+                            <text x="230" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Banheiro</text>
+                            <text x="230" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Feminino</text>
+                        </g>
+                        
+                        <g id="almoxarifado" class="room facility" data-category="facility" role="button" tabindex="0" aria-label="Almoxarifado">
+                            <rect x="310" y="350" width="100" height="60" fill="#f8e8f0" stroke="#6f42c1" stroke-width="2" rx="5"/>
+                            <text x="360" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Almoxarifado</text>
+                        </g>
+                        
+                        <!-- Corridors and structural elements -->
+                        <line x1="0" y1="150" x2="800" y2="150" stroke="#dee2e6" stroke-width="1" stroke-dasharray="5,5"/>
+                        <line x1="0" y1="320" x2="800" y2="320" stroke="#dee2e6" stroke-width="1" stroke-dasharray="5,5"/>
+                        <line x1="580" y1="150" x2="580" y2="600" stroke="#dee2e6" stroke-width="1" stroke-dasharray="5,5"/>
+                    </svg>
                 </div>
-                <div class="map-instructions">
-                    <p id="instruction-text">Clique em "Add Coordenada" para ativar o modo de seleção</p>
+                <div class="map-status">
+                    <p id="status-text">Selecione uma sala para ver sua localização no mapa</p>
+                    <div id="room-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
                 </div>
             </section>
         </main>

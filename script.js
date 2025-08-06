@@ -1,63 +1,67 @@
 /**
- * Interactive Coordinate Addition Tool
- * Allows users to add coordinates to office floor plans and export as JSON
+ * Interactive Office Map - Philips
+ * Manages room selection and visual feedback for office layout
  */
 
-class CoordinateTool {
+class OfficeMap {
     constructor() {
-        this.coordinates = [];
-        this.isSelectionMode = false;
-        this.currentFloor = 'terreo';
-        this.coordinateCounter = 1;
+        this.selectedRoom = null;
+        this.blinkTimeout = null;
+        this.clearTimeout = null;
         this.init();
     }
 
     /**
-     * Initialize the coordinate tool functionality
+     * Initialize the office map functionality
      */
     init() {
         this.bindEvents();
         this.setupAccessibility();
-        this.updateInstructions();
-        console.log('Coordinate Tool initialized successfully');
+        this.updateStatus();
+        console.log('Office Map initialized successfully');
     }
 
     /**
-     * Bind event listeners to controls and map elements
+     * Bind event listeners to room buttons and map elements
      */
     bindEvents() {
-        // Floor selection buttons
-        const floorButtons = document.querySelectorAll('.floor-btn');
-        floorButtons.forEach(button => {
+        // Room button clicks
+        const roomButtons = document.querySelectorAll('.room-btn');
+        roomButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                const floor = e.target.getAttribute('data-floor');
-                this.switchFloor(floor);
+                const roomId = e.target.getAttribute('data-room');
+                this.selectRoom(roomId);
             });
         });
 
-        // Add coordinate button
-        const addButton = document.getElementById('add-coordinate-btn');
-        addButton.addEventListener('click', () => {
-            this.toggleSelectionMode();
+        // SVG room clicks
+        const roomElements = document.querySelectorAll('.room');
+        roomElements.forEach(room => {
+            room.addEventListener('click', (e) => {
+                const roomId = room.id;
+                this.selectRoom(roomId);
+            });
         });
 
-        // Save coordinates button
-        const saveButton = document.getElementById('save-coordinates-btn');
-        saveButton.addEventListener('click', () => {
-            this.saveCoordinates();
-        });
-
-        // Map click handler
-        const floorPlan = document.getElementById('floor-plan');
-        floorPlan.addEventListener('click', (e) => {
-            if (this.isSelectionMode) {
-                this.addCoordinate(e);
-            }
+        // Clear selection button
+        const clearButton = document.getElementById('clear-selection-btn');
+        clearButton.addEventListener('click', () => {
+            this.clearSelection();
         });
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             this.handleKeyboardNavigation(e);
+        });
+
+        // Room keyboard interactions
+        roomElements.forEach(room => {
+            room.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.selectRoom(room.id);
+                }
+            });
         });
 
         // Window resize handler
@@ -67,282 +71,158 @@ class CoordinateTool {
     }
 
     /**
-     * Switch between floor plans
-     * @param {string} floor - The floor to switch to ('terreo' or 'mesanino')
+     * Select a room and trigger visual feedback
+     * @param {string} roomId - The ID of the room to select
      */
-    switchFloor(floor) {
-        this.currentFloor = floor;
-        
-        // Update floor buttons
-        document.querySelectorAll('.floor-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-floor="${floor}"]`).classList.add('active');
-        
-        // Update floor plan image
-        const floorPlan = document.getElementById('floor-plan');
-        floorPlan.src = `${floor}.png`;
-        floorPlan.alt = `Planta Baixa - ${floor === 'terreo' ? 'Térreo' : 'Mezanino'}`;
-        
-        // Clear existing coordinate markers for this view
-        this.updateCoordinateOverlay();
-        
-        console.log(`Switched to ${floor} floor plan`);
-    }
+    selectRoom(roomId) {
+        if (!roomId) return;
 
-    /**
-     * Toggle coordinate selection mode
-     */
-    toggleSelectionMode() {
-        this.isSelectionMode = !this.isSelectionMode;
-        
-        const addButton = document.getElementById('add-coordinate-btn');
-        const floorPlan = document.getElementById('floor-plan');
-        
-        if (this.isSelectionMode) {
-            addButton.classList.add('active');
-            addButton.innerHTML = '<span class="btn-icon">✕</span>Cancelar';
-            floorPlan.classList.add('selection-mode');
-            this.updateInstructions('Clique no mapa para adicionar uma coordenada');
-        } else {
-            addButton.classList.remove('active');
-            addButton.innerHTML = '<span class="btn-icon">+</span>Add Coordenada';
-            floorPlan.classList.remove('selection-mode');
-            this.updateInstructions('Clique em "Add Coordenada" para ativar o modo de seleção');
-        }
-        
-        console.log(`Selection mode: ${this.isSelectionMode ? 'ON' : 'OFF'}`);
-    }
+        // Clear any existing selection
+        this.clearSelection();
 
-    /**
-     * Add a coordinate when user clicks on the map
-     * @param {MouseEvent} e - The click event
-     */
-    addCoordinate(e) {
-        const rect = e.target.getBoundingClientRect();
-        const x = Math.round(e.clientX - rect.left);
-        const y = Math.round(e.clientY - rect.top);
-        
-        // Prompt for room name
-        const roomName = prompt('Digite o nome da sala/localização:');
-        if (!roomName || roomName.trim() === '') {
-            return; // User cancelled or entered empty name
-        }
-        
-        // Create coordinate object
-        const coordinate = {
-            id: this.coordinateCounter++,
-            nome: roomName.trim(),
-            coordenadas: { x, y },
-            andar: this.currentFloor
-        };
-        
-        // Add to coordinates array
-        this.coordinates.push(coordinate);
-        
+        // Set new selection
+        this.selectedRoom = roomId;
+
         // Update UI
-        this.updateCoordinatesList();
-        this.updateCoordinateOverlay();
-        
-        // Turn off selection mode
-        this.toggleSelectionMode();
-        
-        console.log('Added coordinate:', coordinate);
+        this.updateRoomButtons();
+        this.updateRoomElements();
+        this.blinkRoom(roomId);
+        this.updateStatus(roomId);
+        this.announceSelection(roomId);
+
+        // Set auto-clear timeout
+        this.clearTimeout = setTimeout(() => {
+            this.clearSelection();
+        }, 10000); // 10 seconds
+
+        console.log(`Room selected: ${roomId}`);
     }
 
     /**
-     * Update the coordinates list in the sidebar
+     * Clear current selection
      */
-    updateCoordinatesList() {
-        const container = document.getElementById('coordinates-container');
-        
-        if (this.coordinates.length === 0) {
-            container.innerHTML = '<p class="empty-message">Nenhuma coordenada adicionada ainda.</p>';
-            return;
+    clearSelection() {
+        if (this.selectedRoom) {
+            console.log(`Clearing selection: ${this.selectedRoom}`);
         }
-        
-        const coordinatesHTML = this.coordinates.map(coord => `
-            <div class="coordinate-item" data-id="${coord.id}">
-                <div class="coordinate-header">
-                    <strong>${coord.nome}</strong>
-                    <button class="remove-btn" onclick="window.coordinateTool.removeCoordinate(${coord.id})">&times;</button>
-                </div>
-                <div class="coordinate-details">
-                    <span class="coordinate-position">X: ${coord.coordenadas.x}, Y: ${coord.coordenadas.y}</span>
-                    <span class="coordinate-floor">${coord.andar === 'terreo' ? 'Térreo' : 'Mezanino'}</span>
-                </div>
-            </div>
-        `).join('');
-        
-        container.innerHTML = coordinatesHTML;
+
+        // Clear timeouts
+        if (this.blinkTimeout) {
+            clearTimeout(this.blinkTimeout);
+            this.blinkTimeout = null;
+        }
+        if (this.clearTimeout) {
+            clearTimeout(this.clearTimeout);
+            this.clearTimeout = null;
+        }
+
+        // Reset selection
+        this.selectedRoom = null;
+
+        // Update UI
+        this.updateRoomButtons();
+        this.updateRoomElements();
+        this.updateStatus();
+        this.announceSelection(null);
     }
 
     /**
-     * Update coordinate markers on the map overlay
+     * Update room button states
      */
-    updateCoordinateOverlay() {
-        const overlay = document.getElementById('coordinates-overlay');
-        const floorPlan = document.getElementById('floor-plan');
-        
-        // Clear existing markers
-        overlay.innerHTML = '';
-        
-        // Add markers for coordinates on current floor
-        const currentFloorCoordinates = this.coordinates.filter(coord => coord.andar === this.currentFloor);
-        
-        currentFloorCoordinates.forEach(coord => {
-            const marker = document.createElement('div');
-            marker.className = 'coordinate-marker';
-            marker.style.left = `${coord.coordenadas.x}px`;
-            marker.style.top = `${coord.coordenadas.y}px`;
-            marker.title = `${coord.nome} (${coord.coordenadas.x}, ${coord.coordenadas.y})`;
-            marker.innerHTML = `<span class="marker-number">${coord.id}</span>`;
-            
-            // Add click handler to show details
-            marker.addEventListener('click', () => {
-                alert(`${coord.nome}\nCoordenadas: (${coord.coordenadas.x}, ${coord.coordenadas.y})\nAndar: ${coord.andar === 'terreo' ? 'Térreo' : 'Mezanino'}`);
-            });
-            
-            overlay.appendChild(marker);
+    updateRoomButtons() {
+        const roomButtons = document.querySelectorAll('.room-btn');
+        roomButtons.forEach(button => {
+            const roomId = button.getAttribute('data-room');
+            if (roomId === this.selectedRoom) {
+                button.classList.add('selected');
+                button.setAttribute('aria-pressed', 'true');
+            } else {
+                button.classList.remove('selected');
+                button.setAttribute('aria-pressed', 'false');
+            }
         });
     }
 
     /**
-     * Remove a coordinate
-     * @param {number} id - The coordinate ID to remove
+     * Update SVG room element states
      */
-    removeCoordinate(id) {
-        if (confirm('Tem certeza que deseja remover esta coordenada?')) {
-            this.coordinates = this.coordinates.filter(coord => coord.id !== id);
-            this.updateCoordinatesList();
-            this.updateCoordinateOverlay();
-            console.log(`Removed coordinate with ID: ${id}`);
-        }
-    }
-
-    /**
-     * Save coordinates as JSON
-     */
-    saveCoordinates() {
-        if (this.coordinates.length === 0) {
-            alert('Nenhuma coordenada para salvar!');
-            return;
-        }
-        
-        // Format coordinates according to specification
-        const exportData = this.coordinates.map(coord => ({
-            nome: coord.nome,
-            coordenadas: coord.coordenadas,
-            andar: coord.andar
-        }));
-        
-        const jsonString = JSON.stringify(exportData, null, 2);
-        
-        // Create options for user
-        const action = confirm('Coordenadas prontas para salvar!\n\nOK = Copiar para área de transferência\nCancelar = Baixar como arquivo');
-        
-        if (action) {
-            // Copy to clipboard
-            this.copyToClipboard(jsonString);
-        } else {
-            // Download as file
-            this.downloadAsFile(jsonString);
-        }
-    }
-
-    /**
-     * Copy JSON to clipboard
-     * @param {string} jsonString - The JSON string to copy
-     */
-    copyToClipboard(jsonString) {
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(jsonString).then(() => {
-                alert('Coordenadas copiadas para a área de transferência!');
-            }).catch(err => {
-                console.error('Failed to copy to clipboard:', err);
-                this.fallbackCopyToClipboard(jsonString);
-            });
-        } else {
-            this.fallbackCopyToClipboard(jsonString);
-        }
-    }
-
-    /**
-     * Fallback method to copy to clipboard
-     * @param {string} text - The text to copy
-     */
-    fallbackCopyToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            const result = document.execCommand('copy');
-            if (result) {
-                alert('Coordenadas copiadas para a área de transferência!');
+    updateRoomElements() {
+        const roomElements = document.querySelectorAll('.room');
+        roomElements.forEach(room => {
+            if (room.id === this.selectedRoom) {
+                room.classList.add('selected');
+                room.setAttribute('aria-pressed', 'true');
             } else {
-                throw new Error('Copy command failed');
+                room.classList.remove('selected', 'blinking');
+                room.setAttribute('aria-pressed', 'false');
             }
-        } catch (err) {
-            console.error('Fallback copy failed:', err);
-            alert('Não foi possível copiar automaticamente. O JSON será exibido em uma nova janela.');
-            this.showJsonInWindow(text);
-        } finally {
-            document.body.removeChild(textArea);
+        });
+    }
+
+    /**
+     * Trigger blinking animation for selected room
+     * @param {string} roomId - The ID of the room to blink
+     */
+    blinkRoom(roomId) {
+        const roomElement = document.getElementById(roomId);
+        if (!roomElement) return;
+
+        // Add blinking class
+        roomElement.classList.add('blinking');
+
+        // Remove blinking after animation completes
+        this.blinkTimeout = setTimeout(() => {
+            roomElement.classList.remove('blinking');
+        }, 5000); // 5 seconds (matches CSS animation duration)
+    }
+
+    /**
+     * Update status text
+     * @param {string} roomId - The currently selected room ID
+     */
+    updateStatus(roomId = null) {
+        const statusElement = document.getElementById('status-text');
+        if (roomId) {
+            const roomName = this.getRoomDisplayName(roomId);
+            statusElement.textContent = `Sala selecionada: ${roomName} - Localize no mapa!`;
+        } else {
+            statusElement.textContent = 'Selecione uma sala para ver sua localização no mapa';
         }
     }
 
     /**
-     * Download JSON as file
-     * @param {string} jsonString - The JSON string to download
+     * Get user-friendly room name
+     * @param {string} roomId - The room ID
+     * @returns {string} - User-friendly room name
      */
-    downloadAsFile(jsonString) {
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `coordenadas-mapa-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        alert('Arquivo de coordenadas baixado!');
+    getRoomDisplayName(roomId) {
+        const roomNames = {
+            'sala-reuniao-1': 'Sala de Reunião 1',
+            'sala-reuniao-2': 'Sala de Reunião 2',
+            'sala-reuniao-3': 'Sala de Reunião 3',
+            'escritorio-gerencia': 'Escritório Gerência',
+            'escritorio-diretoria': 'Escritório Diretoria',
+            'recepcao': 'Recepção',
+            'copa': 'Copa',
+            'area-descanso': 'Área de Descanso',
+            'banheiro-masculino': 'Banheiro Masculino',
+            'banheiro-feminino': 'Banheiro Feminino',
+            'almoxarifado': 'Almoxarifado'
+        };
+        return roomNames[roomId] || roomId;
     }
 
     /**
-     * Show JSON in a new window as fallback
-     * @param {string} jsonString - The JSON string to display
+     * Announce room selection for screen readers
+     * @param {string} roomId - The selected room ID (null for clear)
      */
-    showJsonInWindow(jsonString) {
-        const newWindow = window.open('', '_blank');
-        newWindow.document.write(`
-            <html>
-                <head><title>Coordenadas do Mapa</title></head>
-                <body>
-                    <h2>Coordenadas do Mapa</h2>
-                    <pre style="background: #f5f5f5; padding: 20px; border-radius: 5px;">${jsonString}</pre>
-                    <p>Copie o conteúdo acima.</p>
-                </body>
-            </html>
-        `);
-    }
-
-    /**
-     * Update instruction text
-     * @param {string} text - The instruction text to display
-     */
-    updateInstructions(text = null) {
-        const instructionElement = document.getElementById('instruction-text');
-        if (text) {
-            instructionElement.textContent = text;
+    announceSelection(roomId) {
+        const announcer = document.getElementById('room-announcer');
+        if (roomId) {
+            const roomName = this.getRoomDisplayName(roomId);
+            announcer.textContent = `Sala selecionada: ${roomName}. A sala está piscando no mapa.`;
         } else {
-            instructionElement.textContent = 'Clique em "Add Coordenada" para ativar o modo de seleção';
+            announcer.textContent = 'Seleção de sala removida.';
         }
     }
 
@@ -351,17 +231,53 @@ class CoordinateTool {
      * @param {KeyboardEvent} e - The keyboard event
      */
     handleKeyboardNavigation(e) {
-        // Escape key cancels selection mode
-        if (e.key === 'Escape' && this.isSelectionMode) {
-            this.toggleSelectionMode();
+        // Escape key clears selection
+        if (e.key === 'Escape') {
+            this.clearSelection();
             return;
         }
+
+        // Arrow key navigation for room buttons
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            this.handleArrowNavigation(e);
+        }
+    }
+
+    /**
+     * Handle arrow key navigation between rooms
+     * @param {KeyboardEvent} e - The keyboard event
+     */
+    handleArrowNavigation(e) {
+        const focusedElement = document.activeElement;
         
-        // Ctrl+S to save coordinates
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault();
-            this.saveCoordinates();
+        // Only handle if focused on a room button or SVG room
+        if (!focusedElement.classList.contains('room-btn') && !focusedElement.classList.contains('room')) {
             return;
+        }
+
+        e.preventDefault();
+
+        let targetElement = null;
+        const allRoomElements = [
+            ...document.querySelectorAll('.room-btn'),
+            ...document.querySelectorAll('.room')
+        ];
+
+        const currentIndex = allRoomElements.indexOf(focusedElement);
+        
+        switch (e.key) {
+            case 'ArrowUp':
+            case 'ArrowLeft':
+                targetElement = allRoomElements[currentIndex - 1] || allRoomElements[allRoomElements.length - 1];
+                break;
+            case 'ArrowDown':
+            case 'ArrowRight':
+                targetElement = allRoomElements[currentIndex + 1] || allRoomElements[0];
+                break;
+        }
+
+        if (targetElement) {
+            targetElement.focus();
         }
     }
 
@@ -369,31 +285,18 @@ class CoordinateTool {
      * Setup accessibility features
      */
     setupAccessibility() {
-        // Add ARIA labels and roles
-        const floorPlan = document.getElementById('floor-plan');
-        floorPlan.setAttribute('role', 'img');
-        floorPlan.setAttribute('aria-label', 'Planta baixa do escritório - clique para adicionar coordenadas');
-        
-        // Add keyboard support for map interaction
-        floorPlan.setAttribute('tabindex', '0');
-        floorPlan.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                if (this.isSelectionMode) {
-                    // Center of image as fallback coordinate
-                    const rect = floorPlan.getBoundingClientRect();
-                    const centerX = Math.round(rect.width / 2);
-                    const centerY = Math.round(rect.height / 2);
-                    
-                    const fakeEvent = {
-                        target: floorPlan,
-                        clientX: rect.left + centerX,
-                        clientY: rect.top + centerY
-                    };
-                    
-                    this.addCoordinate(fakeEvent);
-                }
-                e.preventDefault();
-            }
+        // Add ARIA labels to room elements
+        const roomElements = document.querySelectorAll('.room');
+        roomElements.forEach(room => {
+            const roomName = this.getRoomDisplayName(room.id);
+            room.setAttribute('aria-label', `Selecionar ${roomName}`);
+            room.setAttribute('aria-pressed', 'false');
+        });
+
+        // Add ARIA pressed state to room buttons
+        const roomButtons = document.querySelectorAll('.room-btn');
+        roomButtons.forEach(button => {
+            button.setAttribute('aria-pressed', 'false');
         });
     }
 
@@ -404,46 +307,45 @@ class CoordinateTool {
         // Debounce resize handling
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
-            this.updateCoordinateOverlay();
+            // Re-update room elements if needed
+            if (this.selectedRoom) {
+                this.updateRoomElements();
+            }
         }, 250);
     }
 
     /**
-     * Get all coordinates
-     * @returns {Array} - Array of coordinate objects
+     * Get current selected room
+     * @returns {string|null} - Currently selected room ID
      */
-    getAllCoordinates() {
-        return this.coordinates;
+    getSelectedRoom() {
+        return this.selectedRoom;
     }
 
     /**
-     * Load coordinates from JSON
-     * @param {Array} coordinatesData - Array of coordinate objects to load
+     * Check if a room is currently selected
+     * @param {string} roomId - Room ID to check
+     * @returns {boolean} - True if room is selected
      */
-    loadCoordinates(coordinatesData) {
-        if (Array.isArray(coordinatesData)) {
-            this.coordinates = coordinatesData.map((coord, index) => ({
-                id: index + 1,
-                nome: coord.nome,
-                coordenadas: coord.coordenadas,
-                andar: coord.andar || 'terreo'
-            }));
-            
-            this.coordinateCounter = this.coordinates.length + 1;
-            this.updateCoordinatesList();
-            this.updateCoordinateOverlay();
-            
-            console.log('Loaded coordinates:', this.coordinates);
-        }
+    isRoomSelected(roomId) {
+        return this.selectedRoom === roomId;
+    }
+
+    /**
+     * Get all available room IDs
+     * @returns {Array<string>} - Array of room IDs
+     */
+    getAllRoomIds() {
+        return Array.from(document.querySelectorAll('.room')).map(room => room.id);
     }
 }
 
-// Initialize the coordinate tool when DOM is loaded
+// Initialize the office map when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.coordinateTool = new CoordinateTool();
+    window.officeMap = new OfficeMap();
 });
 
 // Export for testing purposes
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CoordinateTool;
+    module.exports = OfficeMap;
 }
