@@ -1,0 +1,480 @@
+/* Interactive Office Map - CSS Styles */
+
+/* CSS Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Container and Layout */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-height: calc(100vh - 40px);
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+header h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Main Content Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+    min-height: 600px;
+}
+
+/* Room Sidebar */
+.room-sidebar {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 25px;
+    border: 1px solid #dee2e6;
+    height: fit-content;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+/* Floor Selection */
+.floor-selection {
+    margin-bottom: 25px;
+}
+
+.floor-selection h2 {
+    color: #495057;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.floor-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.floor-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #007bff;
+    background: white;
+    color: #007bff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.floor-btn:hover {
+    background: #e7f3ff;
+    transform: translateY(-1px);
+}
+
+.floor-btn.active {
+    background: #007bff;
+    color: white;
+}
+
+.floor-btn:focus {
+    outline: 3px solid #80bdff;
+    outline-offset: 2px;
+}
+
+/* Room Categories */
+.room-categories {
+    margin-bottom: 25px;
+}
+
+.category {
+    margin-bottom: 20px;
+}
+
+.category h3 {
+    color: #495057;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+    padding: 8px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.room-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.room-btn {
+    padding: 12px 16px;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #495057;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    position: relative;
+}
+
+.room-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    transform: translateX(4px);
+}
+
+.room-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.room-btn.hidden {
+    display: none;
+}
+
+.room-btn:focus {
+    outline: 2px solid #80bdff;
+    outline-offset: 2px;
+}
+
+/* Controls */
+.controls {
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+.control-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dc3545;
+    background: white;
+    color: #dc3545;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.control-btn:hover {
+    background: #dc3545;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.control-btn:focus {
+    outline: 3px solid #f8d7da;
+    outline-offset: 2px;
+}
+
+/* Map Container */
+.map-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    overflow: hidden;
+    position: relative;
+    min-height: 600px;
+}
+
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: #f8f9fa;
+}
+
+.floor-plan {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Room Markers */
+.room-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.room-marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #dc3545;
+    border: 2px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.room-marker:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    background: #a71e2a;
+}
+
+.room-marker.blinking {
+    animation: blink 1s ease-in-out 3;
+}
+
+/* Blinking animation for room selection */
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        background: #dc3545;
+    }
+    50% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(1.3);
+        background: #ff6b7a;
+    }
+}
+
+/* Map Instructions */
+.map-instructions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-top: 1px solid #dee2e6;
+    text-align: center;
+}
+
+.map-instructions p {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Responsive Design */
+
+/* Tablet Layout */
+@media (max-width: 1024px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .main-content {
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+    }
+    
+    .room-sidebar {
+        padding: 20px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Mobile Layout */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 6px;
+    }
+    
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .room-sidebar {
+        order: 2;
+        max-height: none;
+        padding: 15px;
+    }
+    
+    .map-container {
+        order: 1;
+        min-height: 400px;
+    }
+    
+    header {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    header p {
+        font-size: 1rem;
+    }
+    
+    .floor-buttons {
+        flex-direction: column;
+    }
+    
+    .room-categories {
+        margin-bottom: 15px;
+    }
+    
+    .category {
+        margin-bottom: 15px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .container {
+        padding: 8px;
+        margin: 2px;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    header p {
+        font-size: 0.9rem;
+    }
+    
+    .room-sidebar {
+        padding: 12px;
+    }
+    
+    .map-container {
+        min-height: 300px;
+    }
+    
+    .floor-btn,
+    .room-btn,
+    .control-btn {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .room-btn,
+    .floor-btn,
+    .control-btn {
+        border-width: 2px;
+    }
+    
+    .room-marker {
+        border-width: 3px;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .room-marker.blinking {
+        animation: none;
+        background: #ff6b7a !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .room-sidebar {
+        display: none;
+    }
+    
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .map-instructions {
+        display: none;
+    }
+    
+    .container {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}

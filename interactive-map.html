@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interativo do Escritório - Philips</title>
+    <link rel="stylesheet" href="interactive-map.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mapa Interativo do Escritório</h1>
+            <p>Clique em uma sala na lista ou diretamente no mapa para localizá-la</p>
+        </header>
+        
+        <main class="main-content">
+            <!-- Room List Sidebar -->
+            <aside class="room-sidebar">
+                <div class="floor-selection">
+                    <h2>Seleção do Andar</h2>
+                    <div class="floor-buttons">
+                        <button id="terreo-btn" class="floor-btn active" data-floor="terreo">Térreo</button>
+                        <button id="mesanino-btn" class="floor-btn" data-floor="mesanino">Mezanino</button>
+                    </div>
+                </div>
+                
+                <div class="room-categories">
+                    <div class="category">
+                        <h3>🏢 Salas de Reunião</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="sala-reuniao-1" data-floor="terreo">Sala de Reunião 1</button>
+                            <button class="room-btn" data-room="sala-reuniao-2" data-floor="terreo">Sala de Reunião 2</button>
+                            <button class="room-btn" data-room="sala-reuniao-3" data-floor="mesanino">Sala de Reunião 3</button>
+                        </div>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>💼 Escritórios</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="escritorio-gerencia" data-floor="terreo">Escritório Gerência</button>
+                            <button class="room-btn" data-room="escritorio-diretoria" data-floor="mesanino">Escritório Diretoria</button>
+                        </div>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>🏛️ Áreas Comuns</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="recepcao" data-floor="terreo">Recepção</button>
+                            <button class="room-btn" data-room="copa" data-floor="terreo">Copa</button>
+                            <button class="room-btn" data-room="area-descanso" data-floor="mesanino">Área de Descanso</button>
+                        </div>
+                    </div>
+                    
+                    <div class="category">
+                        <h3>🔧 Facilidades</h3>
+                        <div class="room-list">
+                            <button class="room-btn" data-room="banheiro-masculino" data-floor="terreo">Banheiro Masculino</button>
+                            <button class="room-btn" data-room="banheiro-feminino" data-floor="terreo">Banheiro Feminino</button>
+                            <button class="room-btn" data-room="almoxarifado" data-floor="mesanino">Almoxarifado</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="clear-selection-btn" class="control-btn">Limpar Seleção</button>
+                </div>
+            </aside>
+            
+            <!-- Interactive Map -->
+            <section class="map-container">
+                <div class="map-wrapper">
+                    <img id="floor-plan" class="floor-plan" src="terreo.png" alt="Planta Baixa do Escritório">
+                    <div id="room-markers" class="room-markers"></div>
+                </div>
+                <div class="map-instructions">
+                    <p id="instruction-text">Selecione uma sala para vê-la piscar no mapa</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Accessibility announcer -->
+    <div id="room-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    
+    <script src="interactive-map.js"></script>
+</body>
+</html>
