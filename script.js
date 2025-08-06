@@ -1,51 +1,58 @@
 /**
- * Interactive Office Map
- * Handles room selection and highlighting functionality
+ * Interactive Coordinate Addition Tool
+ * Allows users to add coordinates to office floor plans and export as JSON
  */
 
-class OfficeMap {
+class CoordinateTool {
     constructor() {
-        this.currentlySelected = null;
-        this.blinkingTimeout = null;
+        this.coordinates = [];
+        this.isSelectionMode = false;
+        this.currentFloor = 'terreo';
+        this.coordinateCounter = 1;
         this.init();
     }
 
     /**
-     * Initialize the office map functionality
+     * Initialize the coordinate tool functionality
      */
     init() {
         this.bindEvents();
         this.setupAccessibility();
-        console.log('Office Map initialized successfully');
+        this.updateInstructions();
+        console.log('Coordinate Tool initialized successfully');
     }
 
     /**
-     * Bind event listeners to room buttons and map elements
+     * Bind event listeners to controls and map elements
      */
     bindEvents() {
-        // Room button clicks
-        const roomButtons = document.querySelectorAll('.room-btn');
-        roomButtons.forEach(button => {
+        // Floor selection buttons
+        const floorButtons = document.querySelectorAll('.floor-btn');
+        floorButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                const roomId = e.target.getAttribute('data-room');
-                this.selectRoom(roomId, e.target);
+                const floor = e.target.getAttribute('data-floor');
+                this.switchFloor(floor);
             });
         });
 
-        // Direct map clicks
-        const mapRooms = document.querySelectorAll('.room');
-        mapRooms.forEach(room => {
-            room.addEventListener('click', (e) => {
-                const roomId = room.id;
-                const correspondingButton = document.querySelector(`[data-room="${roomId}"]`);
-                this.selectRoom(roomId, correspondingButton);
-            });
+        // Add coordinate button
+        const addButton = document.getElementById('add-coordinate-btn');
+        addButton.addEventListener('click', () => {
+            this.toggleSelectionMode();
         });
 
-        // Clear selection button
-        const clearButton = document.getElementById('clear-selection');
-        clearButton.addEventListener('click', () => {
-            this.clearSelection();
+        // Save coordinates button
+        const saveButton = document.getElementById('save-coordinates-btn');
+        saveButton.addEventListener('click', () => {
+            this.saveCoordinates();
+        });
+
+        // Map click handler
+        const floorPlan = document.getElementById('floor-plan');
+        floorPlan.addEventListener('click', (e) => {
+            if (this.isSelectionMode) {
+                this.addCoordinate(e);
+            }
         });
 
         // Keyboard navigation
@@ -53,81 +60,290 @@ class OfficeMap {
             this.handleKeyboardNavigation(e);
         });
 
-        // Window resize handler for responsive adjustments
+        // Window resize handler
         window.addEventListener('resize', () => {
             this.handleResize();
         });
     }
 
     /**
-     * Select and highlight a room
-     * @param {string} roomId - The ID of the room to select
-     * @param {HTMLElement} button - The button that was clicked
+     * Switch between floor plans
+     * @param {string} floor - The floor to switch to ('terreo' or 'mesanino')
      */
-    selectRoom(roomId, button) {
-        // Clear any existing selection
-        this.clearSelection();
-
-        // Find the room element in the SVG
-        const roomElement = document.getElementById(roomId);
-        if (!roomElement) {
-            console.warn(`Room with ID "${roomId}" not found`);
-            return;
-        }
-
-        // Update button state
-        if (button) {
-            button.classList.add('active');
-        }
-
-        // Start blinking animation
-        roomElement.classList.add('blinking');
+    switchFloor(floor) {
+        this.currentFloor = floor;
         
-        // Update current selection
-        this.currentlySelected = {
-            roomId: roomId,
-            roomElement: roomElement,
-            button: button
-        };
-
-        // Auto-clear selection after 10 seconds
-        this.blinkingTimeout = setTimeout(() => {
-            this.clearSelection();
-        }, 10000);
-
-        // Announce selection for screen readers
-        this.announceSelection(roomId);
-
-        // Scroll room into view if needed
-        this.scrollToRoom(roomElement);
-
-        console.log(`Room selected: ${roomId}`);
+        // Update floor buttons
+        document.querySelectorAll('.floor-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-floor="${floor}"]`).classList.add('active');
+        
+        // Update floor plan image
+        const floorPlan = document.getElementById('floor-plan');
+        floorPlan.src = `${floor}.png`;
+        floorPlan.alt = `Planta Baixa - ${floor === 'terreo' ? 'Térreo' : 'Mezanino'}`;
+        
+        // Clear existing coordinate markers for this view
+        this.updateCoordinateOverlay();
+        
+        console.log(`Switched to ${floor} floor plan`);
     }
 
     /**
-     * Clear the current room selection
+     * Toggle coordinate selection mode
      */
-    clearSelection() {
-        if (!this.currentlySelected) return;
-
-        // Remove blinking animation
-        this.currentlySelected.roomElement.classList.remove('blinking');
-
-        // Remove active button state
-        if (this.currentlySelected.button) {
-            this.currentlySelected.button.classList.remove('active');
+    toggleSelectionMode() {
+        this.isSelectionMode = !this.isSelectionMode;
+        
+        const addButton = document.getElementById('add-coordinate-btn');
+        const floorPlan = document.getElementById('floor-plan');
+        
+        if (this.isSelectionMode) {
+            addButton.classList.add('active');
+            addButton.innerHTML = '<span class="btn-icon">✕</span>Cancelar';
+            floorPlan.classList.add('selection-mode');
+            this.updateInstructions('Clique no mapa para adicionar uma coordenada');
+        } else {
+            addButton.classList.remove('active');
+            addButton.innerHTML = '<span class="btn-icon">+</span>Add Coordenada';
+            floorPlan.classList.remove('selection-mode');
+            this.updateInstructions('Clique em "Add Coordenada" para ativar o modo de seleção');
         }
+        
+        console.log(`Selection mode: ${this.isSelectionMode ? 'ON' : 'OFF'}`);
+    }
 
-        // Clear timeout
-        if (this.blinkingTimeout) {
-            clearTimeout(this.blinkingTimeout);
-            this.blinkingTimeout = null;
+    /**
+     * Add a coordinate when user clicks on the map
+     * @param {MouseEvent} e - The click event
+     */
+    addCoordinate(e) {
+        const rect = e.target.getBoundingClientRect();
+        const x = Math.round(e.clientX - rect.left);
+        const y = Math.round(e.clientY - rect.top);
+        
+        // Prompt for room name
+        const roomName = prompt('Digite o nome da sala/localização:');
+        if (!roomName || roomName.trim() === '') {
+            return; // User cancelled or entered empty name
         }
+        
+        // Create coordinate object
+        const coordinate = {
+            id: this.coordinateCounter++,
+            nome: roomName.trim(),
+            coordenadas: { x, y },
+            andar: this.currentFloor
+        };
+        
+        // Add to coordinates array
+        this.coordinates.push(coordinate);
+        
+        // Update UI
+        this.updateCoordinatesList();
+        this.updateCoordinateOverlay();
+        
+        // Turn off selection mode
+        this.toggleSelectionMode();
+        
+        console.log('Added coordinate:', coordinate);
+    }
 
-        // Reset selection
-        this.currentlySelected = null;
+    /**
+     * Update the coordinates list in the sidebar
+     */
+    updateCoordinatesList() {
+        const container = document.getElementById('coordinates-container');
+        
+        if (this.coordinates.length === 0) {
+            container.innerHTML = '<p class="empty-message">Nenhuma coordenada adicionada ainda.</p>';
+            return;
+        }
+        
+        const coordinatesHTML = this.coordinates.map(coord => `
+            <div class="coordinate-item" data-id="${coord.id}">
+                <div class="coordinate-header">
+                    <strong>${coord.nome}</strong>
+                    <button class="remove-btn" onclick="window.coordinateTool.removeCoordinate(${coord.id})">&times;</button>
+                </div>
+                <div class="coordinate-details">
+                    <span class="coordinate-position">X: ${coord.coordenadas.x}, Y: ${coord.coordenadas.y}</span>
+                    <span class="coordinate-floor">${coord.andar === 'terreo' ? 'Térreo' : 'Mezanino'}</span>
+                </div>
+            </div>
+        `).join('');
+        
+        container.innerHTML = coordinatesHTML;
+    }
 
-        console.log('Selection cleared');
+    /**
+     * Update coordinate markers on the map overlay
+     */
+    updateCoordinateOverlay() {
+        const overlay = document.getElementById('coordinates-overlay');
+        const floorPlan = document.getElementById('floor-plan');
+        
+        // Clear existing markers
+        overlay.innerHTML = '';
+        
+        // Add markers for coordinates on current floor
+        const currentFloorCoordinates = this.coordinates.filter(coord => coord.andar === this.currentFloor);
+        
+        currentFloorCoordinates.forEach(coord => {
+            const marker = document.createElement('div');
+            marker.className = 'coordinate-marker';
+            marker.style.left = `${coord.coordenadas.x}px`;
+            marker.style.top = `${coord.coordenadas.y}px`;
+            marker.title = `${coord.nome} (${coord.coordenadas.x}, ${coord.coordenadas.y})`;
+            marker.innerHTML = `<span class="marker-number">${coord.id}</span>`;
+            
+            // Add click handler to show details
+            marker.addEventListener('click', () => {
+                alert(`${coord.nome}\nCoordenadas: (${coord.coordenadas.x}, ${coord.coordenadas.y})\nAndar: ${coord.andar === 'terreo' ? 'Térreo' : 'Mezanino'}`);
+            });
+            
+            overlay.appendChild(marker);
+        });
+    }
+
+    /**
+     * Remove a coordinate
+     * @param {number} id - The coordinate ID to remove
+     */
+    removeCoordinate(id) {
+        if (confirm('Tem certeza que deseja remover esta coordenada?')) {
+            this.coordinates = this.coordinates.filter(coord => coord.id !== id);
+            this.updateCoordinatesList();
+            this.updateCoordinateOverlay();
+            console.log(`Removed coordinate with ID: ${id}`);
+        }
+    }
+
+    /**
+     * Save coordinates as JSON
+     */
+    saveCoordinates() {
+        if (this.coordinates.length === 0) {
+            alert('Nenhuma coordenada para salvar!');
+            return;
+        }
+        
+        // Format coordinates according to specification
+        const exportData = this.coordinates.map(coord => ({
+            nome: coord.nome,
+            coordenadas: coord.coordenadas,
+            andar: coord.andar
+        }));
+        
+        const jsonString = JSON.stringify(exportData, null, 2);
+        
+        // Create options for user
+        const action = confirm('Coordenadas prontas para salvar!\n\nOK = Copiar para área de transferência\nCancelar = Baixar como arquivo');
+        
+        if (action) {
+            // Copy to clipboard
+            this.copyToClipboard(jsonString);
+        } else {
+            // Download as file
+            this.downloadAsFile(jsonString);
+        }
+    }
+
+    /**
+     * Copy JSON to clipboard
+     * @param {string} jsonString - The JSON string to copy
+     */
+    copyToClipboard(jsonString) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(jsonString).then(() => {
+                alert('Coordenadas copiadas para a área de transferência!');
+            }).catch(err => {
+                console.error('Failed to copy to clipboard:', err);
+                this.fallbackCopyToClipboard(jsonString);
+            });
+        } else {
+            this.fallbackCopyToClipboard(jsonString);
+        }
+    }
+
+    /**
+     * Fallback method to copy to clipboard
+     * @param {string} text - The text to copy
+     */
+    fallbackCopyToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const result = document.execCommand('copy');
+            if (result) {
+                alert('Coordenadas copiadas para a área de transferência!');
+            } else {
+                throw new Error('Copy command failed');
+            }
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+            alert('Não foi possível copiar automaticamente. O JSON será exibido em uma nova janela.');
+            this.showJsonInWindow(text);
+        } finally {
+            document.body.removeChild(textArea);
+        }
+    }
+
+    /**
+     * Download JSON as file
+     * @param {string} jsonString - The JSON string to download
+     */
+    downloadAsFile(jsonString) {
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `coordenadas-mapa-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('Arquivo de coordenadas baixado!');
+    }
+
+    /**
+     * Show JSON in a new window as fallback
+     * @param {string} jsonString - The JSON string to display
+     */
+    showJsonInWindow(jsonString) {
+        const newWindow = window.open('', '_blank');
+        newWindow.document.write(`
+            <html>
+                <head><title>Coordenadas do Mapa</title></head>
+                <body>
+                    <h2>Coordenadas do Mapa</h2>
+                    <pre style="background: #f5f5f5; padding: 20px; border-radius: 5px;">${jsonString}</pre>
+                    <p>Copie o conteúdo acima.</p>
+                </body>
+            </html>
+        `);
+    }
+
+    /**
+     * Update instruction text
+     * @param {string} text - The instruction text to display
+     */
+    updateInstructions(text = null) {
+        const instructionElement = document.getElementById('instruction-text');
+        if (text) {
+            instructionElement.textContent = text;
+        } else {
+            instructionElement.textContent = 'Clique em "Add Coordenada" para ativar o modo de seleção';
+        }
     }
 
     /**
@@ -135,142 +351,49 @@ class OfficeMap {
      * @param {KeyboardEvent} e - The keyboard event
      */
     handleKeyboardNavigation(e) {
-        // Escape key clears selection
-        if (e.key === 'Escape') {
-            this.clearSelection();
+        // Escape key cancels selection mode
+        if (e.key === 'Escape' && this.isSelectionMode) {
+            this.toggleSelectionMode();
             return;
         }
-
-        // Arrow key navigation through room buttons
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-            this.navigateRooms(e.key === 'ArrowDown' ? 1 : -1);
-            e.preventDefault();
-        }
-
-        // Enter or Space to select focused room
-        if (e.key === 'Enter' || e.key === ' ') {
-            const focusedButton = document.activeElement;
-            if (focusedButton && focusedButton.classList.contains('room-btn')) {
-                focusedButton.click();
-                e.preventDefault();
-            }
-        }
-    }
-
-    /**
-     * Navigate through room buttons with keyboard
-     * @param {number} direction - 1 for down, -1 for up
-     */
-    navigateRooms(direction) {
-        const roomButtons = Array.from(document.querySelectorAll('.room-btn'));
-        const currentIndex = roomButtons.indexOf(document.activeElement);
         
-        if (currentIndex === -1) {
-            // No button focused, focus first one
-            if (roomButtons.length > 0) {
-                roomButtons[0].focus();
-            }
+        // Ctrl+S to save coordinates
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            this.saveCoordinates();
             return;
         }
-
-        const nextIndex = currentIndex + direction;
-        if (nextIndex >= 0 && nextIndex < roomButtons.length) {
-            roomButtons[nextIndex].focus();
-        }
-    }
-
-    /**
-     * Scroll room into view
-     * @param {HTMLElement} roomElement - The room element to scroll to
-     */
-    scrollToRoom(roomElement) {
-        const mapContainer = document.querySelector('.map-container');
-        const roomRect = roomElement.getBoundingClientRect();
-        const containerRect = mapContainer.getBoundingClientRect();
-
-        // Check if room is visible
-        if (roomRect.top >= containerRect.top && 
-            roomRect.bottom <= containerRect.bottom &&
-            roomRect.left >= containerRect.left && 
-            roomRect.right <= containerRect.right) {
-            return; // Already visible
-        }
-
-        // Scroll room into view
-        roomElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center'
-        });
-    }
-
-    /**
-     * Announce room selection for accessibility
-     * @param {string} roomId - The ID of the selected room
-     */
-    announceSelection(roomId) {
-        // Create or update announcement element
-        let announcer = document.getElementById('room-announcer');
-        if (!announcer) {
-            announcer = document.createElement('div');
-            announcer.id = 'room-announcer';
-            announcer.setAttribute('aria-live', 'polite');
-            announcer.setAttribute('aria-atomic', 'true');
-            announcer.style.position = 'absolute';
-            announcer.style.left = '-10000px';
-            announcer.style.width = '1px';
-            announcer.style.height = '1px';
-            announcer.style.overflow = 'hidden';
-            document.body.appendChild(announcer);
-        }
-
-        // Convert room ID to readable name
-        const roomName = this.getRoomDisplayName(roomId);
-        announcer.textContent = `Sala selecionada: ${roomName}. A sala está piscando no mapa.`;
-    }
-
-    /**
-     * Convert room ID to display name
-     * @param {string} roomId - The room ID
-     * @returns {string} - The display name
-     */
-    getRoomDisplayName(roomId) {
-        const roomNames = {
-            'recepcao': 'Recepção',
-            'sala-reuniao-1': 'Sala de Reunião 1',
-            'sala-reuniao-2': 'Sala de Reunião 2',
-            'sala-reuniao-3': 'Sala de Reunião 3',
-            'escritorio-gerencia': 'Escritório Gerência',
-            'escritorio-diretoria': 'Escritório Diretoria',
-            'copa': 'Copa',
-            'area-descanso': 'Área de Descanso',
-            'banheiro-masculino': 'Banheiro Masculino',
-            'banheiro-feminino': 'Banheiro Feminino',
-            'almoxarifado': 'Almoxarifado'
-        };
-
-        return roomNames[roomId] || roomId;
     }
 
     /**
      * Setup accessibility features
      */
     setupAccessibility() {
-        // Add ARIA labels to room elements
-        const mapRooms = document.querySelectorAll('.room');
-        mapRooms.forEach(room => {
-            const roomName = this.getRoomDisplayName(room.id);
-            room.setAttribute('role', 'button');
-            room.setAttribute('aria-label', `Selecionar ${roomName}`);
-            room.setAttribute('tabindex', '0');
-        });
-
-        // Add ARIA labels to room buttons
-        const roomButtons = document.querySelectorAll('.room-btn');
-        roomButtons.forEach(button => {
-            const roomId = button.getAttribute('data-room');
-            const roomName = this.getRoomDisplayName(roomId);
-            button.setAttribute('aria-label', `Localizar ${roomName} no mapa`);
+        // Add ARIA labels and roles
+        const floorPlan = document.getElementById('floor-plan');
+        floorPlan.setAttribute('role', 'img');
+        floorPlan.setAttribute('aria-label', 'Planta baixa do escritório - clique para adicionar coordenadas');
+        
+        // Add keyboard support for map interaction
+        floorPlan.setAttribute('tabindex', '0');
+        floorPlan.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (this.isSelectionMode) {
+                    // Center of image as fallback coordinate
+                    const rect = floorPlan.getBoundingClientRect();
+                    const centerX = Math.round(rect.width / 2);
+                    const centerY = Math.round(rect.height / 2);
+                    
+                    const fakeEvent = {
+                        target: floorPlan,
+                        clientX: rect.left + centerX,
+                        clientY: rect.top + centerY
+                    };
+                    
+                    this.addCoordinate(fakeEvent);
+                }
+                e.preventDefault();
+            }
         });
     }
 
@@ -281,39 +404,46 @@ class OfficeMap {
         // Debounce resize handling
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
-            // Re-scroll to selected room if any
-            if (this.currentlySelected) {
-                this.scrollToRoom(this.currentlySelected.roomElement);
-            }
+            this.updateCoordinateOverlay();
         }, 250);
     }
 
     /**
-     * Get current selection status
-     * @returns {Object|null} - Current selection or null
+     * Get all coordinates
+     * @returns {Array} - Array of coordinate objects
      */
-    getCurrentSelection() {
-        return this.currentlySelected;
+    getAllCoordinates() {
+        return this.coordinates;
     }
 
     /**
-     * Select room by ID (programmatic selection)
-     * @param {string} roomId - The room ID to select
+     * Load coordinates from JSON
+     * @param {Array} coordinatesData - Array of coordinate objects to load
      */
-    selectRoomById(roomId) {
-        const button = document.querySelector(`[data-room="${roomId}"]`);
-        if (button) {
-            this.selectRoom(roomId, button);
+    loadCoordinates(coordinatesData) {
+        if (Array.isArray(coordinatesData)) {
+            this.coordinates = coordinatesData.map((coord, index) => ({
+                id: index + 1,
+                nome: coord.nome,
+                coordenadas: coord.coordenadas,
+                andar: coord.andar || 'terreo'
+            }));
+            
+            this.coordinateCounter = this.coordinates.length + 1;
+            this.updateCoordinatesList();
+            this.updateCoordinateOverlay();
+            
+            console.log('Loaded coordinates:', this.coordinates);
         }
     }
 }
 
-// Initialize the office map when DOM is loaded
+// Initialize the coordinate tool when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.officeMap = new OfficeMap();
+    window.coordinateTool = new CoordinateTool();
 });
 
 // Export for testing purposes
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = OfficeMap;
+    module.exports = CoordinateTool;
 }

@@ -41,88 +41,198 @@ header p {
 
 .main-content {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 350px 1fr;
     gap: 20px;
     min-height: 600px;
 }
 
-/* Room list sidebar */
-.room-list {
+/* Controls panel sidebar */
+.controls-panel {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow-y: auto;
     max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
-.room-list h2 {
+.controls-panel h2 {
     color: #0066cc;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
     border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
 }
 
-.category {
-    margin-bottom: 25px;
+/* Floor selection */
+.floor-buttons {
+    display: flex;
+    gap: 10px;
 }
 
-.category h3 {
-    color: #333;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.category ul {
-    list-style: none;
-}
-
-.category li {
-    margin-bottom: 5px;
-}
-
-.room-btn {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
-    border-radius: 5px;
+.floor-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #0066cc;
+    background: white;
+    color: #0066cc;
+    border-radius: 6px;
     cursor: pointer;
-    text-align: left;
     font-size: 0.9rem;
+    font-weight: 600;
     transition: all 0.3s ease;
 }
 
-.room-btn:hover {
+.floor-btn:hover {
     background: #e8f4f8;
-    border-color: #0066cc;
-    transform: translateX(5px);
 }
 
-.room-btn.active {
+.floor-btn.active {
     background: #0066cc;
     color: white;
-    border-color: #0066cc;
 }
 
-.clear-btn {
-    width: 100%;
-    padding: 12px;
-    background: #dc3545;
-    color: white;
+/* Control buttons */
+.coordinate-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
-    margin-top: 20px;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-.clear-btn:hover {
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+.add-btn {
+    background: #28a745;
+    color: white;
+}
+
+.add-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.add-btn.active {
+    background: #dc3545;
+}
+
+.add-btn.active:hover {
     background: #c82333;
+}
+
+.save-btn {
+    background: #007bff;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Coordinates list */
+.coordinates-list {
+    flex-grow: 1;
+}
+
+.coordinates-container {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.empty-message {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+.coordinate-item {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.coordinate-item:hover {
+    background: #e9ecef;
+    transform: translateX(3px);
+}
+
+.coordinate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.coordinate-header strong {
+    color: #333;
+    font-size: 1rem;
+}
+
+.remove-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.coordinate-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.coordinate-position {
+    font-family: 'Courier New', monospace;
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.coordinate-floor {
+    background: #0066cc;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
 }
 
 /* Map container */
@@ -132,83 +242,91 @@ header p {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    gap: 15px;
 }
 
-.office-map {
-    width: 100%;
-    height: auto;
-    max-width: 800px;
+.map-wrapper {
+    position: relative;
+    display: inline-block;
     border: 2px solid #ddd;
     border-radius: 8px;
+    overflow: hidden;
     background: #fafafa;
 }
 
-/* Room styles */
-.room {
-    cursor: pointer;
+.floor-plan {
+    display: block;
+    max-width: 100%;
+    height: auto;
     transition: all 0.3s ease;
 }
 
-.room:hover rect {
-    stroke-width: 3;
-    stroke: #0066cc;
-    filter: brightness(1.1);
+.floor-plan.selection-mode {
+    cursor: crosshair;
+    border-color: #28a745;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
 }
 
-.room-label {
-    font-size: 12px;
-    font-weight: 600;
-    fill: #333;
+.coordinates-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    dominant-baseline: middle;
 }
 
-.entrance-label {
+.coordinate-marker {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: #dc3545;
+    border: 3px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.coordinate-marker:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    z-index: 10;
+}
+
+.marker-number {
+    color: white;
     font-size: 10px;
-    font-weight: 600;
-    fill: #666;
-    pointer-events: none;
-}
-
-/* Blinking animation for selected rooms */
-@keyframes blink {
-    0%, 50% {
-        opacity: 1;
-        fill: #ff6b6b;
-        stroke: #ff4757;
-        stroke-width: 4;
-    }
-    25%, 75% {
-        opacity: 0.3;
-        fill: #ff9ff3;
-        stroke: #ff6b6b;
-        stroke-width: 4;
-    }
-}
-
-.room.blinking rect {
-    animation: blink 1s infinite;
-}
-
-.room.blinking text {
-    animation: blink 1s infinite;
     font-weight: bold;
-    fill: #000;
+}
+
+.map-instructions {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    padding: 10px 20px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #0066cc;
 }
 
 /* Responsive design */
 @media (max-width: 1024px) {
     .main-content {
-        grid-template-columns: 250px 1fr;
+        grid-template-columns: 300px 1fr;
     }
     
     header h1 {
         font-size: 2rem;
     }
     
-    .room-list {
+    .controls-panel {
         padding: 15px;
     }
 }
@@ -223,7 +341,7 @@ header p {
         gap: 15px;
     }
     
-    .room-list {
+    .controls-panel {
         max-height: none;
         order: 2;
     }
@@ -241,12 +359,19 @@ header p {
         font-size: 1rem;
     }
     
-    .office-map {
-        max-width: 100%;
+    .floor-buttons {
+        flex-direction: column;
     }
     
-    .room-label {
-        font-size: 10px;
+    .coordinate-controls {
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .control-btn {
+        flex: 1;
+        padding: 12px 16px;
+        font-size: 0.9rem;
     }
 }
 
@@ -263,7 +388,7 @@ header p {
         font-size: 1.5rem;
     }
     
-    .room-list {
+    .controls-panel {
         padding: 10px;
     }
     
@@ -271,35 +396,45 @@ header p {
         padding: 10px;
     }
     
-    .room-btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
+    .coordinate-controls {
+        flex-direction: column;
     }
     
-    .room-label {
-        font-size: 8px;
+    .control-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    
+    .floor-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
     }
 }
 
 /* Accessibility improvements */
-.room-btn:focus {
+.control-btn:focus {
     outline: 2px solid #0066cc;
     outline-offset: 2px;
 }
 
-.clear-btn:focus {
+.floor-btn:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
+.floor-plan:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
+.remove-btn:focus {
     outline: 2px solid #fff;
-    outline-offset: 2px;
-}
-
-.room:focus {
-    outline: 2px solid #0066cc;
     outline-offset: 2px;
 }
 
 /* Print styles */
 @media print {
-    .room-list {
+    .controls-panel {
         display: none;
     }
     
@@ -308,37 +443,58 @@ header p {
         box-shadow: none;
     }
     
-    .office-map {
+    .floor-plan {
         max-width: 100%;
     }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-    .room rect {
-        stroke-width: 3;
+    .coordinate-marker {
+        border-width: 4px;
     }
     
-    .room-label {
-        font-weight: bold;
+    .control-btn {
+        border: 2px solid currentColor;
     }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-    .room-btn {
+    .control-btn,
+    .floor-btn,
+    .coordinate-item,
+    .coordinate-marker,
+    .floor-plan {
         transition: none;
     }
     
-    .room {
-        transition: none;
+    .coordinate-marker:hover {
+        transform: translate(-50%, -50%);
     }
     
-    .room.blinking rect,
-    .room.blinking text {
-        animation: none;
-        fill: #ff6b6b;
-        stroke: #ff4757;
-        stroke-width: 4;
+    .control-btn:hover,
+    .add-btn:hover,
+    .save-btn:hover {
+        transform: none;
     }
+}
+
+/* Selection mode cursor */
+.floor-plan.selection-mode {
+    cursor: crosshair;
+}
+
+/* Loading state */
+.floor-plan:not([src]) {
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.floor-plan:not([src])::before {
+    content: "Carregando planta baixa...";
+    color: #666;
 }
