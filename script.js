@@ -81,7 +81,7 @@ class CoordinateTool {
         
         // Update floor plan image
         const floorPlan = document.getElementById('floor-plan');
-        floorPlan.src = `${floor}.png`;
+        floorPlan.src = floor === 'terreo' ? 'terreo.png' : 'Mesanino.png';
         floorPlan.alt = `Planta Baixa - ${floor === 'terreo' ? 'Térreo' : 'Mezanino'}`;
         
         // Clear existing coordinate markers for this view
@@ -120,8 +120,17 @@ class CoordinateTool {
      */
     addCoordinate(e) {
         const rect = e.target.getBoundingClientRect();
-        const x = Math.round(e.clientX - rect.left);
-        const y = Math.round(e.clientY - rect.top);
+        const displayX = Math.round(e.clientX - rect.left);
+        const displayY = Math.round(e.clientY - rect.top);
+        
+        // Get actual image coordinates by calculating scale factors
+        const img = e.target;
+        const scaleX = img.naturalWidth / img.offsetWidth;
+        const scaleY = img.naturalHeight / img.offsetHeight;
+        
+        // Convert display coordinates to actual image pixel coordinates
+        const x = Math.round(displayX * scaleX);
+        const y = Math.round(displayY * scaleY);
         
         // Prompt for room name
         const roomName = prompt('Digite o nome da sala/localização:');
@@ -129,12 +138,14 @@ class CoordinateTool {
             return; // User cancelled or entered empty name
         }
         
-        // Create coordinate object
+        // Create coordinate object with actual image coordinates
         const coordinate = {
             id: this.coordinateCounter++,
             nome: roomName.trim(),
             coordenadas: { x, y },
-            andar: this.currentFloor
+            andar: this.currentFloor,
+            // Store display coordinates for marker positioning
+            displayCoordinates: { x: displayX, y: displayY }
         };
         
         // Add to coordinates array
@@ -148,6 +159,7 @@ class CoordinateTool {
         this.toggleSelectionMode();
         
         console.log('Added coordinate:', coordinate);
+        console.log(`Display coordinates: (${displayX}, ${displayY}), Image coordinates: (${x}, ${y})`);
     }
 
     /**
@@ -193,14 +205,29 @@ class CoordinateTool {
         currentFloorCoordinates.forEach(coord => {
             const marker = document.createElement('div');
             marker.className = 'coordinate-marker';
-            marker.style.left = `${coord.coordenadas.x}px`;
-            marker.style.top = `${coord.coordenadas.y}px`;
+            
+            // Use display coordinates for marker positioning (if available)
+            // For backward compatibility, calculate display coordinates if not stored
+            let displayX, displayY;
+            if (coord.displayCoordinates) {
+                displayX = coord.displayCoordinates.x;
+                displayY = coord.displayCoordinates.y;
+            } else {
+                // Calculate display coordinates from image coordinates for backward compatibility
+                const scaleX = floorPlan.offsetWidth / floorPlan.naturalWidth;
+                const scaleY = floorPlan.offsetHeight / floorPlan.naturalHeight;
+                displayX = Math.round(coord.coordenadas.x * scaleX);
+                displayY = Math.round(coord.coordenadas.y * scaleY);
+            }
+            
+            marker.style.left = `${displayX}px`;
+            marker.style.top = `${displayY}px`;
             marker.title = `${coord.nome} (${coord.coordenadas.x}, ${coord.coordenadas.y})`;
             marker.innerHTML = `<span class="marker-number">${coord.id}</span>`;
             
             // Add click handler to show details
             marker.addEventListener('click', () => {
-                alert(`${coord.nome}\nCoordenadas: (${coord.coordenadas.x}, ${coord.coordenadas.y})\nAndar: ${coord.andar === 'terreo' ? 'Térreo' : 'Mezanino'}`);
+                alert(`${coord.nome}\nCoordenadas da Imagem: (${coord.coordenadas.x}, ${coord.coordenadas.y})\nAndar: ${coord.andar === 'terreo' ? 'Térreo' : 'Mezanino'}`);
             });
             
             overlay.appendChild(marker);
