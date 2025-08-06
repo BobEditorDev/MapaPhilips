@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Suite de Testes - Ferramenta de Coordenadas</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Test-specific styles */
+        .test-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .test-header {
+            background: #0066cc;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .test-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .test-panel {
+            flex: 1;
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333;
+        }
+        
+        .test-controls {
+            margin-bottom: 20px;
+        }
+        
+        .test-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-btn:hover {
+            background: #0052a3;
+        }
+        
+        .test-btn.danger {
+            background: #dc3545;
+        }
+        
+        .test-btn.success {
+            background: #28a745;
+        }
+        
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #333;
+        }
+        
+        .test-result.pass {
+            background: #1e4d2b;
+            border-left-color: #28a745;
+            color: #a8e6a1;
+        }
+        
+        .test-result.fail {
+            background: #4d1e1e;
+            border-left-color: #dc3545;
+            color: #f8a8a8;
+        }
+        
+        .test-result.pending {
+            background: #4d4620;
+            border-left-color: #ffc107;
+            color: #fff3a0;
+        }
+        
+        .test-log {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            background: #333;
+        }
+        
+        .close-tests {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Application visibility controls */
+        .app-hidden {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Application (from index.html) -->
+    <div id="main-app" class="container">
+        <header>
+            <h1>Ferramenta de Coordenadas - Mapa do Escritório</h1>
+            <p>Use o botão "Add" para ativar o modo de seleção e clique no mapa para adicionar coordenadas</p>
+        </header>
+        
+        <main class="main-content">
+            <!-- Controls Sidebar -->
+            <aside class="controls-panel">
+                <div class="floor-selection">
+                    <h2>Seleção do Andar</h2>
+                    <div class="floor-buttons">
+                        <button id="terreo-btn" class="floor-btn active" data-floor="terreo">Térreo</button>
+                        <button id="mesanino-btn" class="floor-btn" data-floor="mesanino">Mezanino</button>
+                    </div>
+                </div>
+                
+                <div class="coordinate-controls">
+                    <h2>Controles</h2>
+                    <button id="add-coordinate-btn" class="control-btn add-btn">
+                        <span class="btn-icon">+</span>
+                        Add Coordenada
+                    </button>
+                    <button id="save-coordinates-btn" class="control-btn save-btn">
+                        <span class="btn-icon">💾</span>
+                        Salvar JSON
+                    </button>
+                </div>
+                
+                <div class="coordinates-list">
+                    <h2>Coordenadas Adicionadas</h2>
+                    <div id="coordinates-container" class="coordinates-container">
+                        <p class="empty-message">Nenhuma coordenada adicionada ainda.</p>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Floor Plan Map -->
+            <section class="map-container">
+                <div class="map-wrapper">
+                    <img id="floor-plan" class="floor-plan" src="terreo.png" alt="Planta Baixa do Escritório">
+                    <div id="coordinates-overlay" class="coordinates-overlay"></div>
+                </div>
+                <div class="map-instructions">
+                    <p id="instruction-text">Clique em "Add Coordenada" para ativar o modo de seleção</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Test Overlay -->
+    <div id="test-overlay" class="test-overlay hidden">
+        <button class="close-tests" onclick="closeTests()">✕ Fechar Testes</button>
+        
+        <div class="test-header">
+            <h1>🧪 Suite de Testes Interativa - Ferramenta de Coordenadas</h1>
+            <p>Testes em tempo real com a aplicação ativa</p>
+        </div>
+        
+        <div class="test-content">
+            <!-- Test Controls Panel -->
+            <div class="test-panel">
+                <h2>🎮 Controles de Teste</h2>
+                
+                <div class="test-controls">
+                    <button class="test-btn" onclick="testRunner.runAllTests()">🚀 Executar Todos</button>
+                    <button class="test-btn" onclick="testRunner.runBasicTests()">🔧 Testes Básicos</button>
+                    <button class="test-btn" onclick="testRunner.runInteractionTests()">🖱️ Testes de Interação</button>
+                    <button class="test-btn" onclick="testRunner.runWorkflowTests()">🔄 Testes de Fluxo</button>
+                    <button class="test-btn danger" onclick="testRunner.clearResults()">🗑️ Limpar</button>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <strong id="total-tests">0</strong><br>Total
+                    </div>
+                    <div class="stat">
+                        <strong id="passed-tests">0</strong><br>✅ Passou
+                    </div>
+                    <div class="stat">
+                        <strong id="failed-tests">0</strong><br>❌ Falhou
+                    </div>
+                </div>
+                
+                <h3>📋 Log de Execução</h3>
+                <div id="test-log" class="test-log">Sistema de testes carregado. Aguardando execução...\n</div>
+            </div>
+            
+            <!-- Test Results Panel -->
+            <div class="test-panel">
+                <h2>📊 Resultados dos Testes</h2>
+                
+                <div id="test-results">
+                    <h3>🔧 Testes de Inicialização</h3>
+                    <div id="test-app-loaded" class="test-result pending">Aguardando: Verificar se aplicação carregou</div>
+                    <div id="test-elements-present" class="test-result pending">Aguardando: Verificar elementos principais</div>
+                    <div id="test-coordinate-tool-init" class="test-result pending">Aguardando: Verificar inicialização CoordinateTool</div>
+                    
+                    <h3>🖱️ Testes de Interface</h3>
+                    <div id="test-floor-buttons" class="test-result pending">Aguardando: Testar botões de andar</div>
+                    <div id="test-add-button" class="test-result pending">Aguardando: Testar botão Add Coordenada</div>
+                    <div id="test-keyboard-nav" class="test-result pending">Aguardando: Testar navegação por teclado</div>
+                    
+                    <h3>💾 Testes de Funcionalidade</h3>
+                    <div id="test-coordinate-addition" class="test-result pending">Aguardando: Testar adição de coordenada</div>
+                    <div id="test-coordinate-removal" class="test-result pending">Aguardando: Testar remoção de coordenada</div>
+                    <div id="test-json-export" class="test-result pending">Aguardando: Testar exportação JSON</div>
+                    
+                    <h3>🔄 Testes de Fluxo Completo</h3>
+                    <div id="test-full-workflow" class="test-result pending">Aguardando: Testar fluxo completo</div>
+                    <div id="test-multiple-floors" class="test-result pending">Aguardando: Testar múltiplos andares</div>
+                    <div id="test-error-handling" class="test-result pending">Aguardando: Testar tratamento de erros</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load Application Script -->
+    <script src="script.js"></script>
+    
+    <!-- Test Runner Script -->
+    <script>
+        class InteractiveTestRunner {
+            constructor() {
+                this.tests = [];
+                this.passedTests = 0;
+                this.failedTests = 0;
+                this.coordinateTool = null;
+                this.originalPrompt = window.prompt;
+                this.originalConfirm = window.confirm;
+                this.originalAlert = window.alert;
+                this.init();
+            }
+            
+            init() {
+                // Wait for app to be fully loaded
+                setTimeout(() => {
+                    this.coordinateTool = window.coordinateTool;
+                    this.log('Sistema de testes interativo inicializado.');
+                    this.log('Clique em "🚀 Executar Todos" para começar os testes.');
+                }, 500);
+            }
+            
+            log(message) {
+                const logElement = document.getElementById('test-log');
+                const timestamp = new Date().toLocaleTimeString();
+                logElement.textContent += `[${timestamp}] ${message}\n`;
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+            
+            updateStats() {
+                document.getElementById('total-tests').textContent = this.tests.length;
+                document.getElementById('passed-tests').textContent = this.passedTests;
+                document.getElementById('failed-tests').textContent = this.failedTests;
+            }
+            
+            setTestResult(testId, passed, message = '') {
+                const element = document.getElementById(testId);
+                if (element) {
+                    element.className = `test-result ${passed ? 'pass' : 'fail'}`;
+                    element.textContent = passed ? 
+                        `✅ PASSOU${message ? ': ' + message : ''}` : 
+                        `❌ FALHOU${message ? ': ' + message : ''}`;
+                }
+                
+                if (passed) {
+                    this.passedTests++;
+                } else {
+                    this.failedTests++;
+                }
+                this.tests.push({ id: testId, passed, message });
+                this.updateStats();
+            }
+            
+            clearResults() {
+                this.tests = [];
+                this.passedTests = 0;
+                this.failedTests = 0;
+                
+                const testResults = document.querySelectorAll('.test-result');
+                testResults.forEach(result => {
+                    result.className = 'test-result pending';
+                    result.textContent = result.textContent.replace(/^(✅|❌).*/, 'Aguardando: ' + 
+                        result.textContent.replace(/^Aguardando: /, '').replace(/^(✅ PASSOU|❌ FALHOU).*: /, ''));
+                });
+                
+                this.updateStats();
+                this.log('Resultados limpos. Pronto para nova execução.');
+            }
+            
+            async runAllTests() {
+                this.log('🚀 Iniciando execução completa de testes...');
+                this.clearResults();
+                
+                await this.runBasicTests();
+                await this.runInteractionTests();
+                await this.runWorkflowTests();
+                
+                this.log(`✨ Teste completo concluído: ${this.passedTests}/${this.tests.length} aprovados`);
+            }
+            
+            async runBasicTests() {
+                this.log('🔧 Executando testes básicos...');
+                
+                // Test 1: App Loaded
+                try {
+                    const appContainer = document.querySelector('.container');
+                    const mainContent = document.querySelector('.main-content');
+                    const loaded = appContainer && mainContent;
+                    
+                    this.setTestResult('test-app-loaded', loaded, 'Aplicação carregada corretamente');
+                    this.log(loaded ? 'Aplicação: ✅ Carregada' : 'Aplicação: ❌ Falha no carregamento');
+                } catch (error) {
+                    this.setTestResult('test-app-loaded', false, error.message);
+                }
+                
+                // Test 2: Essential Elements
+                try {
+                    const floorPlan = document.getElementById('floor-plan');
+                    const addBtn = document.getElementById('add-coordinate-btn');
+                    const saveBtn = document.getElementById('save-coordinates-btn');
+                    const coordContainer = document.getElementById('coordinates-container');
+                    
+                    const elementsPresent = floorPlan && addBtn && saveBtn && coordContainer;
+                    this.setTestResult('test-elements-present', elementsPresent, 'Todos elementos encontrados');
+                    this.log(elementsPresent ? 'Elementos: ✅ Presentes' : 'Elementos: ❌ Ausentes');
+                } catch (error) {
+                    this.setTestResult('test-elements-present', false, error.message);
+                }
+                
+                // Test 3: CoordinateTool Initialization
+                try {
+                    const toolExists = this.coordinateTool && typeof this.coordinateTool === 'object';
+                    const hasCoordinates = toolExists && Array.isArray(this.coordinateTool.coordinates);
+                    const hasCurrentFloor = toolExists && this.coordinateTool.currentFloor;
+                    
+                    const initialized = toolExists && hasCoordinates && hasCurrentFloor;
+                    this.setTestResult('test-coordinate-tool-init', initialized, 'CoordinateTool funcionando');
+                    this.log(initialized ? 'CoordinateTool: ✅ Inicializado' : 'CoordinateTool: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-coordinate-tool-init', false, error.message);
+                }
+                
+                await this.delay(500);
+            }
+            
+            async runInteractionTests() {
+                this.log('🖱️ Executando testes de interação...');
+                
+                // Test 4: Floor Buttons
+                try {
+                    const terreoBtn = document.querySelector('[data-floor="terreo"]');
+                    const mesaninoBtn = document.querySelector('[data-floor="mesanino"]');
+                    
+                    // Test floor switching
+                    if (mesaninoBtn) {
+                        mesaninoBtn.click();
+                        await this.delay(300);
+                        const switchedToMesanino = this.coordinateTool.currentFloor === 'mesanino';
+                        
+                        terreoBtn.click();
+                        await this.delay(300);
+                        const switchedToTerreo = this.coordinateTool.currentFloor === 'terreo';
+                        
+                        const floorSwitchWorks = switchedToMesanino && switchedToTerreo;
+                        this.setTestResult('test-floor-buttons', floorSwitchWorks, 'Mudança de andar funcional');
+                        this.log(floorSwitchWorks ? 'Botões andar: ✅ Funcionando' : 'Botões andar: ❌ Falha');
+                    }
+                } catch (error) {
+                    this.setTestResult('test-floor-buttons', false, error.message);
+                }
+                
+                // Test 5: Add Button
+                try {
+                    const addBtn = document.getElementById('add-coordinate-btn');
+                    const initialMode = this.coordinateTool.isSelectionMode;
+                    
+                    addBtn.click();
+                    await this.delay(300);
+                    const modeChanged = this.coordinateTool.isSelectionMode !== initialMode;
+                    
+                    addBtn.click(); // Toggle back
+                    await this.delay(300);
+                    const modeToggled = this.coordinateTool.isSelectionMode === initialMode;
+                    
+                    const addButtonWorks = modeChanged && modeToggled;
+                    this.setTestResult('test-add-button', addButtonWorks, 'Toggle modo seleção OK');
+                    this.log(addButtonWorks ? 'Botão Add: ✅ Funcionando' : 'Botão Add: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-add-button', false, error.message);
+                }
+                
+                // Test 6: Keyboard Navigation
+                try {
+                    // Test Escape key
+                    this.coordinateTool.isSelectionMode = true;
+                    const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+                    document.dispatchEvent(escapeEvent);
+                    await this.delay(200);
+                    
+                    const escapeWorks = !this.coordinateTool.isSelectionMode;
+                    this.setTestResult('test-keyboard-nav', escapeWorks, 'Tecla Escape funcional');
+                    this.log(escapeWorks ? 'Teclado: ✅ Funcionando' : 'Teclado: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-keyboard-nav', false, error.message);
+                }
+                
+                await this.delay(500);
+            }
+            
+            async runWorkflowTests() {
+                this.log('🔄 Executando testes de fluxo de trabalho...');
+                
+                // Mock user interactions for testing
+                this.setupMockDialogs();
+                
+                // Test 7: Coordinate Addition
+                try {
+                    const initialCount = this.coordinateTool.coordinates.length;
+                    
+                    // Simulate adding a coordinate
+                    this.coordinateTool.toggleSelectionMode();
+                    const floorPlan = document.getElementById('floor-plan');
+                    const rect = floorPlan.getBoundingClientRect();
+                    
+                    const mockEvent = {
+                        target: floorPlan,
+                        clientX: rect.left + 100,
+                        clientY: rect.top + 100
+                    };
+                    
+                    this.coordinateTool.addCoordinate(mockEvent);
+                    await this.delay(300);
+                    
+                    const coordinateAdded = this.coordinateTool.coordinates.length > initialCount;
+                    this.setTestResult('test-coordinate-addition', coordinateAdded, 'Coordenada adicionada');
+                    this.log(coordinateAdded ? 'Adicionar coord: ✅ OK' : 'Adicionar coord: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-coordinate-addition', false, error.message);
+                }
+                
+                // Test 8: Coordinate Removal
+                try {
+                    const initialCount = this.coordinateTool.coordinates.length;
+                    if (initialCount > 0) {
+                        this.coordinateTool.removeCoordinate(this.coordinateTool.coordinates[0].id);
+                        await this.delay(300);
+                        
+                        const coordinateRemoved = this.coordinateTool.coordinates.length < initialCount;
+                        this.setTestResult('test-coordinate-removal', coordinateRemoved, 'Coordenada removida');
+                        this.log(coordinateRemoved ? 'Remover coord: ✅ OK' : 'Remover coord: ❌ Falha');
+                    } else {
+                        this.setTestResult('test-coordinate-removal', true, 'Nenhuma coordenada para remover');
+                    }
+                } catch (error) {
+                    this.setTestResult('test-coordinate-removal', false, error.message);
+                }
+                
+                // Test 9: JSON Export
+                try {
+                    // Add a test coordinate for export
+                    this.coordinateTool.coordinates = [{
+                        id: 1,
+                        nome: 'Teste Export',
+                        coordenadas: { x: 50, y: 50 },
+                        andar: 'terreo'
+                    }];
+                    
+                    // Mock clipboard for testing
+                    let exportWorked = false;
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText = async (text) => {
+                            exportWorked = text.includes('Teste Export');
+                        };
+                    }
+                    
+                    this.coordinateTool.saveCoordinates();
+                    await this.delay(300);
+                    
+                    this.setTestResult('test-json-export', exportWorked, 'JSON exportado para clipboard');
+                    this.log(exportWorked ? 'Export JSON: ✅ OK' : 'Export JSON: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-json-export', false, error.message);
+                }
+                
+                // Test 10: Full Workflow
+                try {
+                    // Reset application state
+                    this.coordinateTool.coordinates = [];
+                    this.coordinateTool.coordinateCounter = 1;
+                    
+                    // Simulate full user workflow
+                    this.coordinateTool.switchFloor('mesanino');
+                    await this.delay(200);
+                    
+                    this.coordinateTool.toggleSelectionMode();
+                    await this.delay(200);
+                    
+                    const floorPlan = document.getElementById('floor-plan');
+                    const rect = floorPlan.getBoundingClientRect();
+                    const mockEvent = {
+                        target: floorPlan,
+                        clientX: rect.left + 150,
+                        clientY: rect.top + 150
+                    };
+                    
+                    this.coordinateTool.addCoordinate(mockEvent);
+                    await this.delay(200);
+                    
+                    const workflowSuccess = this.coordinateTool.currentFloor === 'mesanino' &&
+                                          this.coordinateTool.coordinates.length > 0 &&
+                                          !this.coordinateTool.isSelectionMode;
+                    
+                    this.setTestResult('test-full-workflow', workflowSuccess, 'Fluxo completo executado');
+                    this.log(workflowSuccess ? 'Fluxo completo: ✅ OK' : 'Fluxo completo: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-full-workflow', false, error.message);
+                }
+                
+                // Test 11: Multiple Floors
+                try {
+                    this.coordinateTool.coordinates = [
+                        { id: 1, nome: 'Sala Térreo', coordenadas: { x: 100, y: 100 }, andar: 'terreo' },
+                        { id: 2, nome: 'Sala Mezanino', coordenadas: { x: 200, y: 200 }, andar: 'mesanino' }
+                    ];
+                    
+                    this.coordinateTool.switchFloor('terreo');
+                    await this.delay(200);
+                    this.coordinateTool.updateCoordinateOverlay();
+                    
+                    this.coordinateTool.switchFloor('mesanino');
+                    await this.delay(200);
+                    this.coordinateTool.updateCoordinateOverlay();
+                    
+                    const multiFloorWorks = this.coordinateTool.coordinates.length === 2;
+                    this.setTestResult('test-multiple-floors', multiFloorWorks, 'Múltiplos andares gerenciados');
+                    this.log(multiFloorWorks ? 'Múltiplos andares: ✅ OK' : 'Múltiplos andares: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-multiple-floors', false, error.message);
+                }
+                
+                // Test 12: Error Handling
+                try {
+                    // Test empty coordinate addition
+                    this.setupMockDialogs(true); // Mock empty responses
+                    
+                    this.coordinateTool.toggleSelectionMode();
+                    const floorPlan = document.getElementById('floor-plan');
+                    const rect = floorPlan.getBoundingClientRect();
+                    const mockEvent = {
+                        target: floorPlan,
+                        clientX: rect.left + 50,
+                        clientY: rect.top + 50
+                    };
+                    
+                    const initialCount = this.coordinateTool.coordinates.length;
+                    this.coordinateTool.addCoordinate(mockEvent);
+                    await this.delay(200);
+                    
+                    const errorHandlingWorks = this.coordinateTool.coordinates.length === initialCount;
+                    this.setTestResult('test-error-handling', errorHandlingWorks, 'Entradas vazias rejeitadas');
+                    this.log(errorHandlingWorks ? 'Tratamento erro: ✅ OK' : 'Tratamento erro: ❌ Falha');
+                } catch (error) {
+                    this.setTestResult('test-error-handling', false, error.message);
+                }
+                
+                this.restoreMockDialogs();
+                await this.delay(500);
+            }
+            
+            setupMockDialogs(empty = false) {
+                window.prompt = (message) => {
+                    this.log(`📝 Mock prompt: ${message}`);
+                    return empty ? '' : 'Sala de Teste';
+                };
+                
+                window.confirm = (message) => {
+                    this.log(`❓ Mock confirm: ${message}`);
+                    return true;
+                };
+                
+                window.alert = (message) => {
+                    this.log(`⚠️ Mock alert: ${message}`);
+                };
+            }
+            
+            restoreMockDialogs() {
+                window.prompt = this.originalPrompt;
+                window.confirm = this.originalConfirm;
+                window.alert = this.originalAlert;
+            }
+            
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+        
+        // Global functions for button clicks
+        function showTests() {
+            document.getElementById('test-overlay').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('app-hidden');
+        }
+        
+        function closeTests() {
+            document.getElementById('test-overlay').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('app-hidden');
+        }
+        
+        // Initialize test runner
+        let testRunner;
+        document.addEventListener('DOMContentLoaded', () => {
+            testRunner = new InteractiveTestRunner();
+        });
+        
+        // Auto-show tests after app loads
+        setTimeout(() => {
+            showTests();
+        }, 1000);
+    </script>
+</body>
+</html>
