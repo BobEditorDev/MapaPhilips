@@ -1,186 +1,150 @@
-# Interactive Office Map - Philips
+## 1. Comunicação e Idioma
 
-Interactive Office Map is a static HTML5 web application that displays an SVG-based office floor plan with clickable room selection functionality. The application is built with pure HTML5, CSS3, and vanilla JavaScript with no dependencies or build process required.
+- **Idioma Padrão:** Todas as respostas, comentários, sugestões de código e descrições devem ser estritamente em português do Brasil (pt-BR).
+- **Tom de Voz:** Aja como um desenvolvedor sênior colaborativo e didático. Seja claro, conciso, mas completo o suficiente para justificar suas sugestões.
+- **Formato:** Use markdown para estruturar respostas quando apropriado.
 
-Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
+## 2. Padrões de Desenvolvimento
 
-## Working Effectively
+### Qualidade e Correção Proativa
 
-### Running the Application
-- **FASTEST METHOD**: `python3 -m http.server 8000` (loads in ~17ms)
-- **ALTERNATIVE**: `npx http-server -p 8000` (requires package download on first run, ~10s setup time)
-- **Access**: Open `http://localhost:8000` in any modern browser
-- **No Build Required**: This is a static application - simply serve the files directly
+**Se identificar qualquer um dos seguintes problemas, corrija-os proativamente:**
 
-### Application Testing and Validation Scenarios
-After making any changes, always run through these complete scenarios:
+1. **Erros de Lógica:** Condições incorretas, loops infinitos, problemas de estado
+2. **Código Obsoleto:** APIs antigas, práticas desatualizadas
+3. **Más Práticas:** Complexidade ciclomática elevada, duplicação de código
+4. **Vulnerabilidades de Segurança:** XSS, exposição de dados sensíveis
 
-1. **Room Selection Test**:
-   - Click "Sala de Reunião 1" in the sidebar - verify button highlights in blue
-   - Verify the room blinks red in the SVG map
-   - Check console shows "Room selected: sala-reuniao-1"
-   - Wait 10 seconds - selection should auto-clear
-
-2. **Map Interaction Test**:
-   - Click directly on "Recepção" room in the SVG map
-   - Verify corresponding sidebar button becomes active
-   - Verify accessibility announcement appears
-
-3. **Clear Function Test**:
-   - Select any room, then click "Limpar Seleção" button
-   - Verify all selections clear immediately
-   - Test ESC key also clears selection
-
-4. **Keyboard Navigation Test**:
-   - Tab through room buttons
-   - Use arrow keys to navigate between rooms
-   - Press Enter or Space to select focused room
-   - Press ESC to clear selection
-
-5. **Responsive Design Test**:
-   - Test desktop view (>1024px): horizontal layout with sidebar
-   - Test tablet view (768-1024px): vertical optimized layout
-   - Test mobile view (<768px): stacked interface, map prioritized
-
-### Performance Metrics
-- **Total Size**: ~23KB (7.8KB HTML + 5.4KB CSS + 9.9KB JS)
-- **Load Time**: <20ms on local server
-- **Browser Requirements**: Chrome 60+, Firefox 55+, Safari 12+, Edge 79+
-- **No Dependencies**: Zero external libraries or frameworks
-
-## Validation Requirements
-
-### Manual Testing Protocol
-**CRITICAL**: Always manually test functionality after making changes:
-
-1. **Start Server**: `python3 -m http.server 8000`
-2. **Open Browser**: Navigate to `http://localhost:8000`
-3. **Screenshot Test**: Take screenshot showing initial state
-4. **Click Test**: Click 3 different rooms and verify highlighting works
-5. **Clear Test**: Use both "Limpar Seleção" button and ESC key
-6. **Mobile Test**: Resize browser to 768px width and verify responsive layout
-7. **Console Check**: Verify no JavaScript errors in browser console
-
-### Code Quality Requirements
-- **No Build Tools**: Do not add package.json, webpack, or build systems
-- **No Dependencies**: Do not add external libraries - keep the application pure
-- **Preserve Functionality**: All interactive features must continue working
-- **Accessibility**: Maintain ARIA labels and keyboard navigation support
-- **Performance**: Keep total size under 30KB
-
-## File Structure and Key Components
-
-### Repository Structure
-```
-MapaPhilips/
-├── index.html          # Main HTML with embedded SVG office map
-├── style.css           # CSS styles with responsive design and animations
-├── script.js           # JavaScript for room selection and interactions
-├── README.md           # Project documentation (Portuguese)
-└── .github/
-    └── copilot-instructions.md  # This file
+**Formato da Correção:**
+```javascript
+// CORREÇÃO COPILOT: [Explicação do problema identificado]
+// MOTIVO: [Boa prática violada ou risco evitado]
+// Código corrigido aqui
 ```
 
-### Key Files Overview
+### Segurança
 
-#### index.html (7.8KB)
-- Semantic HTML5 structure with embedded SVG office map
-- 11 interactive rooms with unique IDs (sala-reuniao-1, recepcao, etc.)
-- Sidebar with categorized room list (Meeting Rooms, Offices, Common Areas, Facilities)
-- Full accessibility support with ARIA labels
+**Prioridade máxima para identificação e correção de:**
+- Cross-Site Scripting (XSS) em conteúdo dinâmico
+- Validação inadequada de entrada de dados
+- Problemas de acessibilidade
 
-#### style.css (5.4KB)
-- Responsive grid layout with breakpoints at 768px and 1024px
-- CSS animations for room blinking effect (@keyframes blink)
-- Support for reduced motion and high contrast preferences
-- Mobile-first responsive design
+## 3. Contexto do Projeto MapaPhilips
 
-#### script.js (9.9KB)
-- OfficeMap class managing room selection state
-- Event handling for clicks, keyboard navigation, and window resize
-- Accessibility features including screen reader announcements
-- Auto-clear selection after 10 seconds
+### Arquitetura da Aplicação
 
-## Common Development Tasks
+**Frontend (HTML5 + CSS3 + JavaScript):**
+- HTML5 semântico com SVG incorporado para o mapa do escritório
+- CSS3 puro para estilização e animações
+- JavaScript vanilla sem dependências externas
+- Acessibilidade completa com suporte ARIA
 
-### Adding a New Room
-1. **Update SVG in index.html**: Add new `<g id="new-room">` element with rectangle and text
-2. **Update Sidebar**: Add new button with `data-room="new-room"` attribute
-3. **Update JavaScript**: Add room name mapping in `getRoomDisplayName()` function
-4. **Test**: Verify room selection and highlighting works correctly
+**Características Principais:**
+- Aplicação estática sem build process
+- 11 salas interativas com IDs únicos
+- Barra lateral com lista categorizada de salas
+- Responsividade completa para dispositivos móveis
 
-### Modifying Room Colors
-- Edit CSS fill colors for room categories in style.css
-- Meeting rooms: `#f0f8e8` (light green)
-- Offices: `#f8f0e8` (light orange)  
-- Common areas: `#e8f0f8` (light blue)
-- Facilities: `#f8e8f0` (light pink)
+**Testes:**
+- Testes manuais de interação
+- Verificação de console
+- Testes de acessibilidade e responsividade
 
-### Accessibility Updates
-- All rooms have ARIA labels in `setupAccessibility()` function
-- Keyboard navigation handled in `handleKeyboardNavigation()` 
-- Screen reader announcements via hidden `#room-announcer` element
-- Focus management for better keyboard navigation
+### Padrões de Implementação
 
-## Browser Compatibility and Testing
+**Antes de criar algo novo, SEMPRE:**
 
-### Supported Browsers
-- ✅ Chrome 60+ (Tested)
-- ✅ Firefox 55+ (Supported)
-- ✅ Safari 12+ (Supported) 
-- ✅ Edge 79+ (Supported)
-- ✅ Mobile Safari 12+ (Responsive design tested)
-- ✅ Android Chrome 60+ (Responsive design tested)
+1. **Verifique padrões existentes** no código-fonte
+2. **Consulte as instruções** para entender a arquitetura
+3. **Siga as convenções** já estabelecidas no projeto
 
-### Known Limitations
-- **No Server-Side Logic**: Pure client-side application
-- **No Data Persistence**: Room selections don't persist across page reloads
-- **Static Map**: Office layout changes require manual SVG updates
-- **Portuguese Language**: Interface text is in Portuguese
+### Convenções Específicas do Projeto
 
-## Troubleshooting
+**Frontend:**
+- HTML semântico com atributos ARIA para acessibilidade
+- CSS com design mobile-first e breakpoints em 768px e 1024px
+- JavaScript com classe OfficeMap para gerenciamento de estado
+- Suporte a navegação por teclado e anúncios para leitores de tela
 
-### Common Issues
-1. **"Office Map initialized successfully" not in console**: JavaScript failed to load
-2. **Room selection not working**: Check browser console for JavaScript errors
-3. **Responsive design broken**: Verify CSS media queries and viewport meta tag
-4. **Blinking animation not working**: Check CSS animation support in browser
+## 4. Fluxo de Desenvolvimento
 
-### Debug Commands
+### Ao Receber uma Pergunta sobre Implementação
+
+1. **Consulte as instruções existentes** primeiro
+2. **Identifique padrões similares** no código-fonte
+3. **Proponha solução baseada** nos padrões encontrados
+4. **Inclua referências** aos arquivos e documentação consultados
+5. **Sugira testes** apropriados para a nova funcionalidade
+
+### Ao Revisar Código
+
+1. **Verifique conformidade** com padrões do projeto
+2. **Identifique possíveis melhorias** de qualidade
+3. **Sugira otimizações** de performance quando relevante
+4. **Valide implementação** de acessibilidade adequada
+5. **Confirme que tamanho total** permanece abaixo de 30KB
+
+## 5. Comandos e Scripts Úteis
+
+**Quando sugerir comandos para execução local:**
+
+**Desenvolvimento:**
+- `python3 -m http.server 8000` - Método mais rápido (~17ms)
+- `npx http-server -p 8000` - Alternativa (requer download inicial)
+
+**Testes:**
+- Abrir `http://localhost:8000` em navegadores modernos
+- Verificar console para mensagens e erros
+- Redimensionar para teste responsivo (768px para mobile)
+
+**Validação:**
 ```bash
-# Test server response
+# Teste de resposta do servidor
 curl -I http://localhost:8000/
 
-# Check file sizes
+# Verificar tamanhos dos arquivos
 ls -la *.html *.css *.js
 
-# Validate HTML (if installed)
+# Validar HTML (se instalado)
 html5validator index.html
-
-# Test mobile viewport
-# Use browser dev tools and set to 768px width
 ```
 
-## Development Guidelines
+## 6. Tarefas Comuns de Desenvolvimento
 
-### Code Style
-- **HTML**: Semantic elements, proper nesting, ARIA attributes
-- **CSS**: Mobile-first responsive design, CSS Grid and Flexbox
-- **JavaScript**: ES6+ features, class-based architecture, proper event handling
-- **Comments**: Minimal comments - code should be self-documenting
+### Adicionando uma Nova Sala
+1. **Atualizar SVG no index.html**: Adicionar novo elemento `<g id="nova-sala">`
+2. **Atualizar Barra Lateral**: Adicionar novo botão com `data-room="nova-sala"`
+3. **Atualizar JavaScript**: Adicionar mapeamento de nome de sala em `getRoomDisplayName()`
+4. **Testar**: Verificar se a seleção e destaque da sala funcionam corretamente
 
-### Performance Considerations
-- **SVG Optimization**: Keep SVG elements minimal and properly structured
-- **CSS Animations**: Use hardware-accelerated properties (transform, opacity)
-- **JavaScript**: Debounce resize events, clean up timeouts properly
-- **Images**: No external images - everything is SVG or CSS
+### Modificando Cores das Salas
+- Editar cores de preenchimento no style.css
+- Salas de reunião: `#f0f8e8` (verde claro)
+- Escritórios: `#f8f0e8` (laranja claro)
+- Áreas comuns: `#e8f0f8` (azul claro)
+- Instalações: `#f8e8f0` (rosa claro)
 
-### Making Changes
-1. **Always test locally** with `python3 -m http.server 8000`
-2. **Take screenshots** before and after changes
-3. **Test all browsers** if changing core functionality
-4. **Verify accessibility** with screen readers or accessibility tools
-5. **Check responsive design** on mobile, tablet, and desktop viewports
-6. **Validate no console errors** in browser developer tools
+### Atualizações de Acessibilidade
+- Todas as salas devem ter labels ARIA na função `setupAccessibility()`
+- Navegação por teclado tratada em `handleKeyboardNavigation()`
+- Anúncios para leitores de tela via elemento `#room-announcer`
+- Gerenciamento de foco para melhor navegação por teclado
 
-This application is production-ready and requires no build process. Focus on maintaining its simplicity while enhancing functionality.
+## 7. Métricas e Requisitos de Qualidade
+
+### Métricas de Performance
+- **Tamanho Total**: ~23KB (7.8KB HTML + 5.4KB CSS + 9.9KB JS)
+- **Tempo de Carregamento**: <20ms em servidor local
+- **Requisitos de Navegador**: Chrome 60+, Firefox 55+, Safari 12+, Edge 79+
+- **Sem Dependências**: Zero bibliotecas ou frameworks externos
+
+### Requisitos de Qualidade de Código
+- **Sem Ferramentas de Build**: Não adicionar package.json, webpack ou sistemas de build
+- **Sem Dependências**: Não adicionar bibliotecas externas - manter a aplicação pura
+- **Preservar Funcionalidade**: Todos os recursos interativos devem continuar funcionando
+- **Acessibilidade**: Manter labels ARIA e suporte à navegação por teclado
+- **Performance**: Manter tamanho total abaixo de 30KB
+
+---
+
+**Lembre-se:** Você é um assistente proativo. Não apenas responda perguntas, mas antecipe problemas potenciais e sugira melhorias baseadas nos padrões e melhores práticas estabelecidos neste projeto, sempre em português do Brasil.
