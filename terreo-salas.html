@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salas do Térreo - Mapa do Escritório Philips</title>
+    <link rel="stylesheet" href="terreo-salas.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Salas do Térreo</h1>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">🔧 Coordenadas</a>
+                <a href="terreo-salas.html" class="nav-link active">📍 Térreo</a>
+            </nav>
+        </header>
+        
+        <main class="main-content">
+            <!-- Rooms Sidebar -->
+            <aside class="rooms-panel">
+                <div class="search-section">
+                    <h2>Buscar Sala</h2>
+                    <input type="text" id="room-search" class="search-input" placeholder="Digite o nome da sala...">
+                </div>
+                
+                <div class="rooms-list">
+                    <h2>Lista de Salas</h2>
+                    <div id="rooms-container" class="rooms-container">
+                        <!-- Salas serão inseridas via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="room-info">
+                    <h2>Informações</h2>
+                    <div id="room-details" class="room-details">
+                        <p class="info-message">Selecione uma sala para ver suas informações</p>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Floor Plan Map -->
+            <section class="map-container">
+                <div class="map-wrapper">
+                    <img id="floor-plan" src="terreo.png" alt="Planta Baixa do Térreo">
+                    <div id="rooms-overlay" class="rooms-overlay"></div>
+                </div>
+                <div class="map-footer">
+                    <span id="instruction-text" class="instruction-text">Clique em uma sala da lista para destacar sua localização</span>
+                    <div class="map-controls">
+                        <button id="show-all-btn" class="control-btn">Todas</button>
+                        <button id="hide-all-btn" class="control-btn">Ocultar</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="terreo-salas.js"></script>
+</body>
+</html>

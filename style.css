@@ -37,6 +37,40 @@ header h1 {
 header p {
     color: #666;
     font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+/* Navigation links */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: #f8f9fa;
+    color: #0066cc;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.nav-link:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    background: #0066cc;
+    color: white;
+    border-color: #0066cc;
 }
 
 .main-content {
@@ -256,17 +290,13 @@ header p {
     background: #fafafa;
 }
 
-.floor-plan {
+/* Floor plan image sizing */
+#floor-plan {
+    width: 95%;
+    /* height: 100%; */
+    object-fit: contain;
     display: block;
-    max-width: 100%;
-    height: auto;
-    transition: all 0.3s ease;
-}
-
-.floor-plan.selection-mode {
-    cursor: crosshair;
-    border-color: #28a745;
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+    margin: 0 auto;
 }
 
 .coordinates-overlay {
@@ -422,11 +452,6 @@ header p {
     outline-offset: 2px;
 }
 
-.floor-plan:focus {
-    outline: 2px solid #0066cc;
-    outline-offset: 2px;
-}
-
 .remove-btn:focus {
     outline: 2px solid #fff;
     outline-offset: 2px;
@@ -441,10 +466,6 @@ header p {
     .map-container {
         width: 100%;
         box-shadow: none;
-    }
-    
-    .floor-plan {
-        max-width: 100%;
     }
 }
 
@@ -464,8 +485,7 @@ header p {
     .control-btn,
     .floor-btn,
     .coordinate-item,
-    .coordinate-marker,
-    .floor-plan {
+    .coordinate-marker {
         transition: none;
     }
     
@@ -478,23 +498,4 @@ header p {
     .save-btn:hover {
         transform: none;
     }
-}
-
-/* Selection mode cursor */
-.floor-plan.selection-mode {
-    cursor: crosshair;
-}
-
-/* Loading state */
-.floor-plan:not([src]) {
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-}
-
-.floor-plan:not([src])::before {
-    content: "Carregando planta baixa...";
-    color: #666;
 }

@@ -48,8 +48,8 @@ class CoordinateTool {
         });
 
         // Map click handler
-        const floorPlan = document.getElementById('floor-plan');
-        floorPlan.addEventListener('click', (e) => {
+        const coordinatesOverlay = document.getElementById('coordinates-overlay');
+        coordinatesOverlay.addEventListener('click', (e) => {
             if (this.isSelectionMode) {
                 this.addCoordinate(e);
             }
@@ -79,11 +79,6 @@ class CoordinateTool {
         });
         document.querySelector(`[data-floor="${floor}"]`).classList.add('active');
         
-        // Update floor plan image
-        const floorPlan = document.getElementById('floor-plan');
-        floorPlan.src = floor === 'terreo' ? 'terreo.png' : 'Mesanino.png';
-        floorPlan.alt = `Planta Baixa - ${floor === 'terreo' ? 'Térreo' : 'Mezanino'}`;
-        
         // Clear existing coordinate markers for this view
         this.updateCoordinateOverlay();
         
@@ -97,17 +92,17 @@ class CoordinateTool {
         this.isSelectionMode = !this.isSelectionMode;
         
         const addButton = document.getElementById('add-coordinate-btn');
-        const floorPlan = document.getElementById('floor-plan');
+        const coordinatesOverlay = document.getElementById('coordinates-overlay');
         
         if (this.isSelectionMode) {
             addButton.classList.add('active');
             addButton.innerHTML = '<span class="btn-icon">✕</span>Cancelar';
-            floorPlan.classList.add('selection-mode');
+            coordinatesOverlay.style.cursor = 'crosshair';
             this.updateInstructions('Clique no mapa para adicionar uma coordenada');
         } else {
             addButton.classList.remove('active');
             addButton.innerHTML = '<span class="btn-icon">+</span>Add Coordenada';
-            floorPlan.classList.remove('selection-mode');
+            coordinatesOverlay.style.cursor = 'default';
             this.updateInstructions('Clique em "Add Coordenada" para ativar o modo de seleção');
         }
         
@@ -194,7 +189,6 @@ class CoordinateTool {
      */
     updateCoordinateOverlay() {
         const overlay = document.getElementById('coordinates-overlay');
-        const floorPlan = document.getElementById('floor-plan');
         
         // Clear existing markers
         overlay.innerHTML = '';
@@ -397,22 +391,22 @@ class CoordinateTool {
      */
     setupAccessibility() {
         // Add ARIA labels and roles
-        const floorPlan = document.getElementById('floor-plan');
-        floorPlan.setAttribute('role', 'img');
-        floorPlan.setAttribute('aria-label', 'Planta baixa do escritório - clique para adicionar coordenadas');
+        const coordinatesOverlay = document.getElementById('coordinates-overlay');
+        coordinatesOverlay.setAttribute('role', 'application');
+        coordinatesOverlay.setAttribute('aria-label', 'Área de coordenadas - clique para adicionar coordenadas');
         
         // Add keyboard support for map interaction
-        floorPlan.setAttribute('tabindex', '0');
-        floorPlan.addEventListener('keydown', (e) => {
+        coordinatesOverlay.setAttribute('tabindex', '0');
+        coordinatesOverlay.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 if (this.isSelectionMode) {
-                    // Center of image as fallback coordinate
-                    const rect = floorPlan.getBoundingClientRect();
+                    // Center of overlay as fallback coordinate
+                    const rect = coordinatesOverlay.getBoundingClientRect();
                     const centerX = Math.round(rect.width / 2);
                     const centerY = Math.round(rect.height / 2);
                     
                     const fakeEvent = {
-                        target: floorPlan,
+                        target: coordinatesOverlay,
                         clientX: rect.left + centerX,
                         clientY: rect.top + centerY
                     };
