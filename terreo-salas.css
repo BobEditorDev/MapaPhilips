@@ -189,6 +189,23 @@ header p {
     font-weight: 600;
 }
 
+.room-hint {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.room-item:hover .room-hint {
+    opacity: 1;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
 .room-coords {
     font-family: 'Courier New', monospace;
     font-size: 0.7rem;
@@ -251,8 +268,39 @@ header p {
 }
 
 .selected-room-info > div {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-size: 0.85rem;
+}
+
+.room-code, .room-capacity, .room-equipment, .room-location {
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.outlook-code {
+    font-family: 'Courier New', monospace;
+    background: #e9ecef;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    word-break: break-all;
+}
+
+.room-biography {
+    margin-top: 8px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #0066cc;
+}
+
+.biography-text {
+    margin: 4px 0 0 0;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #555;
+    font-style: italic;
 }
 
 .coords-display {
