@@ -37,7 +37,7 @@ header {
     position: absolute;
     top: 8px;
     left: 15px;
-    font-size: 20px;
+    font-size: 26px;
     font-weight: bold;
     color: #0066cc;
     z-index: 10;
@@ -144,7 +144,7 @@ header p {
 }
 
 .rooms-container {
-    max-height: 320px;
+    max-height: 450px;
     overflow-y: auto;
     border: 1px solid #ddd;
     border-radius: 3px;

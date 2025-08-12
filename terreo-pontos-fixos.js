@@ -21,8 +21,10 @@ class TerreoLandmarks {
             { "nome": "CAIXA D'ÁGUA", "emoji": "💧", "coordenadas": { "x": 577, "y": 6483 } },
             { "nome": "LAVANDERIA", "emoji": "👕", "coordenadas": { "x": 5429, "y": 6990 } },
             { "nome": "RECEPÇÃO", "emoji": "👋", "coordenadas": { "x": 4462, "y": 562 } },
+            { "nome": "ENTRADA", "emoji": "🚪", "coordenadas": { "x": 4462, "y": 400 } },
             { "nome": "PONTOS", "emoji": "📍", "coordenadas": { "x": 4517, "y": 874 } },
-            { "nome": "INFRA", "emoji": "🔧", "coordenadas": { "x": 5039, "y": 218 } }
+            { "nome": "INFRA", "emoji": "🔧", "coordenadas": { "x": 5039, "y": 218 } },
+            { "nome": "CORREDOR LARANJA", "emoji": "🍊", "coordenadas": { "x": 4127, "y": 5039 } }
         ];
         
         this.init();
