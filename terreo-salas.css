@@ -952,6 +952,7 @@ header p {
     justify-content: center;
     box-shadow: 0 3px 10px rgba(0, 102, 204, 0.3);
     z-index: 150; /* Below room markers but above map */
+    transform: translate(-140%, 0%); /* Posicionamento base - mesma lógica das salas */
 }
 
 .landmark-emoji {
@@ -964,7 +965,7 @@ header p {
 .landmark-marker.hovered,
 .landmark-marker:focus,
 .landmark-marker.focused {
-    transform: translate(-140%, 0%) scale(1.15); /* Manter posicionamento + escala */
+    transform: translate(-140%, 0%) scale(1.15); /* Manter posicionamento base + escala */
     border-color: #0056b3;
     box-shadow: 0 4px 15px rgba(0, 102, 204, 0.5);
     z-index: 250;

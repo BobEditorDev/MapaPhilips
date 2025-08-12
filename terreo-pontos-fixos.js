@@ -98,10 +98,10 @@ class TerreoLandmarks {
         marker.setAttribute('role', 'button');
         marker.setAttribute('tabindex', '0');
 
-        // Position marker (margem direita do emoji na coordenada exata)
+        // Position marker (aplicar mesma lógica das salas para consistência no zoom)
         marker.style.left = `${Math.round(displayX)}px`;
         marker.style.top = `${Math.round(displayY)}px`;
-        marker.style.transform = 'translate(-140%, 0%)'; // Borda direita na coordenada
+        // Transform removido do JavaScript - aplicado apenas via CSS para consistência no zoom
 
         // Add emoji and tooltip content
         marker.innerHTML = `
