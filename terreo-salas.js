@@ -15,7 +15,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_EINSTEIN_01",
                 "capacidade": 10,
                 "equipamentos": "TV, Wireless e Spiker",
-                "biografia": "Albert Einstein (1879-1955) foi um físico alemão que desenvolveu a teoria da relatividade, uma das teorias mais importantes da física moderna. Ganhou o Prêmio Nobel de Física em 1921."
+                "biografia": {
+                    "resumo": "Albert Einstein (1879-1955) foi um físico alemão que desenvolveu a teoria da relatividade, uma das teorias mais importantes da física moderna. Ganhou o Prêmio Nobel de Física em 1921.",
+                    "completa": "Albert Einstein (1879-1955) foi um físico teórico alemão-americano que revolucionou a ciência moderna com suas teorias fundamentais. Nascido em Ulm, no Reino de Württemberg, no Império Alemão, Einstein desenvolveu a teoria da relatividade especial (1905) e geral (1915), que mudaram completamente nossa compreensão do espaço, tempo e gravidade. Sua famosa equação E=mc² demonstrou a equivalência entre massa e energia. Em 1921, recebeu o Prêmio Nobel de Física por sua explicação do efeito fotoelétrico. Emigrou para os Estados Unidos em 1933 para escapar da perseguição nazista, estabelecendo-se no Instituto de Estudos Avançados de Princeton.",
+                    "referencias": [
+                        "Isaacson, Walter. Einstein: His Life and Universe. Simon & Schuster, 2007.",
+                        "Einstein, Albert. Relativity: The Special and General Theory. Methuen, 1916."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR02",
@@ -25,7 +32,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_TESLA_02",
                 "capacidade": 8,
                 "equipamentos": "TV, Wireless e Spiker",
-                "biografia": "Nikola Tesla (1856-1943) foi um inventor e engenheiro eletrotécnico sérvio-americano pioneiro no desenvolvimento de tecnologias de energia e comunicação, incluindo o sistema de corrente alternada."
+                "biografia": {
+                    "resumo": "Nikola Tesla (1856-1943) foi um inventor e engenheiro eletrotécnico sérvio-americano pioneiro no desenvolvimento de tecnologias de energia e comunicação, incluindo o sistema de corrente alternada.",
+                    "completa": "Nikola Tesla (1856-1943) foi um inventor, engenheiro elétrico e futurista sérvio-americano conhecido por suas contribuições ao design do moderno sistema de fornecimento de energia elétrica. Nascido no Império Austríaco (atual Croácia), Tesla emigrou para os Estados Unidos em 1884. Desenvolveu o sistema polifásico de corrente alternada (AC), que se tornou o padrão mundial para transmissão de energia elétrica. Suas patentes e trabalho teórico também contribuíram para o desenvolvimento de comunicações sem fio, motores de indução e várias outras tecnologias que moldaram o mundo moderno. Possuía mais de 300 patentes registradas.",
+                    "referencias": [
+                        "Carlson, W. Bernard. Tesla: Inventor of the Electrical Age. Princeton University Press, 2013.",
+                        "Tesla, Nikola. My Inventions: The Autobiography of Nikola Tesla. Experimenter Publishing, 1919."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR03",
@@ -35,7 +49,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_NEWTON_03",
                 "capacidade": 5,
                 "equipamentos": "Fechada",
-                "biografia": "Isaac Newton (1643-1727) foi um matemático, físico e astrônomo inglês que formulou as leis do movimento e da gravitação universal, fundamentais para a física clássica."
+                "biografia": {
+                    "resumo": "Isaac Newton (1643-1727) foi um matemático, físico e astrônomo inglês que formulou as leis do movimento e da gravitação universal, fundamentais para a física clássica.",
+                    "completa": "Isaac Newton (1643-1727) foi um matemático, físico, astrônomo e alquimista inglês considerado uma das figuras mais influentes da história da ciência. Nascido em Woolsthorpe, Lincolnshire, Newton formulou as três leis do movimento e a lei da gravitação universal, publicadas em sua obra magna 'Principia Mathematica' (1687). Suas contribuições incluem o desenvolvimento do cálculo diferencial e integral (independentemente de Leibniz), a teoria das cores e a construção do primeiro telescópio refletor. Como presidente da Royal Society e mestre da Casa da Moeda Real, Newton também teve um papel importante na vida acadêmica e pública inglesa.",
+                    "referencias": [
+                        "Westfall, Richard S. Never at Rest: A Biography of Isaac Newton. Cambridge University Press, 1980.",
+                        "Newton, Isaac. Philosophiæ Naturalis Principia Mathematica. Royal Society, 1687."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR04",
@@ -45,7 +66,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_CURIE_04",
                 "capacidade": 8,
                 "equipamentos": "TV, Wireless e Spiker",
-                "biografia": "Marie Curie (1867-1934) foi uma física e química polonesa-francesa pioneira na pesquisa sobre radioatividade. Foi a primeira mulher a ganhar um Prêmio Nobel."
+                "biografia": {
+                    "resumo": "Marie Curie (1867-1934) foi uma física e química polonesa-francesa pioneira na pesquisa sobre radioatividade. Foi a primeira mulher a ganhar um Prêmio Nobel.",
+                    "completa": "Marie Skłodowska-Curie (1867-1934) foi uma física e química polonesa-francesa que conduziu pesquisas pioneiras sobre radioatividade, termo que ela própria cunhou. Nascida em Varsóvia (Polônia russa), emigrou para Paris para estudar na Sorbonne. Tornou-se a primeira mulher a ganhar um Prêmio Nobel (Física, 1903, compartilhado com Pierre Curie e Henri Becquerel), a primeira pessoa a ganhar Prêmios Nobel em duas ciências diferentes (Química, 1911), e a primeira professora mulher na Universidade de Paris. Descobriu dois elementos químicos: polônio e rádio. Seus cadernos de laboratório permanecem radioativos até hoje.",
+                    "referencias": [
+                        "Quinn, Susan. Marie Curie: A Life. Simon & Schuster, 1995.",
+                        "Curie, Marie. Pierre Curie. Macmillan, 1923."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR05",
@@ -55,7 +83,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_DARWIN_05",
                 "capacidade": 8,
                 "equipamentos": "TV, Wireless e Spiker",
-                "biografia": "Charles Darwin (1809-1882) foi um naturalista inglês que propôs a teoria da evolução das espécies por seleção natural, revolucionando nossa compreensão da vida."
+                "biografia": {
+                    "resumo": "Charles Darwin (1809-1882) foi um naturalista inglês que propôs a teoria da evolução das espécies por seleção natural, revolucionando nossa compreensão da vida.",
+                    "completa": "Charles Robert Darwin (1809-1882) foi um naturalista inglês que revolucionou a biologia com sua teoria da evolução através da seleção natural. Nascido em Shrewsbury, desenvolveu seu interesse pela natureza durante os estudos em Cambridge. Sua viagem de cinco anos no HMS Beagle (1831-1836) forneceu evidências cruciais para suas teorias. Sua obra 'A Origem das Espécies' (1859) apresentou evidências científicas de que todas as espécies descendem de ancestrais comuns através de um processo de seleção natural. Esta teoria unificou as ciências da vida e explicou a diversidade da vida na Terra, estabelecendo a biologia evolutiva como disciplina científica.",
+                    "referencias": [
+                        "Browne, Janet. Charles Darwin: A Biography. Princeton University Press, 1995.",
+                        "Darwin, Charles. On the Origin of Species. John Murray, 1859."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR07",
@@ -65,7 +100,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_TURING_07",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Alan Turing (1912-1954) foi um matemático e cientista da computação britânico, considerado pai da ciência da computação e da inteligência artificial."
+                "biografia": {
+                    "resumo": "Alan Turing (1912-1954) foi um matemático e cientista da computação britânico, considerado pai da ciência da computação e da inteligência artificial.",
+                    "completa": "Alan Mathison Turing (1912-1954) foi um matemático, cientista da computação, lógico e criptoanalista britânico. Considerado o pai da ciência da computação e da inteligência artificial, Turing foi fundamental na formalização dos conceitos de algoritmo e computação com a máquina de Turing. Durante a Segunda Guerra Mundial, trabalhou em Bletchley Park decifrando códigos alemães, incluindo a máquina Enigma. Sua contribuição foi crucial para o esforço de guerra dos Aliados. Propôs o famoso 'Teste de Turing' para determinar se uma máquina pode exibir comportamento inteligente equivalente ao humano.",
+                    "referencias": [
+                        "Hodges, Andrew. Alan Turing: The Enigma. Princeton University Press, 1983.",
+                        "Turing, Alan. Computing Machinery and Intelligence. Mind, 1950."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR09",
@@ -75,7 +117,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_HOFF_09",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Marcian Hoff (1937-) é um engenheiro americano conhecido como um dos inventores do microprocessador, revolucionando a indústria de computadores."
+                "biografia": {
+                    "resumo": "Marcian Hoff (1937-) é um engenheiro americano conhecido como um dos inventores do microprocessador, revolucionando a indústria de computadores.",
+                    "completa": "Marcian Edward 'Ted' Hoff Jr. (1937-) é um engenheiro elétrico americano conhecido como um dos inventores do microprocessador. Durante seu trabalho na Intel Corporation, Hoff foi o arquiteto principal do Intel 4004, lançado em 1971, que é amplamente reconhecido como o primeiro microprocessador comercialmente viável. Esta inovação revolucionou a indústria de computadores, permitindo a miniaturização de sistemas de computação e abrindo caminho para a era dos computadores pessoais. Seu trabalho fundamentou toda a revolução digital moderna.",
+                    "referencias": [
+                        "Malone, Michael S. The Intel Trinity. HarperCollins, 2014.",
+                        "Hoff, Marcian E. The Intel 4004 Microprocessor. IEEE Micro, 1996."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR11",
@@ -85,7 +134,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_COOPER_11",
                 "capacidade": 4,
                 "equipamentos": "Fechada",
-                "biografia": "Martin Cooper (1928-) é um engenheiro americano pioneiro no desenvolvimento da telefonia móvel, considerado inventor do primeiro telefone celular comercial."
+                "biografia": {
+                    "resumo": "Martin Cooper (1928-) é um engenheiro americano pioneiro no desenvolvimento da telefonia móvel, considerado inventor do primeiro telefone celular comercial.",
+                    "completa": "Martin Lawrence Cooper (1928-) é um engenheiro americano pioneiro e inventor da telefonia móvel. Trabalhando na Motorola, Cooper liderou a equipe que desenvolveu o primeiro telefone celular portátil, o DynaTAC 8000x. Em 3 de abril de 1973, Cooper fez a primeira chamada de telefone celular público da história, ligando para um rival da Bell Labs enquanto caminhava pelas ruas de Nova York. Esta demonstração revolucionária marcou o início da era da comunicação móvel pessoal, transformando fundamentalmente como o mundo se comunica.",
+                    "referencias": [
+                        "Cooper, Martin. Cutting the Cord: The Cell Phone Has Transformed Humanity. Greenleaf Book Group, 2020.",
+                        "Young, Jeffrey S. The Art of the DynaTAC. IEEE Spectrum, 2003."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR13",
@@ -105,7 +161,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_LOVELACE_15",
                 "capacidade": 8,
                 "equipamentos": "TV, Wireless e Spiker",
-                "biografia": "Ada Lovelace (1815-1852) foi uma matemática britânica considerada a primeira programadora de computador da história, criando o primeiro algoritmo processado por uma máquina."
+                "biografia": {
+                    "resumo": "Ada Lovelace (1815-1852) foi uma matemática britânica considerada a primeira programadora de computador da história, criando o primeiro algoritmo processado por uma máquina.",
+                    "completa": "Augusta Ada King, Condessa de Lovelace (1815-1852), conhecida como Ada Lovelace, foi uma matemática e escritora inglesa. Filha do poeta Lord Byron, Ada é reconhecida como a primeira pessoa a escrever um algoritmo destinado a ser processado por uma máquina, especificamente a Máquina Analítica de Charles Babbage. Suas 'Notas' sobre a máquina incluem o que é considerado o primeiro programa de computador da história. Ela visionariamente compreendeu que as máquinas poderiam ir além de meros cálculos numéricos, prevendo aplicações em música e arte.",
+                    "referencias": [
+                        "Toole, Betty Alexandra. Ada, the Enchantress of Numbers. Strawberry Press, 1998.",
+                        "Lovelace, Ada. Notes on the Analytical Engine. Scientific Memoirs, 1843."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR17",
@@ -115,7 +178,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_BABBAGE_17",
                 "capacidade": 6,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Charles Babbage (1791-1871) foi um matemático e inventor inglês que concebeu a primeira máquina de calcular automática, precursora dos computadores modernos."
+                "biografia": {
+                    "resumo": "Charles Babbage (1791-1871) foi um matemático e inventor inglês que concebeu a primeira máquina de calcular automática, precursora dos computadores modernos.",
+                    "completa": "Charles Babbage (1791-1871) foi um matemático, inventor e engenheiro mecânico inglês que originou o conceito de um computador digital programável. Professor Lucasiano de Matemática na Universidade de Cambridge, Babbage é mais lembrado por projetar a Máquina Diferencial e a Máquina Analítica. A Máquina Analítica, em particular, é considerada o primeiro design para um computador mecânico de uso geral. Embora nunca totalmente construída durante sua vida devido às limitações da engenharia da época, seus projetos continham todos os elementos lógicos de um computador moderno.",
+                    "referencias": [
+                        "Swade, Doron. The Difference Engine: Charles Babbage and the Quest to Build the First Computer. Penguin Books, 2001.",
+                        "Babbage, Charles. Passages from the Life of a Philosopher. Longman & Co, 1864."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR19",
@@ -404,14 +474,22 @@ class TerreoRooms {
         // Sort rooms alphabetically
         const sortedRooms = [...this.filteredRooms].sort((a, b) => a.nome.localeCompare(b.nome));
         
-        const roomsHTML = sortedRooms.map(room => `
-            <div class="room-item" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${room.biografia}">
-                <div class="room-header">
-                    <strong class="room-name">${room.nome}</strong>
-                    <span class="room-hint">💡</span>
+        const roomsHTML = sortedRooms.map(room => {
+            // CORREÇÃO COPILOT: Usar resumo da biografia para tooltip quando disponível
+            // MOTIVO: Melhor experiência do usuário com resumo otimizado para tooltip
+            const tooltipText = typeof room.biografia === 'object' && room.biografia.resumo 
+                ? room.biografia.resumo 
+                : room.biografia;
+                
+            return `
+                <div class="room-item" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${tooltipText}">
+                    <div class="room-header">
+                        <strong class="room-name">${room.nome}</strong>
+                        <span class="room-hint">💡</span>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
         
         container.innerHTML = roomsHTML;
         
@@ -485,6 +563,10 @@ class TerreoRooms {
     updateRoomDetails(room) {
         const detailsContainer = document.getElementById('room-details');
         
+        // CORREÇÃO COPILOT: Suporte tanto para formato antigo quanto novo da biografia
+        // MOTIVO: Garantir compatibilidade com salas que ainda não foram atualizadas
+        const biografiaContent = this.renderBiografia(room);
+        
         detailsContainer.innerHTML = `
             <div class="selected-room-info">
                 <h3>${room.nome}</h3>
@@ -506,7 +588,7 @@ class TerreoRooms {
                 </div>
                 <div class="room-biography">
                     <strong>Biografia:</strong>
-                    <p class="biography-text">${room.biografia}</p>
+                    ${biografiaContent}
                 </div>
                 <div class="room-actions">
                     <button class="detail-btn" onclick="terreoRooms.centerOnRoom('${room.nome}')">
@@ -518,6 +600,103 @@ class TerreoRooms {
                 </div>
             </div>
         `;
+        
+        // Configurar eventos para o botão "Ler mais" se existir
+        const expandBtn = detailsContainer.querySelector('.expand-btn');
+        if (expandBtn) {
+            expandBtn.addEventListener('click', () => {
+                this.toggleBiografia(room.nome);
+            });
+        }
+    }
+
+    /**
+     * Renderiza o conteúdo da biografia baseado no formato (novo ou legado)
+     * @param {Object} room - O objeto da sala
+     * @returns {string} - HTML da biografia
+     */
+    renderBiografia(room) {
+        // Se biografia é objeto (novo formato)
+        if (typeof room.biografia === 'object' && room.biografia.resumo) {
+            const referencesHtml = room.biografia.referencias ? `
+                <div class="biography-references">
+                    <h4>Referências:</h4>
+                    <ul>
+                        ${room.biografia.referencias.map(ref => `<li>${ref}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : '';
+            
+            return `
+                <div class="biography-summary">
+                    ${room.biografia.resumo}
+                </div>
+                <div class="biography-expanded" id="biography-expanded-${room.nome}">
+                    ${room.biografia.completa}
+                    ${referencesHtml}
+                </div>
+                <button class="expand-btn" id="expand-btn-${room.nome}" aria-expanded="false" aria-controls="biography-expanded-${room.nome}">
+                    Ler mais
+                </button>
+            `;
+        } else {
+            // Formato legado - biografia como string
+            return `<p class="biography-summary">${room.biografia}</p>`;
+        }
+    }
+
+    /**
+     * Alterna entre mostrar/ocultar biografia expandida
+     * @param {string} roomName - Nome da sala
+     */
+    toggleBiografia(roomName) {
+        const expandedElement = document.getElementById(`biography-expanded-${roomName}`);
+        const expandBtn = document.getElementById(`expand-btn-${roomName}`);
+        
+        if (!expandedElement || !expandBtn) return;
+        
+        const isExpanded = expandedElement.classList.contains('show');
+        
+        if (isExpanded) {
+            expandedElement.classList.remove('show');
+            expandBtn.textContent = 'Ler mais';
+            expandBtn.setAttribute('aria-expanded', 'false');
+        } else {
+            expandedElement.classList.add('show');
+            expandBtn.textContent = 'Ler menos';
+            expandBtn.setAttribute('aria-expanded', 'true');
+        }
+        
+        // Anunciar mudança para leitores de tela
+        const announcement = isExpanded ? 'Biografia recolhida' : 'Biografia expandida';
+        this.announceToScreenReader(announcement);
+    }
+
+    /**
+     * Anuncia informações para leitores de tela
+     * @param {string} message - Mensagem a ser anunciada
+     */
+    announceToScreenReader(message) {
+        // Criar elemento de anúncio temporário
+        const announcer = document.createElement('div');
+        announcer.setAttribute('aria-live', 'polite');
+        announcer.setAttribute('aria-atomic', 'true');
+        announcer.className = 'sr-only';
+        announcer.style.position = 'absolute';
+        announcer.style.left = '-10000px';
+        announcer.style.width = '1px';
+        announcer.style.height = '1px';
+        announcer.style.overflow = 'hidden';
+        
+        document.body.appendChild(announcer);
+        announcer.textContent = message;
+        
+        // Remover após 1 segundo
+        setTimeout(() => {
+            if (document.body.contains(announcer)) {
+                document.body.removeChild(announcer);
+            }
+        }, 1000);
     }
 
     /**
