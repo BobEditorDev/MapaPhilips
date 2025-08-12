@@ -964,7 +964,7 @@ header p {
 .landmark-marker.hovered,
 .landmark-marker:focus,
 .landmark-marker.focused {
-    transform: scale(1.15);
+    transform: translate(-100%, -50%) scale(1.15); /* Manter posicionamento + escala */
     border-color: #0056b3;
     box-shadow: 0 4px 15px rgba(0, 102, 204, 0.5);
     z-index: 250;
@@ -979,8 +979,8 @@ header p {
 }
 
 @keyframes landmarkPulse {
-    0%, 100% { transform: scale(1.15); }
-    50% { transform: scale(1.3); }
+    0%, 100% { transform: translate(-100%, -50%) scale(1.15); }
+    50% { transform: translate(-100%, -50%) scale(1.3); }
 }
 
 /* Landmark tooltip - posicionamento inteligente */
@@ -1153,7 +1153,7 @@ header p {
     
     .room-marker:hover,
     .landmark-marker:hover {
-        transform: none;
+        transform: translate(-100%, -50%); /* Manter posicionamento sem escala no reduced motion */
     }
     
     .control-btn:hover,
