@@ -5,7 +5,7 @@
 
 class TerreoLandmarks {
     constructor() {
-        // Pontos de referência fixos conforme especificação do issue #22
+        // Pontos de referência fixos com coordenadas exatas fornecidas pelo usuário
         this.landmarks = [
             { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 3159, "y": 3604 } },
             { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 1872, "y": 1693 } },
@@ -21,8 +21,7 @@ class TerreoLandmarks {
             { "nome": "CAIXA D'ÁGUA", "emoji": "💧", "coordenadas": { "x": 577, "y": 6483 } },
             { "nome": "LAVANDERIA", "emoji": "👕", "coordenadas": { "x": 5429, "y": 6990 } },
             { "nome": "RECEPÇÃO", "emoji": "👋", "coordenadas": { "x": 4462, "y": 562 } },
-            { "nome": "ENTRADA", "emoji": "🚪", "coordenadas": { "x": 4462, "y": 400 } },
-            { "nome": "PONTOS", "emoji": "📍", "coordenadas": { "x": 4517, "y": 874 } },
+            { "nome": "MÁQUINA PONTO", "emoji": "📍", "coordenadas": { "x": 4517, "y": 874 } },
             { "nome": "INFRA", "emoji": "🔧", "coordenadas": { "x": 5039, "y": 218 } },
             { "nome": "CORREDOR LARANJA", "emoji": "🍊", "coordenadas": { "x": 4127, "y": 5039 } }
         ];

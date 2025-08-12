@@ -151,14 +151,15 @@ header p {
     overflow-y: auto; /* Apenas a lista de salas tem scroll */
     border: 1px solid #ddd;
     border-radius: 3px;
-    padding: 8px;
-    min-height: 200px; /* Altura mínima para garantir visibilidade */
+    padding: 6px; /* Reduzido de 8px para 6px */
+    min-height: 180px; /* Reduzido de 200px para 180px para dar mais espaço às informações */
+    max-height: 320px; /* Limite máximo para garantir espaço para informações */
 }
 
 /* Room info section - sempre visível sem scroll */
 .room-info {
     flex-shrink: 0; /* Não encolhe */
-    max-height: 250px; /* Limita altura máxima */
+    max-height: 180px; /* Reduzido de 250px para 180px */
 }
 
 .empty-message {
@@ -172,8 +173,8 @@ header p {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    padding: 8px;
-    margin-bottom: 6px;
+    padding: 6px; /* Reduzido de 8px para 6px */
+    margin-bottom: 4px; /* Reduzido de 6px para 4px */
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -214,7 +215,7 @@ header p {
 
 .room-name {
     color: #333;
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Reduzido de 0.9rem para 0.85rem */
     font-weight: 600;
 }
 
@@ -237,7 +238,7 @@ header p {
 
 .room-coords {
     font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
+    font-size: 0.65rem; /* Reduzido de 0.7rem para 0.65rem */
     color: #666;
     background: #e9ecef;
     padding: 1px 3px;
@@ -250,7 +251,7 @@ header p {
 
 .room-type-badge {
     display: inline-block;
-    font-size: 0.65rem;
+    font-size: 0.6rem; /* Reduzido de 0.65rem para 0.6rem */
     padding: 1px 4px;
     border-radius: 8px;
     font-weight: 500;
@@ -280,10 +281,10 @@ header p {
 .room-details {
     border: 1px solid #ddd;
     border-radius: 3px;
-    padding: 8px;
+    padding: 6px; /* Reduzido de 8px para 6px */
     background: #fafafa;
-    overflow-y: auto; /* Scroll interno apenas se o conteúdo for muito grande */
-    max-height: 200px; /* Altura máxima para controlar o espaço */
+    overflow: visible; /* Removido scroll interno */
+    max-height: none; /* Removido limite de altura */
 }
 
 .info-message {
@@ -299,8 +300,8 @@ header p {
 }
 
 .selected-room-info > div {
-    margin-bottom: 8px;
-    font-size: 0.85rem;
+    margin-bottom: 6px; /* Reduzido de 8px para 6px */
+    font-size: 0.8rem; /* Reduzido de 0.85rem para 0.8rem */
 }
 
 .room-code, .room-capacity, .room-equipment, .room-location {
