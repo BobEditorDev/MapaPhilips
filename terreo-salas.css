@@ -5,11 +5,21 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden; /* Garante que nada saia da página */
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
     background-color: #f5f5f5;
+    overflow-x: hidden; /* Não permitir scroll horizontal */
+    overflow-y: hidden; /* Não permitir scroll vertical */
+    height: 100vh; /* Limita altura ao viewport */
+    max-height: 100vh; /* Garante que não ultrapasse */
 }
 
 /* Container and layout */
@@ -20,6 +30,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Não permitir overflow do container principal */
 }
 
 header {
@@ -29,6 +40,25 @@ header {
     border-bottom: 1px solid #e0e0e0;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     flex-shrink: 0;
+    position: relative;
+}
+
+/* Logo Philips */
+.philips-logo {
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #0066cc;
+    z-index: 10;
+    background: linear-gradient(45deg, #0066cc, #004499);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 2px rgba(0, 102, 204, 0.3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 1px;
 }
 
 header h1 {
@@ -78,9 +108,11 @@ header p {
 
 .main-content {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: minmax(200px, 280px) 1fr;
     height: calc(100vh - 60px);
     overflow: hidden;
+    min-width: 0; /* Permite que o grid encolha quando necessário */
+    max-height: calc(100vh - 60px); /* Garante que nunca ultrapasse a viewport */
 }
 
 /* Rooms panel sidebar */
@@ -88,11 +120,13 @@ header p {
     background: white;
     padding: 10px;
     border-right: 2px solid #e0e0e0;
-    overflow-y: auto;
     height: 100%;
+    max-height: 100%; /* Garante que não ultrapasse o container pai */
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow: hidden; /* Remove scroll geral do painel */
+    min-width: 0; /* Permite que o painel encolha quando necessário */
 }
 
 .rooms-panel h2 {
@@ -121,15 +155,27 @@ header p {
 
 /* Rooms list */
 .rooms-list {
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .rooms-container {
-    max-height: 320px;
-    overflow-y: auto;
+    flex-grow: 1;
+    overflow-y: auto; /* Apenas a lista de salas tem scroll */
     border: 1px solid #ddd;
     border-radius: 3px;
-    padding: 8px;
+    padding: 5px; /* Reduzido de 6px para 5px */
+    min-height: 120px; /* Reduzido para dar mais espaço às informações */
+    max-height: 200px; /* Reduzido significativamente para dar mais espaço às informações */
+}
+
+/* Room info section - sempre visível sem scroll, com altura flexível */
+.room-info {
+    flex-shrink: 0; /* Não encolhe */
+    overflow: hidden; /* Evita que o conteúdo saia dos limites */
+    max-height: calc(100vh - 300px); /* Altura calculada para sempre ficar dentro da viewport */
 }
 
 .empty-message {
@@ -143,8 +189,8 @@ header p {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    padding: 8px;
-    margin-bottom: 6px;
+    padding: 4px; /* Reduzido de 6px para 4px */
+    margin-bottom: 3px; /* Reduzido de 4px para 3px */
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -185,7 +231,7 @@ header p {
 
 .room-name {
     color: #333;
-    font-size: 0.9rem;
+    font-size: 0.8rem; /* Reduzido de 0.85rem para 0.8rem */
     font-weight: 600;
 }
 
@@ -208,7 +254,7 @@ header p {
 
 .room-coords {
     font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
+    font-size: 0.65rem; /* Reduzido de 0.7rem para 0.65rem */
     color: #666;
     background: #e9ecef;
     padding: 1px 3px;
@@ -221,7 +267,7 @@ header p {
 
 .room-type-badge {
     display: inline-block;
-    font-size: 0.65rem;
+    font-size: 0.6rem; /* Reduzido de 0.65rem para 0.6rem */
     padding: 1px 4px;
     border-radius: 8px;
     font-weight: 500;
@@ -251,8 +297,11 @@ header p {
 .room-details {
     border: 1px solid #ddd;
     border-radius: 3px;
-    padding: 8px;
+    padding: 6px;
     background: #fafafa;
+    overflow-y: auto; /* Permitir scroll interno apenas quando necessário */
+    max-height: calc(100vh - 350px); /* Altura fixa para sempre ficar dentro da viewport */
+    height: auto; /* Permite que se ajuste ao conteúdo dentro do max-height */
 }
 
 .info-message {
@@ -268,8 +317,8 @@ header p {
 }
 
 .selected-room-info > div {
-    margin-bottom: 8px;
-    font-size: 0.85rem;
+    margin-bottom: 4px; /* Reduzido para otimizar espaço */
+    font-size: 0.7rem;
 }
 
 .room-code, .room-capacity, .room-equipment, .room-location {
@@ -288,11 +337,13 @@ header p {
 }
 
 .room-biography {
-    margin-top: 8px;
-    padding: 8px;
+    margin-top: 6px; /* Reduzido de 8px */
+    padding: 6px; /* Reduzido de 8px */
     background: #f8f9fa;
     border-radius: 4px;
     border-left: 3px solid #0066cc;
+    max-height: calc(100vh - 450px); /* Altura fixa para garantir que não saia da viewport */
+    overflow-y: auto; /* Permitir scroll interno quando conteúdo for muito longo */
 }
 
 .biography-summary,
@@ -305,9 +356,12 @@ header p {
 }
 
 .biography-expanded {
-    margin-top: 8px;
+    margin-top: 6px; /* Reduzido de 8px */
     display: none;
     animation: fadeIn 0.3s ease-in-out;
+    max-height: calc(100vh - 500px); /* Altura fixa para garantir que não saia da viewport */
+    overflow-y: auto; /* Permitir scroll interno */
+    padding-right: 4px; /* Espaço para scrollbar */
 }
 
 .biography-expanded.show {
@@ -378,8 +432,35 @@ header p {
     }
     to {
         opacity: 1;
-        max-height: 200px;
+        max-height: calc(100vh - 500px); /* Altura fixa consistente com .biography-expanded */
     }
+}
+
+/* Adicionar scrollbar customizada para as seções de informações */
+.room-details::-webkit-scrollbar,
+.room-biography::-webkit-scrollbar,
+.biography-expanded::-webkit-scrollbar {
+    width: 6px;
+}
+
+.room-details::-webkit-scrollbar-track,
+.room-biography::-webkit-scrollbar-track,
+.biography-expanded::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.room-details::-webkit-scrollbar-thumb,
+.room-biography::-webkit-scrollbar-thumb,
+.biography-expanded::-webkit-scrollbar-thumb {
+    background: #0066cc;
+    border-radius: 3px;
+}
+
+.room-details::-webkit-scrollbar-thumb:hover,
+.room-biography::-webkit-scrollbar-thumb:hover,
+.biography-expanded::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
 }
 
 /* Suporte para movimento reduzido */
@@ -637,7 +718,7 @@ header p {
     opacity: 1;
 }
 
-/* Marker tooltip */
+/* Marker tooltip - posicionamento inteligente */
 .marker-tooltip {
     position: absolute;
     bottom: 100%;
@@ -665,6 +746,61 @@ header p {
     transform: translateX(-50%);
     border: 6px solid transparent;
     border-top-color: #333;
+}
+
+/* Posicionamento de tooltip - à direita */
+.marker-tooltip.right {
+    bottom: auto;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-left: 10px;
+}
+
+.marker-tooltip.right::after {
+    top: 50%;
+    left: 0;
+    transform: translate(-100%, -50%);
+    border: 6px solid transparent;
+    border-right-color: #333;
+}
+
+/* Posicionamento de tooltip - à esquerda */
+.marker-tooltip.left {
+    bottom: auto;
+    left: auto;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+
+.marker-tooltip.left::after {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: #333;
+}
+
+/* Posicionamento de tooltip - abaixo */
+.marker-tooltip.bottom {
+    bottom: auto;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.marker-tooltip.bottom::after {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    border: 6px solid transparent;
+    border-bottom-color: #333;
 }
 
 .room-marker:hover .marker-tooltip {
@@ -856,7 +992,6 @@ header p {
     border-radius: 50%;
     width: 36px;
     height: 36px;
-    transform: translate(-50%, -50%);
     cursor: pointer;
     pointer-events: auto;
     transition: all 0.3s ease;
@@ -865,6 +1000,7 @@ header p {
     justify-content: center;
     box-shadow: 0 3px 10px rgba(0, 102, 204, 0.3);
     z-index: 150; /* Below room markers but above map */
+    transform: translate(-140%, 0%); /* Posicionamento base - mesma lógica das salas */
 }
 
 .landmark-emoji {
@@ -877,7 +1013,7 @@ header p {
 .landmark-marker.hovered,
 .landmark-marker:focus,
 .landmark-marker.focused {
-    transform: translate(-50%, -50%) scale(1.15);
+    transform: translate(-140%, 0%) scale(1.15); /* Manter posicionamento base + escala */
     border-color: #0056b3;
     box-shadow: 0 4px 15px rgba(0, 102, 204, 0.5);
     z-index: 250;
@@ -892,11 +1028,11 @@ header p {
 }
 
 @keyframes landmarkPulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1.15); }
-    50% { transform: translate(-50%, -50%) scale(1.3); }
+    0%, 100% { transform: translate(-220%, -0%) scale(1.15); }
+    50% { transform: translate(-220%, -0%) scale(1.3); }
 }
 
-/* Landmark tooltip */
+/* Landmark tooltip - posicionamento inteligente */
 .landmark-tooltip {
     position: absolute;
     bottom: 100%;
@@ -925,6 +1061,61 @@ header p {
     transform: translateX(-50%);
     border: 5px solid transparent;
     border-top-color: #0066cc;
+}
+
+/* Posicionamento de landmark tooltip - à direita */
+.landmark-tooltip.right {
+    bottom: auto;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-left: 8px;
+}
+
+.landmark-tooltip.right::after {
+    top: 50%;
+    left: 0;
+    transform: translate(-100%, -50%);
+    border: 5px solid transparent;
+    border-right-color: #0066cc;
+}
+
+/* Posicionamento de landmark tooltip - à esquerda */
+.landmark-tooltip.left {
+    bottom: auto;
+    left: auto;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-right: 8px;
+}
+
+.landmark-tooltip.left::after {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-left-color: #0066cc;
+}
+
+/* Posicionamento de landmark tooltip - abaixo */
+.landmark-tooltip.bottom {
+    bottom: auto;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+
+.landmark-tooltip.bottom::after {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    border: 5px solid transparent;
+    border-bottom-color: #0066cc;
 }
 
 .landmark-marker:hover .landmark-tooltip,
@@ -1011,7 +1202,7 @@ header p {
     
     .room-marker:hover,
     .landmark-marker:hover {
-        transform: translate(-50%, -50%);
+        transform: translate(-220%, -0%); /* Manter posicionamento sem escala no reduced motion */
     }
     
     .control-btn:hover,

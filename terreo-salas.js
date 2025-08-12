@@ -531,8 +531,12 @@ class TerreoRooms {
         this.updateRoomDetails(room);
         this.highlightRoomOnMap(room);
         
+        // CORREÇÃO COPILOT: Centralizar automaticamente o mapa na sala selecionada
+        // MOTIVO: Melhora a experiência do usuário automatizando a navegação
+        this.centerOnRoom(roomName);
+        
         // Update instructions
-        this.updateInstructions(`Sala ${roomName} selecionada - localização destacada no mapa`);
+        this.updateInstructions(`Sala ${roomName} selecionada e centralizada no mapa`);
         
         console.log('Selected room:', room);
     }
@@ -755,14 +759,15 @@ class TerreoRooms {
         marker.className = `room-marker ${isHighlighted ? 'highlighted' : ''}`;
         marker.setAttribute('data-room', room.nome);
         
-        // Position marker (centrado no ponto)
-        marker.style.left = `${displayX - 6}px`;  
-        marker.style.top = `${displayY - 6}px`;   
+        // Position marker (centralizado exatamente no pixel da coordenada)
+        marker.style.left = `${Math.round(displayX)}px`;
+        marker.style.top = `${Math.round(displayY)}px`;
+        marker.style.transform = 'translate(-50%, -50%)';   
         
-        // Add content and tooltip
+        // Add content and tooltip with intelligent positioning
         marker.innerHTML = `
             <span class="marker-label">${room.nome}</span>
-            <div class="marker-tooltip">
+            <div class="marker-tooltip" id="tooltip-${room.nome}">
                 <strong>${room.nome}</strong><br>
                 Andar: Térreo
             </div>
@@ -773,9 +778,10 @@ class TerreoRooms {
             this.selectRoom(room.nome);
         });
         
-        // Add hover effects
+        // Add hover effects with tooltip positioning
         marker.addEventListener('mouseenter', () => {
             marker.classList.add('hovered');
+            this.adjustTooltipPosition(marker, displayX, displayY);
         });
         
         marker.addEventListener('mouseleave', () => {
@@ -786,6 +792,54 @@ class TerreoRooms {
         overlay.appendChild(marker);
         
         console.log(`Added marker for ${room.nome} at scaled coordinates (${displayX.toFixed(1)}, ${displayY.toFixed(1)}) from original (${room.coordenadas.x}, ${room.coordenadas.y})`);
+    }
+
+    /**
+     * Ajusta a posição do tooltip para não ultrapassar as bordas do mapa
+     * @param {HTMLElement} marker - Elemento do marcador
+     * @param {number} markerX - Coordenada X do marcador
+     * @param {number} markerY - Coordenada Y do marcador
+     */
+    adjustTooltipPosition(marker, markerX, markerY) {
+        const tooltip = marker.querySelector('.marker-tooltip');
+        if (!tooltip) return;
+
+        const mapWrapper = document.querySelector('.map-wrapper');
+        const mapRect = mapWrapper.getBoundingClientRect();
+        const floorPlan = document.getElementById('floor-plan');
+        const planRect = floorPlan.getBoundingClientRect();
+        
+        // Calculate position relative to the map container
+        const relativeX = markerX;
+        const relativeY = markerY;
+        const mapWidth = floorPlan.offsetWidth;
+        const mapHeight = floorPlan.offsetHeight;
+        
+        // Reset all position classes
+        tooltip.classList.remove('top', 'bottom', 'left', 'right');
+        
+        // Define thresholds (100px from edges)
+        const threshold = 100;
+        
+        // Check horizontal position
+        if (relativeX < threshold) {
+            // Near left edge - show tooltip to the right
+            tooltip.classList.add('right');
+        } else if (relativeX > mapWidth - threshold) {
+            // Near right edge - show tooltip to the left
+            tooltip.classList.add('left');
+        }
+        
+        // Check vertical position
+        if (relativeY < threshold) {
+            // Near top edge - show tooltip below
+            tooltip.classList.add('bottom');
+        } else if (relativeY > mapHeight - threshold) {
+            // Near bottom edge - show tooltip above
+            tooltip.classList.add('top');
+        }
+        
+        console.log(`Tooltip positioned for ${marker.getAttribute('data-room')} at (${relativeX.toFixed(1)}, ${relativeY.toFixed(1)}) - classes: ${tooltip.className}`);
     }
 
     /**
