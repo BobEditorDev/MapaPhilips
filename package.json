@@ -1,0 +1,31 @@
+{
+  "name": "mapa-philips",
+  "version": "1.0.0",
+  "description": "Mapa interativo do escritório Philips - Térreo e Mezanino",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "start": "python3 -m http.server 8000",
+    "test": "echo \"Projeto não possui testes automatizados - validação manual\" && exit 0"
+  },
+  "keywords": [
+    "mapa",
+    "escritorio",
+    "philips",
+    "navegacao",
+    "terreo",
+    "mezanino"
+  ],
+  "author": "BobEditorDev",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BobEditorDev/MapaPhilips.git"
+  },
+  "homepage": "https://github.com/BobEditorDev/MapaPhilips",
+  "devDependencies": {},
+  "dependencies": {}
+}
