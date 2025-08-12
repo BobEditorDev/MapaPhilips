@@ -162,8 +162,7 @@ class TerreoRooms {
         }
         
         this.renderRoomsList();
-        this.setupEventListeners();
-        this.setupSearchFilter();
+        this.bindEvents();
         this.showAllRooms();
     }
 
@@ -271,10 +270,6 @@ class TerreoRooms {
             <div class="room-item" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}">
                 <div class="room-header">
                     <strong class="room-name">${room.nome}</strong>
-                    <span class="room-coords">(${room.coordenadas.x}, ${room.coordenadas.y})</span>
-                </div>
-                <div class="room-type">
-                    ${this.getRoomType(room.nome)}
                 </div>
             </div>
         `).join('');
@@ -299,23 +294,7 @@ class TerreoRooms {
         });
     }
 
-    /**
-     * Get room type based on room name (for display purposes)
-     * @param {string} roomName - The room name
-     * @returns {string} - The room type
-     */
-    getRoomType(roomName) {
-        // Categorizar salas por área de conhecimento/tipo
-        const scientists = ['TESLA', 'CURIE', 'HAWKING', 'CHAGAS', 'EINSTEIN', 'DARWIN', 'GALILEI', 'HIPOCRATES', 'PASTEUR', 'FREUD', 'VIRCHOW'];
-        const developers = ['TURING', 'HOFF', 'COOPER', 'PASCAL', 'LOVELACE', 'BABBAGE', 'STROUSTROUP', 'LERDORF', 'CHAMBERLIN', 'COHEN', 'KAY', 'TORVALDS', 'LUTZ', 'OLSER'];
-        
-        if (scientists.includes(roomName)) {
-            return '<span class="room-type-badge scientist">Cientista</span>';
-        } else if (developers.includes(roomName)) {
-            return '<span class="room-type-badge developer">Tecnologia</span>';
-        }
-        return '<span class="room-type-badge other">Outros</span>';
-    }
+
 
     /**
      * Select a room and highlight it on the map
@@ -370,22 +349,12 @@ class TerreoRooms {
         detailsContainer.innerHTML = `
             <div class="selected-room-info">
                 <h3>${room.nome}</h3>
-                <div class="room-coordinates">
-                    <strong>Coordenadas:</strong> 
-                    <span class="coords-display">X: ${room.coordenadas.x}, Y: ${room.coordenadas.y}</span>
-                </div>
                 <div class="room-location">
                     <strong>Andar:</strong> Térreo
-                </div>
-                <div class="room-category">
-                    <strong>Categoria:</strong> ${this.getRoomType(room.nome)}
                 </div>
                 <div class="room-actions">
                     <button class="detail-btn" onclick="terreoRooms.centerOnRoom('${room.nome}')">
                         🎯 Centralizar no Mapa
-                    </button>
-                    <button class="detail-btn" onclick="terreoRooms.copyCoordinates('${room.nome}')">
-                        📋 Copiar Coordenadas
                     </button>
                 </div>
             </div>
@@ -457,8 +426,7 @@ class TerreoRooms {
             <span class="marker-label">${room.nome}</span>
             <div class="marker-tooltip">
                 <strong>${room.nome}</strong><br>
-                Coordenadas: (${room.coordenadas.x}, ${room.coordenadas.y})<br>
-                ${this.getRoomType(room.nome)}
+                Andar: Térreo
             </div>
         `;
         
@@ -538,24 +506,24 @@ class TerreoRooms {
     }
 
     /**
-     * Copy room coordinates to clipboard
+     * Copy room name to clipboard (simplified version)
      * @param {string} roomName - The room name
      */
-    copyCoordinates(roomName) {
+    copyRoomName(roomName) {
         const room = this.rooms.find(r => r.nome === roomName);
         if (!room) return;
         
-        const coordsText = `${room.nome}: (${room.coordenadas.x}, ${room.coordenadas.y})`;
+        const roomText = room.nome;
         
         if (navigator.clipboard) {
-            navigator.clipboard.writeText(coordsText).then(() => {
-                this.showTemporaryMessage('Coordenadas copiadas para a área de transferência!');
+            navigator.clipboard.writeText(roomText).then(() => {
+                this.showTemporaryMessage('Nome da sala copiado para a área de transferência!');
             }).catch(err => {
                 console.error('Failed to copy:', err);
-                this.fallbackCopyToClipboard(coordsText);
+                this.fallbackCopyToClipboard(roomText);
             });
         } else {
-            this.fallbackCopyToClipboard(coordsText);
+            this.fallbackCopyToClipboard(roomText);
         }
     }
 
