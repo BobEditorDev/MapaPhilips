@@ -789,11 +789,15 @@ class TerreoRooms {
     }
 
     /**
-     * Clear all markers from the map
+     * Clear all room markers from the map (preserving landmarks)
      */
     clearMapMarkers() {
         const overlay = document.getElementById('rooms-overlay');
-        overlay.innerHTML = '';
+        // CORREÇÃO COPILOT: Preservar landmarks ao limpar marcadores de salas
+        // MOTIVO: Atender requisito de que landmarks devem permanecer sempre visíveis
+        overlay.querySelectorAll('.room-marker').forEach(marker => {
+            marker.remove();
+        });
     }
 
     /**
