@@ -964,7 +964,7 @@ header p {
 .landmark-marker.hovered,
 .landmark-marker:focus,
 .landmark-marker.focused {
-    transform: translate(-220%, -0%) scale(1.15); /* Manter posicionamento + escala */
+    transform: translate(-140%, 0%) scale(1.15); /* Manter posicionamento + escala */
     border-color: #0056b3;
     box-shadow: 0 4px 15px rgba(0, 102, 204, 0.5);
     z-index: 250;
