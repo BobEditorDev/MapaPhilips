@@ -101,7 +101,7 @@ class TerreoLandmarks {
         // Position marker (margem direita do emoji na coordenada exata)
         marker.style.left = `${Math.round(displayX)}px`;
         marker.style.top = `${Math.round(displayY)}px`;
-        marker.style.transform = 'translate(-100%, -50%)'; // Borda direita na coordenada
+        marker.style.transform = 'translate(-220%, -0%)'; // Borda direita na coordenada
 
         // Add emoji and tooltip content
         marker.innerHTML = `
