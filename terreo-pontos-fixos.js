@@ -102,7 +102,7 @@ class TerreoLandmarks {
         // Position marker (centralizado exatamente no pixel da coordenada)
         marker.style.left = `${Math.round(displayX)}px`;
         marker.style.top = `${Math.round(displayY)}px`;
-        marker.style.transform = 'translate(-50%, -50%)';
+        // transform já definido no CSS, não redefinir aqui
 
         // Add emoji and tooltip content
         marker.innerHTML = `

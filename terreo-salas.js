@@ -531,8 +531,12 @@ class TerreoRooms {
         this.updateRoomDetails(room);
         this.highlightRoomOnMap(room);
         
+        // CORREÇÃO COPILOT: Centralizar automaticamente o mapa na sala selecionada
+        // MOTIVO: Melhora a experiência do usuário automatizando a navegação
+        this.centerOnRoom(roomName);
+        
         // Update instructions
-        this.updateInstructions(`Sala ${roomName} selecionada - localização destacada no mapa`);
+        this.updateInstructions(`Sala ${roomName} selecionada e centralizada no mapa`);
         
         console.log('Selected room:', room);
     }
