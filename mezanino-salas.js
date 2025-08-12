@@ -178,6 +178,26 @@ class MezaninoRooms {
         window.addEventListener('resize', () => {
             this.handleResize();
         });
+
+        // CORREÇÃO COPILOT: Captura de clique no overlay para exibir coordenadas relativas ao mapa
+        // MOTIVO: Facilitar cadastro de novas salas e depuração visual
+        const overlay = document.getElementById('rooms-overlay');
+        overlay.addEventListener('click', (e) => {
+            const floorPlan = document.getElementById('floor-plan');
+            // Posição do overlay na tela
+            const rect = overlay.getBoundingClientRect();
+            // Coordenadas do clique relativas ao overlay
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            // Ajuste para escala da imagem
+            const scaleX = floorPlan.naturalWidth / floorPlan.offsetWidth;
+            const scaleY = floorPlan.naturalHeight / floorPlan.offsetHeight;
+            const coordX = Math.round(x * scaleX);
+            const coordY = Math.round(y * scaleY);
+            // Exibe no console (pode trocar por alert se preferir)
+            console.log(`Coordenada clicada no mezanino: x=${coordX}, y=${coordY}`);
+            this.showTemporaryMessage(`Coordenada: x=${coordX}, y=${coordY}`);
+        });
     }
 
     /**

@@ -18,8 +18,36 @@ class CoordinateTool {
     init() {
         this.bindEvents();
         this.setupAccessibility();
+        this.setupOverlay();
         this.updateInstructions();
         console.log('Coordinate Tool initialized successfully');
+    }
+
+    /**
+     * Setup overlay dimensions to match the image
+     */
+    setupOverlay() {
+        const floorPlan = document.getElementById('floor-plan');
+        const overlay = document.getElementById('coordinates-overlay');
+        
+        if (floorPlan.complete) {
+            this.updateOverlayDimensions();
+        } else {
+            floorPlan.addEventListener('load', () => this.updateOverlayDimensions());
+        }
+    }
+
+    /**
+     * Update overlay dimensions to match displayed image
+     */
+    updateOverlayDimensions() {
+        const floorPlan = document.getElementById('floor-plan');
+        const overlay = document.getElementById('coordinates-overlay');
+        
+        overlay.style.width = `${floorPlan.offsetWidth}px`;
+        overlay.style.height = `${floorPlan.offsetHeight}px`;
+        
+        console.log(`Overlay dimensions updated: ${floorPlan.offsetWidth}x${floorPlan.offsetHeight}px`);
     }
 
     /**
@@ -79,8 +107,27 @@ class CoordinateTool {
         });
         document.querySelector(`[data-floor="${floor}"]`).classList.add('active');
         
-        // Clear existing coordinate markers for this view
-        this.updateCoordinateOverlay();
+        // CORREÇÃO COPILOT: Atualizar imagem do mapa ao trocar de andar
+        // MOTIVO: A ferramenta deve mostrar o mapa correto conforme o andar selecionado
+        const floorPlan = document.getElementById('floor-plan');
+        if (floor === 'terreo') {
+            floorPlan.src = 'terreo.png';
+            floorPlan.alt = 'Planta Baixa do Térreo';
+        } else if (floor === 'mesanino') {
+            floorPlan.src = 'Mesanino.png';
+            floorPlan.alt = 'Planta Baixa do Mezanino';
+        }
+        
+        // Aguardar carregamento da nova imagem antes de atualizar overlay
+        if (floorPlan.complete) {
+            this.updateOverlayDimensions();
+            this.updateCoordinateOverlay();
+        } else {
+            floorPlan.addEventListener('load', () => {
+                this.updateOverlayDimensions();
+                this.updateCoordinateOverlay();
+            }, { once: true });
+        }
         
         console.log(`Switched to ${floor} floor plan`);
     }
@@ -98,11 +145,17 @@ class CoordinateTool {
             addButton.classList.add('active');
             addButton.innerHTML = '<span class="btn-icon">✕</span>Cancelar';
             coordinatesOverlay.style.cursor = 'crosshair';
+            // CORREÇÃO COPILOT: Habilitar cliques no overlay durante modo de seleção
+            // MOTIVO: O CSS define pointer-events: none, precisa ser alterado para capturar cliques
+            coordinatesOverlay.style.pointerEvents = 'auto';
             this.updateInstructions('Clique no mapa para adicionar uma coordenada');
         } else {
             addButton.classList.remove('active');
             addButton.innerHTML = '<span class="btn-icon">+</span>Add Coordenada';
             coordinatesOverlay.style.cursor = 'default';
+            // CORREÇÃO COPILOT: Desabilitar cliques no overlay fora do modo de seleção
+            // MOTIVO: Permitir que cliques passem através do overlay para os marcadores
+            coordinatesOverlay.style.pointerEvents = 'none';
             this.updateInstructions('Clique em "Add Coordenada" para ativar o modo de seleção');
         }
         
@@ -114,18 +167,21 @@ class CoordinateTool {
      * @param {MouseEvent} e - The click event
      */
     addCoordinate(e) {
-        const rect = e.target.getBoundingClientRect();
-        const displayX = Math.round(e.clientX - rect.left);
-        const displayY = Math.round(e.clientY - rect.top);
-        
-        // Get actual image coordinates by calculating scale factors
-        const img = e.target;
-        const scaleX = img.naturalWidth / img.offsetWidth;
-        const scaleY = img.naturalHeight / img.offsetHeight;
-        
-        // Convert display coordinates to actual image pixel coordinates
-        const x = Math.round(displayX * scaleX);
-        const y = Math.round(displayY * scaleY);
+
+    // CORREÇÃO COPILOT: Usar a imagem como referência para escala, não o overlay
+    // MOTIVO: O overlay não possui naturalWidth/naturalHeight, o cálculo ficava errado
+    const overlayRect = e.target.getBoundingClientRect();
+    const img = document.getElementById('floor-plan');
+    const imgRect = img.getBoundingClientRect();
+    // Coordenadas do clique relativas ao overlay
+    const displayX = Math.round(e.clientX - overlayRect.left);
+    const displayY = Math.round(e.clientY - overlayRect.top);
+    // Escala real da imagem
+    const scaleX = img.naturalWidth / img.offsetWidth;
+    const scaleY = img.naturalHeight / img.offsetHeight;
+    // Coordenadas reais na imagem
+    const x = Math.round(displayX * scaleX);
+    const y = Math.round(displayY * scaleY);
         
         // Prompt for room name
         const roomName = prompt('Digite o nome da sala/localização:');
@@ -208,6 +264,7 @@ class CoordinateTool {
                 displayY = coord.displayCoordinates.y;
             } else {
                 // Calculate display coordinates from image coordinates for backward compatibility
+                const floorPlan = document.getElementById('floor-plan');
                 const scaleX = floorPlan.offsetWidth / floorPlan.naturalWidth;
                 const scaleY = floorPlan.offsetHeight / floorPlan.naturalHeight;
                 displayX = Math.round(coord.coordenadas.x * scaleX);
@@ -425,6 +482,7 @@ class CoordinateTool {
         // Debounce resize handling
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
+            this.updateOverlayDimensions();
             this.updateCoordinateOverlay();
         }, 250);
     }
