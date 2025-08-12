@@ -5,12 +5,21 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden; /* Garante que nada saia da página */
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
     background-color: #f5f5f5;
     overflow-x: hidden; /* Não permitir scroll horizontal */
+    overflow-y: hidden; /* Não permitir scroll vertical */
+    height: 100vh; /* Limita altura ao viewport */
+    max-height: 100vh; /* Garante que não ultrapasse */
 }
 
 /* Container and layout */
@@ -103,6 +112,7 @@ header p {
     height: calc(100vh - 60px);
     overflow: hidden;
     min-width: 0; /* Permite que o grid encolha quando necessário */
+    max-height: calc(100vh - 60px); /* Garante que nunca ultrapasse a viewport */
 }
 
 /* Rooms panel sidebar */
@@ -111,6 +121,7 @@ header p {
     padding: 10px;
     border-right: 2px solid #e0e0e0;
     height: 100%;
+    max-height: 100%; /* Garante que não ultrapasse o container pai */
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -163,8 +174,8 @@ header p {
 /* Room info section - sempre visível sem scroll, com altura flexível */
 .room-info {
     flex-shrink: 0; /* Não encolhe */
-    overflow: visible; /* Permite que o conteúdo seja exibido */
-    max-height: calc(50vh - 100px); /* Limita altura para evitar sobreposição */
+    overflow: hidden; /* Evita que o conteúdo saia dos limites */
+    max-height: calc(60vh - 200px); /* Ajustado para acomodar melhor o conteúdo */
 }
 
 .empty-message {
@@ -289,7 +300,8 @@ header p {
     padding: 6px;
     background: #fafafa;
     overflow-y: auto;
-    max-height: calc(50vh);
+    max-height: calc(40vh); /* Reduzido para garantir que fique dentro dos limites */
+    height: auto; /* Permite que se ajuste ao conteúdo dentro do max-height */
 }
 
 .info-message {
