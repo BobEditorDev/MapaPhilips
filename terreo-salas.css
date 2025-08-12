@@ -167,15 +167,15 @@ header p {
     border: 1px solid #ddd;
     border-radius: 3px;
     padding: 5px; /* Reduzido de 6px para 5px */
-    min-height: 140px; /* Reduzido de 160px para 140px para dar mais espaço às informações */
-    max-height: 240px; /* Reduzido de 280px para 240px para dar mais espaço às informações */
+    min-height: 120px; /* Reduzido para dar mais espaço às informações */
+    max-height: 200px; /* Reduzido significativamente para dar mais espaço às informações */
 }
 
 /* Room info section - sempre visível sem scroll, com altura flexível */
 .room-info {
     flex-shrink: 0; /* Não encolhe */
     overflow: hidden; /* Evita que o conteúdo saia dos limites */
-    max-height: calc(60vh - 200px); /* Ajustado para acomodar melhor o conteúdo */
+    max-height: calc(100vh - 300px); /* Altura calculada para sempre ficar dentro da viewport */
 }
 
 .empty-message {
@@ -299,8 +299,8 @@ header p {
     border-radius: 3px;
     padding: 6px;
     background: #fafafa;
-    overflow-y: auto;
-    max-height: calc(40vh); /* Reduzido para garantir que fique dentro dos limites */
+    overflow-y: auto; /* Permitir scroll interno apenas quando necessário */
+    max-height: calc(100vh - 350px); /* Altura fixa para sempre ficar dentro da viewport */
     height: auto; /* Permite que se ajuste ao conteúdo dentro do max-height */
 }
 
@@ -317,7 +317,7 @@ header p {
 }
 
 .selected-room-info > div {
-    /* margin-bottom: 6px; */
+    margin-bottom: 4px; /* Reduzido para otimizar espaço */
     font-size: 0.7rem;
 }
 
@@ -337,11 +337,13 @@ header p {
 }
 
 .room-biography {
-    margin-top: 8px;
-    padding: 8px;
+    margin-top: 6px; /* Reduzido de 8px */
+    padding: 6px; /* Reduzido de 8px */
     background: #f8f9fa;
     border-radius: 4px;
     border-left: 3px solid #0066cc;
+    max-height: calc(100vh - 450px); /* Altura fixa para garantir que não saia da viewport */
+    overflow-y: auto; /* Permitir scroll interno quando conteúdo for muito longo */
 }
 
 .biography-summary,
@@ -354,9 +356,12 @@ header p {
 }
 
 .biography-expanded {
-    margin-top: 8px;
+    margin-top: 6px; /* Reduzido de 8px */
     display: none;
     animation: fadeIn 0.3s ease-in-out;
+    max-height: calc(100vh - 500px); /* Altura fixa para garantir que não saia da viewport */
+    overflow-y: auto; /* Permitir scroll interno */
+    padding-right: 4px; /* Espaço para scrollbar */
 }
 
 .biography-expanded.show {
@@ -427,8 +432,35 @@ header p {
     }
     to {
         opacity: 1;
-        max-height: 300px; /* Aumentado de 200px para 300px */
+        max-height: calc(100vh - 500px); /* Altura fixa consistente com .biography-expanded */
     }
+}
+
+/* Adicionar scrollbar customizada para as seções de informações */
+.room-details::-webkit-scrollbar,
+.room-biography::-webkit-scrollbar,
+.biography-expanded::-webkit-scrollbar {
+    width: 6px;
+}
+
+.room-details::-webkit-scrollbar-track,
+.room-biography::-webkit-scrollbar-track,
+.biography-expanded::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.room-details::-webkit-scrollbar-thumb,
+.room-biography::-webkit-scrollbar-thumb,
+.biography-expanded::-webkit-scrollbar-thumb {
+    background: #0066cc;
+    border-radius: 3px;
+}
+
+.room-details::-webkit-scrollbar-thumb:hover,
+.room-biography::-webkit-scrollbar-thumb:hover,
+.biography-expanded::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
 }
 
 /* Suporte para movimento reduzido */
