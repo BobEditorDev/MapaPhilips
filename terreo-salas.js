@@ -6,130 +6,268 @@
 class TerreoRooms {
     constructor() {
         this.rooms = [
+            // Salas de Reunião
             {
-                "nome": "TESLA",
-                "coordenadas": { "x": 430, "y": 1942 },
-                "andar": "terreo"
-            },
-            {
-                "nome": "CURIE",
-                "coordenadas": { "x": 430, "y": 3600 },
-                "andar": "terreo"
-            },
-            {
-                "nome": "HAWKING",
-                "coordenadas": { "x": 945, "y": 1942 },
-                "andar": "terreo"
-            },
-            {
-                "nome": "CHAGAS",
-                "coordenadas": { "x": 945, "y": 3608 },
-                "andar": "terreo"
-            },
-            {
+                "codigo": "T-MR01",
                 "nome": "EINSTEIN",
                 "coordenadas": { "x": 4375, "y": 1735 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_EINSTEIN_01",
+                "capacidade": 10,
+                "equipamentos": "TV, Wireless e Spiker",
+                "biografia": "Albert Einstein (1879-1955) foi um físico alemão que desenvolveu a teoria da relatividade, uma das teorias mais importantes da física moderna. Ganhou o Prêmio Nobel de Física em 1921."
             },
             {
+                "codigo": "T-MR02",
+                "nome": "TESLA",
+                "coordenadas": { "x": 430, "y": 1942 },
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_TESLA_02",
+                "capacidade": 8,
+                "equipamentos": "TV, Wireless e Spiker",
+                "biografia": "Nikola Tesla (1856-1943) foi um inventor e engenheiro eletrotécnico sérvio-americano pioneiro no desenvolvimento de tecnologias de energia e comunicação, incluindo o sistema de corrente alternada."
+            },
+            {
+                "codigo": "T-MR03",
+                "nome": "NEWTON",
+                "coordenadas": { "x": 430, "y": 3600 }, // Assumindo coordenadas similar ao CURIE
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_NEWTON_03",
+                "capacidade": 5,
+                "equipamentos": "Fechada",
+                "biografia": "Isaac Newton (1643-1727) foi um matemático, físico e astrônomo inglês que formulou as leis do movimento e da gravitação universal, fundamentais para a física clássica."
+            },
+            {
+                "codigo": "T-MR04",
+                "nome": "CURIE",
+                "coordenadas": { "x": 430, "y": 3600 },
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_CURIE_04",
+                "capacidade": 8,
+                "equipamentos": "TV, Wireless e Spiker",
+                "biografia": "Marie Curie (1867-1934) foi uma física e química polonesa-francesa pioneira na pesquisa sobre radioatividade. Foi a primeira mulher a ganhar um Prêmio Nobel."
+            },
+            {
+                "codigo": "T-MR05",
                 "nome": "DARWIN",
                 "coordenadas": { "x": 5311, "y": 1744 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_DARWIN_05",
+                "capacidade": 8,
+                "equipamentos": "TV, Wireless e Spiker",
+                "biografia": "Charles Darwin (1809-1882) foi um naturalista inglês que propôs a teoria da evolução das espécies por seleção natural, revolucionando nossa compreensão da vida."
             },
             {
+                "codigo": "T-MR07",
                 "nome": "TURING",
                 "coordenadas": { "x": 4289, "y": 3505 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_TURING_07",
+                "capacidade": 4,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Alan Turing (1912-1954) foi um matemático e cientista da computação britânico, considerado pai da ciência da computação e da inteligência artificial."
             },
             {
+                "codigo": "T-MR09",
                 "nome": "HOFF",
                 "coordenadas": { "x": 3971, "y": 3497 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_HOFF_09",
+                "capacidade": 4,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Marcian Hoff (1937-) é um engenheiro americano conhecido como um dos inventores do microprocessador, revolucionando a indústria de computadores."
             },
             {
+                "codigo": "T-MR11",
                 "nome": "COOPER",
                 "coordenadas": { "x": 3971, "y": 3857 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_COOPER_11",
+                "capacidade": 4,
+                "equipamentos": "Fechada",
+                "biografia": "Martin Cooper (1928-) é um engenheiro americano pioneiro no desenvolvimento da telefonia móvel, considerado inventor do primeiro telefone celular comercial."
             },
             {
+                "codigo": "T-MR13",
                 "nome": "PASCAL",
                 "coordenadas": { "x": 4297, "y": 3857 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_PASCAL_13",
+                "capacidade": 4,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Blaise Pascal (1623-1662) foi um matemático, físico e filósofo francês que fez contribuições fundamentais para a matemática e física, incluindo o conceito de pressão atmosférica."
             },
             {
+                "codigo": "T-MR15",
                 "nome": "LOVELACE",
                 "coordenadas": { "x": 6600, "y": 3875 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_LOVELACE_15",
+                "capacidade": 8,
+                "equipamentos": "TV, Wireless e Spiker",
+                "biografia": "Ada Lovelace (1815-1852) foi uma matemática britânica considerada a primeira programadora de computador da história, criando o primeiro algoritmo processado por uma máquina."
             },
             {
+                "codigo": "T-MR17",
                 "nome": "BABBAGE",
                 "coordenadas": { "x": 4753, "y": 4390 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_BABBAGE_17",
+                "capacidade": 6,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Charles Babbage (1791-1871) foi um matemático e inventor inglês que concebeu a primeira máquina de calcular automática, precursora dos computadores modernos."
             },
             {
-                "nome": "STROUSTROUP",
+                "codigo": "T-MR19",
+                "nome": "STROUSTRUP",
                 "coordenadas": { "x": 4400, "y": 4476 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_STROUSTRUP_19",
+                "capacidade": 8,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Bjarne Stroustrup (1950-) é um cientista da computação dinamarquês criador da linguagem de programação C++, uma das linguagens mais influentes da computação."
             },
             {
+                "codigo": "T-MR21",
                 "nome": "LERDORF",
                 "coordenadas": { "x": 4022, "y": 4545 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_LERDORF_21",
+                "capacidade": 12,
+                "equipamentos": "TV, Wireless e Spiker",
+                "biografia": "Rasmus Lerdorf (1968-) é um programador dinamarquês-canadense criador da linguagem PHP, amplamente utilizada no desenvolvimento web."
             },
             {
+                "codigo": "T-MR23",
                 "nome": "CHAMBERLIN",
                 "coordenadas": { "x": 3292, "y": 4390 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_CHAMBERLIN_23",
+                "capacidade": 6,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Donald Chamberlin (1944-) é um cientista da computação americano co-criador da linguagem SQL, padrão para bancos de dados relacionais."
             },
             {
+                "codigo": "T-MR25",
                 "nome": "COHEN",
                 "coordenadas": { "x": 3292, "y": 4751 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_COHEN_25",
+                "capacidade": 6,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Fred Cohen (1956-) é um cientista da computação americano pioneiro no estudo de vírus de computador e segurança da informação."
             },
             {
+                "codigo": "T-MR27",
                 "nome": "KAY",
                 "coordenadas": { "x": 3653, "y": 4648 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_KAY_27",
+                "capacidade": 8,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Alan Kay (1940-) é um cientista da computação americano pioneiro na programação orientada a objetos e nas interfaces gráficas de usuário."
             },
             {
+                "codigo": "T-MR29",
                 "nome": "TORVALDS",
                 "coordenadas": { "x": 4761, "y": 4751 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_TORVALDS_29",
+                "capacidade": 6,
+                "equipamentos": "Trancada",
+                "biografia": "Linus Torvalds (1969-) é um engenheiro de software finlandês criador do sistema operacional Linux e do sistema de controle de versão Git."
             },
             {
+                "codigo": "T-MR31",
                 "nome": "HIPOCRATES",
                 "coordenadas": { "x": 3971, "y": 5876 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_HIPOCRATES_31",
+                "capacidade": 4,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Hipócrates (460-370 a.C.) foi um médico grego considerado o 'Pai da Medicina', estabelecendo a medicina como disciplina distinta e criando o juramento hipocrático."
             },
             {
+                "codigo": "T-MR33",
                 "nome": "PASTEUR",
                 "coordenadas": { "x": 3971, "y": 6169 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_PASTEUR_33",
+                "capacidade": 4,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Louis Pasteur (1822-1895) foi um químico e microbiologista francês cujas descobertas tiveram enorme importância na história da medicina e da microbiologia."
             },
             {
+                "codigo": "T-MR35",
                 "nome": "FREUD",
                 "coordenadas": { "x": 3962, "y": 6504 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_MR_T_FREUD_35",
+                "capacidade": 6,
+                "equipamentos": "Fechada",
+                "biografia": "Sigmund Freud (1856-1939) foi um neurologista austríaco fundador da psicanálise, revolucionando nossa compreensão da mente humana."
             },
+            // Salas de Apresentação
             {
-                "nome": "GALILEI",
-                "coordenadas": { "x": 4632, "y": 2706 },
-                "andar": "terreo"
-            },
-            {
-                "nome": "OLSER",
-                "coordenadas": { "x": 4667, "y": 3686 },
-                "andar": "terreo"
-            },
-            {
-                "nome": "LUTZ",
-                "coordenadas": { "x": 3541, "y": 3694 },
-                "andar": "terreo"
-            },
-            {
+                "codigo": "T-PR01",
                 "nome": "VIRCHOW",
                 "coordenadas": { "x": 6093, "y": 3866 },
-                "andar": "terreo"
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_PR_T_VIRCHOW_01",
+                "capacidade": 12,
+                "equipamentos": "2 TV, Wireless e Spikers",
+                "biografia": "Rudolf Virchow (1821-1902) foi um médico alemão conhecido como o 'Pai da Patologia Moderna', estabelecendo que todas as células vêm de células preexistentes."
+            },
+            {
+                "codigo": "T-PR02",
+                "nome": "HAWKING",
+                "coordenadas": { "x": 945, "y": 1942 },
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_PR_T_HAWKING_02",
+                "capacidade": 12,
+                "equipamentos": "2 TV, Wireless e Spikers",
+                "biografia": "Stephen Hawking (1942-2018) foi um físico teórico inglês conhecido por suas contribuições à cosmologia e buracos negros, autor de 'Uma Breve História do Tempo'."
+            },
+            {
+                "codigo": "T-PR04",
+                "nome": "CHAGAS",
+                "coordenadas": { "x": 945, "y": 3608 },
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_PR_T_CHAGAS_04",
+                "capacidade": 12,
+                "equipamentos": "2 TV, Wireless, Equipamento para Conferencia e Spiker",
+                "biografia": "Carlos Chagas (1879-1934) foi um médico e pesquisador brasileiro que descobriu a doença de Chagas, sendo o único cientista a descrever completamente uma doença infecciosa."
+            },
+            // Salas de Treinamento
+            {
+                "codigo": "T-TR01",
+                "nome": "GALILEI",
+                "coordenadas": { "x": 4632, "y": 2706 },
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_TR_T_GALILEI_01",
+                "capacidade": 20,
+                "equipamentos": "2 TV, Wireless, Conexão LAN, Projetor e Spiker",
+                "biografia": "Galileu Galilei (1564-1642) foi um físico, matemático e astrônomo italiano fundamental para a revolução científica, conhecido como 'Pai da Ciência Moderna'."
+            },
+            {
+                "codigo": "T-TR03",
+                "nome": "OSLER",
+                "coordenadas": { "x": 4667, "y": 3686 },
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_TR_T_OSLER_03",
+                "capacidade": 12,
+                "equipamentos": "TV, Wireless, Projetor",
+                "biografia": "William Osler (1849-1919) foi um médico canadense considerado um dos fundadores da medicina moderna, criando o sistema de residência médica."
+            },
+            {
+                "codigo": "T-TR05",
+                "nome": "LUTZ",
+                "coordenadas": { "x": 3541, "y": 3694 },
+                "andar": "terreo",
+                "codigoOutlook": "_R_BNU_TR_T_LUTZ_05",
+                "capacidade": 18,
+                "equipamentos": "2 TV, Wireless, Projetor",
+                "biografia": "Adolfo Lutz (1855-1940) foi um médico e cientista brasileiro pioneiro em medicina tropical e microbiologia, considerado pai da medicina tropical no Brasil."
             }
         ];
         
@@ -349,12 +487,32 @@ class TerreoRooms {
         detailsContainer.innerHTML = `
             <div class="selected-room-info">
                 <h3>${room.nome}</h3>
+                <div class="room-code">
+                    <strong>Código:</strong> ${room.codigo}
+                </div>
+                <div class="room-outlook">
+                    <strong>Outlook:</strong> 
+                    <span class="outlook-code">${room.codigoOutlook}</span>
+                </div>
+                <div class="room-capacity">
+                    <strong>Capacidade:</strong> ${room.capacidade} pessoas
+                </div>
+                <div class="room-equipment">
+                    <strong>Equipamentos:</strong> ${room.equipamentos}
+                </div>
                 <div class="room-location">
                     <strong>Andar:</strong> Térreo
+                </div>
+                <div class="room-biography">
+                    <strong>Biografia:</strong>
+                    <p class="biography-text">${room.biografia}</p>
                 </div>
                 <div class="room-actions">
                     <button class="detail-btn" onclick="terreoRooms.centerOnRoom('${room.nome}')">
                         🎯 Centralizar no Mapa
+                    </button>
+                    <button class="detail-btn" onclick="terreoRooms.copyRoomInfo('${room.nome}')">
+                        📋 Copiar Informações
                     </button>
                 </div>
             </div>
@@ -506,24 +664,31 @@ class TerreoRooms {
     }
 
     /**
-     * Copy room name to clipboard (simplified version)
+     * Copy room information to clipboard (enhanced version)
      * @param {string} roomName - The room name
      */
-    copyRoomName(roomName) {
+    copyRoomInfo(roomName) {
         const room = this.rooms.find(r => r.nome === roomName);
         if (!room) return;
         
-        const roomText = room.nome;
+        const roomInfo = `Sala: ${room.nome}
+Código: ${room.codigo}
+Outlook: ${room.codigoOutlook}
+Capacidade: ${room.capacidade} pessoas
+Equipamentos: ${room.equipamentos}
+Andar: Térreo
+        
+Biografia: ${room.biografia}`;
         
         if (navigator.clipboard) {
-            navigator.clipboard.writeText(roomText).then(() => {
-                this.showTemporaryMessage('Nome da sala copiado para a área de transferência!');
+            navigator.clipboard.writeText(roomInfo).then(() => {
+                this.showTemporaryMessage('Informações da sala copiadas para a área de transferência!');
             }).catch(err => {
                 console.error('Failed to copy:', err);
-                this.fallbackCopyToClipboard(roomText);
+                this.fallbackCopyToClipboard(roomInfo);
             });
         } else {
-            this.fallbackCopyToClipboard(roomText);
+            this.fallbackCopyToClipboard(roomInfo);
         }
     }
 
