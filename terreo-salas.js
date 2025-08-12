@@ -405,9 +405,10 @@ class TerreoRooms {
         const sortedRooms = [...this.filteredRooms].sort((a, b) => a.nome.localeCompare(b.nome));
         
         const roomsHTML = sortedRooms.map(room => `
-            <div class="room-item" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}">
+            <div class="room-item" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${room.biografia}">
                 <div class="room-header">
                     <strong class="room-name">${room.nome}</strong>
+                    <span class="room-hint">💡</span>
                 </div>
             </div>
         `).join('');

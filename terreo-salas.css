@@ -189,6 +189,23 @@ header p {
     font-weight: 600;
 }
 
+.room-hint {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.room-item:hover .room-hint {
+    opacity: 1;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
 .room-coords {
     font-family: 'Courier New', monospace;
     font-size: 0.7rem;
