@@ -100,7 +100,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_TURING_07",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Alan Turing (1912-1954) foi um matemático e cientista da computação britânico, considerado pai da ciência da computação e da inteligência artificial."
+                "biografia": {
+                    "resumo": "Alan Turing (1912-1954) foi um matemático e cientista da computação britânico, considerado pai da ciência da computação e da inteligência artificial.",
+                    "completa": "Alan Mathison Turing (1912-1954) foi um matemático, cientista da computação, lógico e criptoanalista britânico. Considerado o pai da ciência da computação e da inteligência artificial, Turing foi fundamental na formalização dos conceitos de algoritmo e computação com a máquina de Turing. Durante a Segunda Guerra Mundial, trabalhou em Bletchley Park decifrando códigos alemães, incluindo a máquina Enigma. Sua contribuição foi crucial para o esforço de guerra dos Aliados. Propôs o famoso 'Teste de Turing' para determinar se uma máquina pode exibir comportamento inteligente equivalente ao humano.",
+                    "referencias": [
+                        "Hodges, Andrew. Alan Turing: The Enigma. Princeton University Press, 1983.",
+                        "Turing, Alan. Computing Machinery and Intelligence. Mind, 1950."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR09",
@@ -110,7 +117,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_HOFF_09",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Marcian Hoff (1937-) é um engenheiro americano conhecido como um dos inventores do microprocessador, revolucionando a indústria de computadores."
+                "biografia": {
+                    "resumo": "Marcian Hoff (1937-) é um engenheiro americano conhecido como um dos inventores do microprocessador, revolucionando a indústria de computadores.",
+                    "completa": "Marcian Edward 'Ted' Hoff Jr. (1937-) é um engenheiro elétrico americano conhecido como um dos inventores do microprocessador. Durante seu trabalho na Intel Corporation, Hoff foi o arquiteto principal do Intel 4004, lançado em 1971, que é amplamente reconhecido como o primeiro microprocessador comercialmente viável. Esta inovação revolucionou a indústria de computadores, permitindo a miniaturização de sistemas de computação e abrindo caminho para a era dos computadores pessoais. Seu trabalho fundamentou toda a revolução digital moderna.",
+                    "referencias": [
+                        "Malone, Michael S. The Intel Trinity. HarperCollins, 2014.",
+                        "Hoff, Marcian E. The Intel 4004 Microprocessor. IEEE Micro, 1996."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR11",
@@ -120,7 +134,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_COOPER_11",
                 "capacidade": 4,
                 "equipamentos": "Fechada",
-                "biografia": "Martin Cooper (1928-) é um engenheiro americano pioneiro no desenvolvimento da telefonia móvel, considerado inventor do primeiro telefone celular comercial."
+                "biografia": {
+                    "resumo": "Martin Cooper (1928-) é um engenheiro americano pioneiro no desenvolvimento da telefonia móvel, considerado inventor do primeiro telefone celular comercial.",
+                    "completa": "Martin Lawrence Cooper (1928-) é um engenheiro americano pioneiro e inventor da telefonia móvel. Trabalhando na Motorola, Cooper liderou a equipe que desenvolveu o primeiro telefone celular portátil, o DynaTAC 8000x. Em 3 de abril de 1973, Cooper fez a primeira chamada de telefone celular público da história, ligando para um rival da Bell Labs enquanto caminhava pelas ruas de Nova York. Esta demonstração revolucionária marcou o início da era da comunicação móvel pessoal, transformando fundamentalmente como o mundo se comunica.",
+                    "referencias": [
+                        "Cooper, Martin. Cutting the Cord: The Cell Phone Has Transformed Humanity. Greenleaf Book Group, 2020.",
+                        "Young, Jeffrey S. The Art of the DynaTAC. IEEE Spectrum, 2003."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR13",
@@ -140,7 +161,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_LOVELACE_15",
                 "capacidade": 8,
                 "equipamentos": "TV, Wireless e Spiker",
-                "biografia": "Ada Lovelace (1815-1852) foi uma matemática britânica considerada a primeira programadora de computador da história, criando o primeiro algoritmo processado por uma máquina."
+                "biografia": {
+                    "resumo": "Ada Lovelace (1815-1852) foi uma matemática britânica considerada a primeira programadora de computador da história, criando o primeiro algoritmo processado por uma máquina.",
+                    "completa": "Augusta Ada King, Condessa de Lovelace (1815-1852), conhecida como Ada Lovelace, foi uma matemática e escritora inglesa. Filha do poeta Lord Byron, Ada é reconhecida como a primeira pessoa a escrever um algoritmo destinado a ser processado por uma máquina, especificamente a Máquina Analítica de Charles Babbage. Suas 'Notas' sobre a máquina incluem o que é considerado o primeiro programa de computador da história. Ela visionariamente compreendeu que as máquinas poderiam ir além de meros cálculos numéricos, prevendo aplicações em música e arte.",
+                    "referencias": [
+                        "Toole, Betty Alexandra. Ada, the Enchantress of Numbers. Strawberry Press, 1998.",
+                        "Lovelace, Ada. Notes on the Analytical Engine. Scientific Memoirs, 1843."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR17",
@@ -150,7 +178,14 @@ class TerreoRooms {
                 "codigoOutlook": "_R_BNU_MR_T_BABBAGE_17",
                 "capacidade": 6,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Charles Babbage (1791-1871) foi um matemático e inventor inglês que concebeu a primeira máquina de calcular automática, precursora dos computadores modernos."
+                "biografia": {
+                    "resumo": "Charles Babbage (1791-1871) foi um matemático e inventor inglês que concebeu a primeira máquina de calcular automática, precursora dos computadores modernos.",
+                    "completa": "Charles Babbage (1791-1871) foi um matemático, inventor e engenheiro mecânico inglês que originou o conceito de um computador digital programável. Professor Lucasiano de Matemática na Universidade de Cambridge, Babbage é mais lembrado por projetar a Máquina Diferencial e a Máquina Analítica. A Máquina Analítica, em particular, é considerada o primeiro design para um computador mecânico de uso geral. Embora nunca totalmente construída durante sua vida devido às limitações da engenharia da época, seus projetos continham todos os elementos lógicos de um computador moderno.",
+                    "referencias": [
+                        "Swade, Doron. The Difference Engine: Charles Babbage and the Quest to Build the First Computer. Penguin Books, 2001.",
+                        "Babbage, Charles. Passages from the Life of a Philosopher. Longman & Co, 1864."
+                    ]
+                }
             },
             {
                 "codigo": "T-MR19",
