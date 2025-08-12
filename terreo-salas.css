@@ -295,12 +295,103 @@ header p {
     border-left: 3px solid #0066cc;
 }
 
-.biography-text {
+.biography-summary,
+.biography-expanded {
     margin: 4px 0 0 0;
     font-size: 0.8rem;
     line-height: 1.4;
     color: #555;
     font-style: italic;
+}
+
+.biography-expanded {
+    margin-top: 8px;
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.biography-expanded.show {
+    display: block;
+}
+
+.expand-btn {
+    background: #0066cc;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.expand-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.expand-btn:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
+.biography-references {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid #dee2e6;
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.biography-references h4 {
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+    color: #0066cc;
+    font-weight: 600;
+}
+
+.biography-references ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.biography-references li {
+    margin-bottom: 2px;
+    padding-left: 8px;
+    position: relative;
+}
+
+.biography-references li:before {
+    content: "•";
+    color: #0066cc;
+    position: absolute;
+    left: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 200px;
+    }
+}
+
+/* Suporte para movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+    .biography-expanded {
+        animation: none;
+    }
+    
+    .expand-btn:hover {
+        transform: none;
+    }
+}
 }
 
 .coords-display {
