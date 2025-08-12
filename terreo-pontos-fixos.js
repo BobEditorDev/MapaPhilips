@@ -98,10 +98,10 @@ class TerreoLandmarks {
         marker.setAttribute('role', 'button');
         marker.setAttribute('tabindex', '0');
 
-        // Position marker (centralizado exatamente no pixel da coordenada)
+        // Position marker (coordenadas exatas, centralização feita apenas pelo CSS)
         marker.style.left = `${Math.round(displayX)}px`;
         marker.style.top = `${Math.round(displayY)}px`;
-        // transform já definido no CSS, não redefinir aqui
+        // CSS transform: translate(-50%, -50%) já centraliza o marker
 
         // Add emoji and tooltip content
         marker.innerHTML = `

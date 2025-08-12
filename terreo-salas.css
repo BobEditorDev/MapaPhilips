@@ -151,15 +151,15 @@ header p {
     overflow-y: auto; /* Apenas a lista de salas tem scroll */
     border: 1px solid #ddd;
     border-radius: 3px;
-    padding: 6px; /* Reduzido de 8px para 6px */
-    min-height: 180px; /* Reduzido de 200px para 180px para dar mais espaço às informações */
-    max-height: 320px; /* Limite máximo para garantir espaço para informações */
+    padding: 5px; /* Reduzido de 6px para 5px */
+    min-height: 160px; /* Reduzido de 180px para 160px para dar mais espaço às informações */
+    max-height: 280px; /* Reduzido de 320px para 280px para dar mais espaço às informações */
 }
 
 /* Room info section - sempre visível sem scroll */
 .room-info {
     flex-shrink: 0; /* Não encolhe */
-    max-height: 180px; /* Reduzido de 250px para 180px */
+    /* Removido max-height para permitir exibição completa das informações */
 }
 
 .empty-message {
@@ -173,8 +173,8 @@ header p {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    padding: 6px; /* Reduzido de 8px para 6px */
-    margin-bottom: 4px; /* Reduzido de 6px para 4px */
+    padding: 4px; /* Reduzido de 6px para 4px */
+    margin-bottom: 3px; /* Reduzido de 4px para 3px */
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -215,7 +215,7 @@ header p {
 
 .room-name {
     color: #333;
-    font-size: 0.85rem; /* Reduzido de 0.9rem para 0.85rem */
+    font-size: 0.8rem; /* Reduzido de 0.85rem para 0.8rem */
     font-weight: 600;
 }
 
