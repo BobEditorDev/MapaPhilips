@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramenta de Coordenadas - Mapa do Escritório Philips</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ferramenta de Coordenadas - Mapa do Escritório</h1>
+            <p>Use o botão "Add" para ativar o modo de seleção e clique no mapa para adicionar coordenadas</p>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">📍 Térreo</a>
+                <a href="mezanino.html" class="nav-link">🏢 Mezanino</a>
+                <a href="coordenadas.html" class="nav-link active">🔧 Coordenadas</a>
+            </nav>
+        </header>
+        
+        <main class="main-content">
+            <!-- Controls Sidebar -->
+            <aside class="controls-panel">
+                <div class="floor-selection">
+                    <h2>Seleção do Andar</h2>
+                    <div class="floor-buttons">
+                        <button id="terreo-btn" class="floor-btn active" data-floor="terreo">Térreo</button>
+                        <button id="mesanino-btn" class="floor-btn" data-floor="mesanino">Mezanino</button>
+                    </div>
+                </div>
+                
+                <div class="coordinate-controls">
+                    <h2>Controles</h2>
+                    <button id="add-coordinate-btn" class="control-btn add-btn">
+                        <span class="btn-icon">+</span>
+                        Add Coordenada
+                    </button>
+                    <button id="save-coordinates-btn" class="control-btn save-btn">
+                        <span class="btn-icon">💾</span>
+                        Salvar JSON
+                    </button>
+                </div>
+                
+                <div class="coordinates-list">
+                    <h2>Coordenadas Adicionadas</h2>
+                    <div id="coordinates-container" class="coordinates-container">
+                        <p class="empty-message">Nenhuma coordenada adicionada ainda.</p>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Floor Plan Map -->
+            <section class="map-container">
+                <div class="map-wrapper">
+                    <img id="floor-plan" src="terreo.png" alt="Planta Baixa do Escritório">
+                    <div id="coordinates-overlay" class="coordinates-overlay"></div>
+                </div>
+                <div class="map-instructions">
+                    <p id="instruction-text">Clique em "Add Coordenada" para ativar o modo de seleção</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
