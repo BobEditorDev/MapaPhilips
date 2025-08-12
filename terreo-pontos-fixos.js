@@ -97,21 +97,23 @@ class TerreoLandmarks {
         marker.setAttribute('role', 'button');
         marker.setAttribute('tabindex', '0');
 
-        // Position marker (centered on point)
-        marker.style.left = `${displayX}px`;
-        marker.style.top = `${displayY}px`;
+        // Position marker (centralizado exatamente no pixel da coordenada)
+        marker.style.left = `${Math.round(displayX)}px`;
+        marker.style.top = `${Math.round(displayY)}px`;
+        marker.style.transform = 'translate(-50%, -50%)';
 
         // Add emoji and tooltip content
         marker.innerHTML = `
             <span class="landmark-emoji">${landmark.emoji}</span>
-            <div class="landmark-tooltip">
+            <div class="landmark-tooltip" id="landmark-tooltip-${landmark.nome}-${index}">
                 <strong>${landmark.nome}</strong>
             </div>
         `;
 
-        // Add hover and focus effects
+        // Add hover and focus effects with tooltip positioning
         marker.addEventListener('mouseenter', () => {
             marker.classList.add('hovered');
+            this.adjustLandmarkTooltipPosition(marker, displayX, displayY);
         });
 
         marker.addEventListener('mouseleave', () => {
@@ -120,6 +122,7 @@ class TerreoLandmarks {
 
         marker.addEventListener('focus', () => {
             marker.classList.add('focused');
+            this.adjustLandmarkTooltipPosition(marker, displayX, displayY);
         });
 
         marker.addEventListener('blur', () => {
@@ -143,6 +146,52 @@ class TerreoLandmarks {
         overlay.appendChild(marker);
 
         console.log(`Landmark "${landmark.nome}" adicionado em (${displayX.toFixed(1)}, ${displayY.toFixed(1)}) - escala original (${landmark.coordenadas.x}, ${landmark.coordenadas.y})`);
+    }
+
+    /**
+     * Ajusta a posição do tooltip do landmark para não ultrapassar as bordas do mapa
+     * @param {HTMLElement} marker - Elemento do marcador
+     * @param {number} markerX - Coordenada X do marcador
+     * @param {number} markerY - Coordenada Y do marcador
+     */
+    adjustLandmarkTooltipPosition(marker, markerX, markerY) {
+        const tooltip = marker.querySelector('.landmark-tooltip');
+        if (!tooltip) return;
+
+        const floorPlan = document.getElementById('floor-plan');
+        
+        // Calculate position relative to the map
+        const relativeX = markerX;
+        const relativeY = markerY;
+        const mapWidth = floorPlan.offsetWidth;
+        const mapHeight = floorPlan.offsetHeight;
+        
+        // Reset all position classes
+        tooltip.classList.remove('top', 'bottom', 'left', 'right');
+        
+        // Define thresholds (80px from edges for landmarks)
+        const threshold = 80;
+        
+        // Check horizontal position
+        if (relativeX < threshold) {
+            // Near left edge - show tooltip to the right
+            tooltip.classList.add('right');
+        } else if (relativeX > mapWidth - threshold) {
+            // Near right edge - show tooltip to the left
+            tooltip.classList.add('left');
+        }
+        
+        // Check vertical position
+        if (relativeY < threshold) {
+            // Near top edge - show tooltip below
+            tooltip.classList.add('bottom');
+        } else if (relativeY > mapHeight - threshold) {
+            // Near bottom edge - show tooltip above
+            tooltip.classList.add('top');
+        }
+        
+        const landmarkName = marker.getAttribute('data-landmark');
+        console.log(`Landmark tooltip positioned for ${landmarkName} at (${relativeX.toFixed(1)}, ${relativeY.toFixed(1)}) - classes: ${tooltip.className}`);
     }
 
     /**

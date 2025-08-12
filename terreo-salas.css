@@ -29,6 +29,25 @@ header {
     border-bottom: 1px solid #e0e0e0;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     flex-shrink: 0;
+    position: relative;
+}
+
+/* Logo Philips */
+.philips-logo {
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #0066cc;
+    z-index: 10;
+    background: linear-gradient(45deg, #0066cc, #004499);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 2px rgba(0, 102, 204, 0.3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 1px;
 }
 
 header h1 {
@@ -637,7 +656,7 @@ header p {
     opacity: 1;
 }
 
-/* Marker tooltip */
+/* Marker tooltip - posicionamento inteligente */
 .marker-tooltip {
     position: absolute;
     bottom: 100%;
@@ -665,6 +684,61 @@ header p {
     transform: translateX(-50%);
     border: 6px solid transparent;
     border-top-color: #333;
+}
+
+/* Posicionamento de tooltip - à direita */
+.marker-tooltip.right {
+    bottom: auto;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-left: 10px;
+}
+
+.marker-tooltip.right::after {
+    top: 50%;
+    left: 0;
+    transform: translate(-100%, -50%);
+    border: 6px solid transparent;
+    border-right-color: #333;
+}
+
+/* Posicionamento de tooltip - à esquerda */
+.marker-tooltip.left {
+    bottom: auto;
+    left: auto;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+
+.marker-tooltip.left::after {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: #333;
+}
+
+/* Posicionamento de tooltip - abaixo */
+.marker-tooltip.bottom {
+    bottom: auto;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.marker-tooltip.bottom::after {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    border: 6px solid transparent;
+    border-bottom-color: #333;
 }
 
 .room-marker:hover .marker-tooltip {
@@ -896,7 +970,7 @@ header p {
     50% { transform: translate(-50%, -50%) scale(1.3); }
 }
 
-/* Landmark tooltip */
+/* Landmark tooltip - posicionamento inteligente */
 .landmark-tooltip {
     position: absolute;
     bottom: 100%;
@@ -925,6 +999,61 @@ header p {
     transform: translateX(-50%);
     border: 5px solid transparent;
     border-top-color: #0066cc;
+}
+
+/* Posicionamento de landmark tooltip - à direita */
+.landmark-tooltip.right {
+    bottom: auto;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-left: 8px;
+}
+
+.landmark-tooltip.right::after {
+    top: 50%;
+    left: 0;
+    transform: translate(-100%, -50%);
+    border: 5px solid transparent;
+    border-right-color: #0066cc;
+}
+
+/* Posicionamento de landmark tooltip - à esquerda */
+.landmark-tooltip.left {
+    bottom: auto;
+    left: auto;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-bottom: 0;
+    margin-right: 8px;
+}
+
+.landmark-tooltip.left::after {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-left-color: #0066cc;
+}
+
+/* Posicionamento de landmark tooltip - abaixo */
+.landmark-tooltip.bottom {
+    bottom: auto;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+
+.landmark-tooltip.bottom::after {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    border: 5px solid transparent;
+    border-bottom-color: #0066cc;
 }
 
 .landmark-marker:hover .landmark-tooltip,
