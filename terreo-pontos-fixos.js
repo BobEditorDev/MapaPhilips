@@ -5,20 +5,24 @@
 
 class TerreoLandmarks {
     constructor() {
-        // Pontos de referência fixos conforme especificação
+        // Pontos de referência fixos conforme especificação do issue #22
         this.landmarks = [
-            { "nome": "ÁREA DE FUMANTES",   "emoji": "🚬", "coordenadas": { "x": 2215, "y": 6818 } },
-            { "nome": "LOUNGE",              "emoji": "🛋️☕️", "coordenadas": { "x": 3269, "y": 671 } },
-            { "nome": "BANHEIROS",           "emoji": "🚻", "coordenadas": { "x": 5492, "y": 749 } },
-            { "nome": "BANHEIROS",           "emoji": "🚻", "coordenadas": { "x": 6459, "y": 850 } },
-            { "nome": "SUPORTE",              "emoji": "💻📞", "coordenadas": { "x": 6553, "y": 2301 } },
-            { "nome": "DESENVOLVIMENTO",      "emoji": "💻🚂", "coordenadas": { "x": 952,  "y": 944 } },
-            { "nome": "DESENVOLVIMENTO",      "emoji": "💻🚂", "coordenadas": { "x": 999,  "y": 2793 } },
-            { "nome": "DESENVOLVIMENTO",      "emoji": "💻🚂", "coordenadas": { "x": 960,  "y": 4618 } },
-            { "nome": "ACC",                  "emoji": "🛡", "coordenadas": { "x": 2371, "y": 4915 } },
-            { "nome": "ESPAÇO BRASIL",        "emoji": "🇧🇷", "coordenadas": { "x": 4883, "y": 6116 } },
-            { "nome": "V&V",                  "emoji": "💻🥼", "coordenadas": { "x": 6514, "y": 4907 } },
-            { "nome": "ENTRADA",              "emoji": "🚪", "coordenadas": { "x": 4298, "y": 218 } }
+            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 3159, "y": 3604 } },
+            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 1872, "y": 1693 } },
+            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 5484, "y": 3713 } },
+            { "nome": "ELEVADOR", "emoji": "🛗", "coordenadas": { "x": 2200, "y": 4033 } },
+            { "nome": "MAQUINA DE CAFÉ", "emoji": "☕", "coordenadas": { "x": 5624, "y": 4431 } },
+            { "nome": "MAQUINA DE CAFÉ", "emoji": "☕", "coordenadas": { "x": 2052, "y": 1552 } },
+            { "nome": "MAQUINA DE CAFÉ", "emoji": "☕", "coordenadas": { "x": 2044, "y": 921 } },
+            { "nome": "GELADEIRAS", "emoji": "❄️", "coordenadas": { "x": 2036, "y": 491 } },
+            { "nome": "COZINHA", "emoji": "🍽️", "coordenadas": { "x": 2418, "y": 710 } },
+            { "nome": "AMBULATÓRIO", "emoji": "🏥", "coordenadas": { "x": 6444, "y": 367 } },
+            { "nome": "DECK", "emoji": "🌳", "coordenadas": { "x": 1919, "y": 117 } },
+            { "nome": "CAIXA D'ÁGUA", "emoji": "💧", "coordenadas": { "x": 577, "y": 6483 } },
+            { "nome": "LAVANDERIA", "emoji": "👕", "coordenadas": { "x": 5429, "y": 6990 } },
+            { "nome": "RECEPÇÃO", "emoji": "👋", "coordenadas": { "x": 4462, "y": 562 } },
+            { "nome": "PONTOS", "emoji": "📍", "coordenadas": { "x": 4517, "y": 874 } },
+            { "nome": "INFRA", "emoji": "🔧", "coordenadas": { "x": 5039, "y": 218 } }
         ];
         
         this.init();
