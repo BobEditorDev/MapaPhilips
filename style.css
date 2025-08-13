@@ -92,6 +92,32 @@ header p {
     border-color: #0066cc;
 }
 
+/* Repository button */
+.repo-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    background: #24292e;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    border: 1px solid #24292e;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-left: 8px;
+}
+
+.repo-btn:hover {
+    background: #1a1e22;
+    transform: translateY(-1px);
+}
+
+.repo-btn:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
 .main-content {
     display: grid;
     grid-template-columns: 350px 1fr;
@@ -504,7 +530,8 @@ header p {
     .control-btn,
     .floor-btn,
     .coordinate-item,
-    .coordinate-marker {
+    .coordinate-marker,
+    .repo-btn {
         transition: none;
     }
     
@@ -514,7 +541,58 @@ header p {
     
     .control-btn:hover,
     .add-btn:hover,
-    .save-btn:hover {
+    .save-btn:hover,
+    .repo-btn:hover {
         transform: none;
+    }
+}
+
+/* Global footer styles */
+.global-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    padding: 12px 20px;
+    text-align: center;
+    margin-top: 30px;
+    border-radius: 8px;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+}
+
+.footer-content {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.footer-content .developer {
+    color: #0066cc;
+    font-weight: 600;
+}
+
+.footer-content .copilot {
+    color: #28a745;
+    font-weight: 600;
+}
+
+/* Responsive adjustments for footer */
+@media (max-width: 768px) {
+    .global-footer {
+        padding: 10px 15px;
+        margin-top: 20px;
+    }
+    
+    .footer-content {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .global-footer {
+        padding: 8px 10px;
+        margin-top: 15px;
+    }
+    
+    .footer-content {
+        font-size: 0.8rem;
     }
 }
