@@ -104,8 +104,8 @@ header p {
     border: 1px solid #24292e;
     transition: all 0.2s ease;
     font-weight: 500;
-    font-size: 0.9rem;
-    margin-left: 8px;
+    font-size: 0.75rem;
+    margin-left: 4px;
 }
 
 .repo-btn:hover {
@@ -551,48 +551,55 @@ header p {
 .global-footer {
     background: #f8f9fa;
     border-top: 1px solid #e0e0e0;
-    padding: 12px 20px;
+    padding: 8px 15px;
     text-align: center;
-    margin-top: 30px;
-    border-radius: 8px;
-    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
 }
 
 .footer-content {
     color: #666;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     line-height: 1.4;
 }
 
 .footer-content .developer {
     color: #0066cc;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .footer-content .copilot {
     color: #28a745;
-    font-weight: 600;
+    font-weight: 500;
+}
+
+/* Adjust main content to account for footer */
+.container {
+    padding-bottom: 32px; /* Espaço para o rodapé */
 }
 
 /* Responsive adjustments for footer */
 @media (max-width: 768px) {
     .global-footer {
-        padding: 10px 15px;
-        margin-top: 20px;
+        padding: 6px 10px;
     }
     
     .footer-content {
-        font-size: 0.85rem;
+        font-size: 0.7rem;
     }
 }
 
 @media (max-width: 480px) {
     .global-footer {
-        padding: 8px 10px;
-        margin-top: 15px;
+        padding: 5px 8px;
     }
     
     .footer-content {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
     }
 }
