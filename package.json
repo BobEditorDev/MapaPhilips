@@ -28,6 +28,6 @@
   "homepage": "https://github.com/BobEditorDev/MapaPhilips",
   "devDependencies": {},
   "dependencies": {
-    "@vercel/kv": "^1.0.1"
+    "pg": "^8.11.5"
   }
 }

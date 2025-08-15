@@ -1,5 +1,5 @@
 /**
- * Sistema de Contador de Visitas Persistente com Vercel KV
+ * Sistema de Contador de Visitas Persistente com PostgreSQL (Neon)
  * Implementa contador que persiste no servidor e distingue sessões
  */
 
@@ -16,7 +16,7 @@ class VisitCounter {
     async init() {
         await this.incrementVisitCountIntelligent();
         await this.displayVisitCount();
-        console.log('Visit Counter initialized successfully');
+        console.log('Visit Counter (PostgreSQL) initialized successfully');
     }
 
     /**
@@ -30,7 +30,7 @@ class VisitCounter {
         // Só incrementa se não contou nesta sessão ainda
         if (!hasCountedThisSession) {
             try {
-                // Tentar usar API do Vercel primeiro
+                // Tentar usar API do PostgreSQL primeiro
                 const response = await fetch(this.apiEndpoint, {
                     method: 'POST',
                     headers: {
@@ -40,7 +40,7 @@ class VisitCounter {
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(`Nova visita registrada no servidor: ${data.visits}`);
+                    console.log(`Nova visita registrada no PostgreSQL: ${data.visits}`);
                     
                     // Marcar que já contou nesta sessão
                     sessionStorage.setItem(sessionKey, 'true');
@@ -48,10 +48,10 @@ class VisitCounter {
                     // Sincronizar com localStorage para compatibilidade
                     localStorage.setItem('mapa-philips-visits', data.visits.toString());
                 } else {
-                    throw new Error('API não disponível');
+                    throw new Error('API PostgreSQL não disponível');
                 }
             } catch (error) {
-                console.log('API não disponível, usando fallback localStorage:', error.message);
+                console.log('API PostgreSQL não disponível, usando fallback localStorage:', error.message);
                 this.fallbackMode = true;
                 this.incrementVisitCountFallback();
                 
@@ -88,7 +88,7 @@ class VisitCounter {
                     const data = await response.json();
                     return data.visits;
                 } else {
-                    throw new Error('API não disponível');
+                    throw new Error('API PostgreSQL não disponível');
                 }
             }
         } catch (error) {
@@ -127,8 +127,8 @@ class VisitCounter {
             const visitCounterSpan = document.createElement('span');
             visitCounterSpan.className = 'visit-counter';
             
-            // Adicionar indicador se estiver usando servidor ou fallback
-            const sourceIndicator = this.fallbackMode ? '' : ' 🌐';
+            // Adicionar indicador PostgreSQL se estiver usando servidor ou fallback
+            const sourceIndicator = this.fallbackMode ? '' : ' 🐘';
             visitCounterSpan.innerHTML = ` • <span class="visit-number">${visits}</span> ${visitorText}${sourceIndicator}`;
             
             footer.appendChild(visitCounterSpan);
@@ -143,7 +143,7 @@ class VisitCounter {
             // Tentar resetar no servidor (se API estiver disponível)
             if (!this.fallbackMode) {
                 // Como não temos endpoint de reset, vamos só limpar local
-                console.log('Reset do servidor não implementado - apenas local');
+                console.log('Reset do servidor PostgreSQL não implementado - apenas local');
             }
         } catch (error) {
             console.log('Resetando apenas localmente:', error.message);
@@ -166,7 +166,7 @@ class VisitCounter {
     }
 
     /**
-     * Verificar status da conexão com API
+     * Verificar status da conexão com API PostgreSQL
      */
     async checkApiStatus() {
         try {
