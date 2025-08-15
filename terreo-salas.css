@@ -1301,3 +1301,366 @@ header p {
         font-size: 0.65rem;
     }
 }
+
+/* ================================
+   ESTILOS ESPECÍFICOS PARA COORDENADAS.HTML
+   ================================ */
+
+/* Controls panel sidebar para página de coordenadas */
+.controls-panel {
+    background: white;
+    padding: 10px;
+    border-right: 2px solid #e0e0e0;
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.controls-panel h2 {
+    color: #0066cc;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 4px;
+}
+
+/* Floor selection */
+.floor-selection {
+    flex-shrink: 0;
+}
+
+.floor-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.floor-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #0066cc;
+    background: white;
+    color: #0066cc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.floor-btn:hover {
+    background: #e8f4f8;
+}
+
+.floor-btn.active {
+    background: #0066cc;
+    color: white;
+}
+
+/* Coordinate controls */
+.coordinate-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.coordinate-controls .control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-icon {
+    font-size: 1rem;
+}
+
+.add-btn {
+    background: #28a745;
+    color: white;
+}
+
+.add-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.add-btn.active {
+    background: #dc3545;
+}
+
+.add-btn.active:hover {
+    background: #c82333;
+}
+
+.save-btn {
+    background: #007bff;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Coordinates list */
+.coordinates-list {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.coordinates-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 120px;
+}
+
+.coordinate-item {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+}
+
+.coordinate-item:hover {
+    background: #e9ecef;
+    transform: translateX(3px);
+}
+
+.coordinate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.coordinate-header strong {
+    color: #333;
+    font-size: 0.85rem;
+}
+
+.remove-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.coordinate-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.coordinate-position {
+    font-family: 'Courier New', monospace;
+    background: #e9ecef;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.coordinate-floor {
+    background: #0066cc;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+}
+
+/* Coordinates overlay */
+.coordinates-overlay {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    height: auto;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.coordinate-marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #dc3545;
+    border: 2px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.coordinate-marker:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    z-index: 200;
+}
+
+.marker-number {
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+/* Map instructions para coordenadas */
+.map-instructions {
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+    padding: 8px 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #0066cc;
+    flex-shrink: 0;
+}
+
+/* Ajustes específicos para grid layout do coordenadas */
+.controls-panel ~ .map-container {
+    /* Específico para quando há controls-panel */
+}
+
+/* Responsividade para página de coordenadas */
+@media (max-width: 1024px) {
+    .coordinate-controls .control-btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+    
+    .floor-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .controls-panel {
+        max-height: 200px;
+        order: 2;
+        border-right: none;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .coordinate-controls {
+        flex-direction: row;
+        gap: 6px;
+    }
+    
+    .coordinate-controls .control-btn {
+        flex: 1;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .controls-panel {
+        padding: 6px;
+    }
+    
+    .coordinate-controls {
+        flex-direction: column;
+    }
+    
+    .coordinate-controls .control-btn {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+    }
+    
+    .floor-btn {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Accessibility para página de coordenadas */
+.coordinate-controls .control-btn:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
+.floor-btn:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
+.remove-btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* High contrast mode para coordenadas */
+@media (prefers-contrast: high) {
+    .coordinate-marker {
+        border-width: 3px;
+    }
+    
+    .coordinate-controls .control-btn {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Reduced motion para coordenadas */
+@media (prefers-reduced-motion: reduce) {
+    .coordinate-controls .control-btn,
+    .floor-btn,
+    .coordinate-item,
+    .coordinate-marker {
+        transition: none;
+    }
+    
+    .coordinate-marker:hover {
+        transform: translate(-50%, -50%);
+    }
+    
+    .add-btn:hover,
+    .save-btn:hover {
+        transform: none;
+    }
+}
+
+/* Estilos para contador de visitas */
+.visit-counter {
+    color: #007bff;
+    font-weight: 500;
+}
+
+.visit-number {
+    color: #0066cc;
+    font-weight: 600;
+}
