@@ -322,8 +322,8 @@ header p {
 
 .room-details {
     border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 6px;
+    border-radius: 4px; /* Bordas mais arredondadas */
+    padding: 8px; /* Mais padding */
     background: #fafafa;
     overflow-y: auto; /* Permitir scroll interno apenas quando necessário */
     max-height: calc(100vh - 350px); /* Altura fixa para sempre ficar dentro da viewport */
@@ -334,21 +334,23 @@ header p {
     color: #666;
     font-style: italic;
     text-align: center;
+    padding: 8px; /* Mais padding */
+    font-size: 0.85rem; /* Fonte maior */
 }
 
 .selected-room-info h3 {
     color: #0066cc;
-    margin-bottom: 6px;
-    font-size: 1rem;
+    margin-bottom: 8px; /* Mais espaço */
+    font-size: 1.1rem; /* Fonte maior */
 }
 
 .selected-room-info > div {
-    margin-bottom: 4px; /* Reduzido para otimizar espaço */
-    font-size: 0.7rem;
+    margin-bottom: 6px; /* Mais espaço */
+    font-size: 0.8rem; /* Fonte maior */
 }
 
 .room-code, .room-capacity, .room-equipment, .room-location {
-    padding: 4px 0;
+    padding: 6px 0; /* Mais padding */
     border-bottom: 1px solid #f0f0f0;
 }
 
@@ -880,42 +882,74 @@ header p {
     
     .main-content {
         grid-template-columns: 1fr;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 80px); /* Mais espaço para header maior */
     }
     
     .rooms-panel {
-        max-height: 240px;
+        max-height: 300px; /* Aumentado de 240px para 300px */
         order: 2;
         border-right: none;
         border-top: 1px solid #e0e0e0;
         overflow-y: auto;
+        padding: 12px; /* Aumentado de 8px para 12px */
     }
     
     .map-container {
         order: 1;
-        padding: 8px;
+        padding: 12px; /* Aumentado de 8px para 12px */
+    }
+    
+    header {
+        padding: 10px 15px; /* Aumentado padding */
     }
     
     header h1 {
-        font-size: 1.2rem;
+        font-size: 1.3rem; /* Aumentado de 1.2rem */
+        margin-bottom: 8px; /* Mais espaço */
     }
     
     header p {
-        font-size: 0.8rem;
+        font-size: 0.9rem; /* Aumentado de 0.8rem */
+        margin-bottom: 12px; /* Mais espaço */
     }
     
     .nav-links {
-        gap: 5px;
+        gap: 8px; /* Aumentado de 5px para 8px */
     }
     
     .nav-link {
-        padding: 3px 8px;
-        font-size: 0.75rem;
+        padding: 10px 16px; /* Área de toque maior */
+        font-size: 0.8rem; /* Fonte maior */
+        min-height: 44px; /* Área mínima de toque */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     /* Ocultar ferramenta de coordenadas em tablets */
     .nav-link[href="coordenadas.html"] {
         display: none;
+    }
+    
+    .search-section {
+        margin-bottom: 15px; /* Mais espaço */
+    }
+    
+    .search-input {
+        padding: 12px; /* Área de toque maior */
+        font-size: 0.9rem; /* Fonte maior */
+        min-height: 44px; /* Área mínima de toque */
+    }
+    
+    .room-item {
+        padding: 12px 10px; /* Mais padding */
+        min-height: 50px; /* Área de toque maior */
+        margin-bottom: 2px; /* Mais espaço entre items */
+    }
+    
+    .room-name {
+        font-size: 0.9rem; /* Fonte maior */
+        font-weight: 500;
     }
     
     .room-actions {
@@ -924,17 +958,21 @@ header p {
     
     .detail-btn {
         flex: none;
+        padding: 8px 12px; /* Mais padding */
+        min-height: 40px; /* Área de toque adequada */
     }
     
     .map-controls {
         flex-direction: column;
         align-items: center;
+        gap: 8px;
     }
     
     .control-btn {
-        width: 140px;
-        padding: 4px 8px;
-        font-size: 0.7rem;
+        width: 160px; /* Mais largo */
+        padding: 8px 12px; /* Mais padding */
+        font-size: 0.8rem; /* Fonte maior */
+        min-height: 44px; /* Área mínima de toque */
     }
 }
 
@@ -944,41 +982,29 @@ header p {
     }
     
     header {
-        padding: 5px 10px;
+        padding: 8px 12px; /* Mais padding */
     }
     
     header h1 {
-        font-size: 1rem;
+        font-size: 1.1rem; /* Fonte maior */
+        margin-bottom: 6px;
     }
     
-    .rooms-panel {
-        padding: 5px;
-        max-height: 180px;
-        overflow-y: auto;
-    }
-    
-    .map-container {
-        padding: 5px;
-    }
-    
-    .room-item {
-        padding: 10px 6px;
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-    }
-    
-    .room-name {
-        font-size: 0.8rem;
+    .nav-links {
+        gap: 6px; /* Mais espaço entre links */
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
     .nav-link {
-        padding: 8px 12px;
-        font-size: 0.7rem;
-        min-height: 44px;
+        padding: 12px 16px; /* Área de toque muito maior */
+        font-size: 0.75rem;
+        min-height: 48px; /* Área mínima de toque maior */
         display: flex;
         align-items: center;
         justify-content: center;
+        flex: 1;
+        min-width: 120px; /* Largura mínima */
     }
     
     /* Ocultar ferramenta de coordenadas em smartphones */
@@ -986,10 +1012,74 @@ header p {
         display: none;
     }
     
+    .rooms-panel {
+        padding: 10px; /* Mais padding */
+        max-height: 250px; /* Aumentado de 180px para 250px */
+        overflow-y: auto;
+    }
+    
+    .map-container {
+        padding: 8px; /* Mais padding */
+    }
+    
+    .search-section {
+        margin-bottom: 12px;
+    }
+    
+    .search-section h2 {
+        font-size: 1rem; /* Fonte maior */
+        margin-bottom: 8px;
+    }
+    
+    .search-input {
+        padding: 14px 12px; /* Área de toque maior */
+        font-size: 1rem; /* Fonte maior */
+        min-height: 48px; /* Área mínima de toque */
+        border-radius: 6px; /* Bordas mais arredondadas */
+    }
+    
+    .rooms-list h2 {
+        font-size: 1rem; /* Fonte maior */
+        margin-bottom: 10px;
+    }
+    
+    .room-item {
+        padding: 16px 12px; /* Muito mais padding */
+        min-height: 56px; /* Área de toque muito maior */
+        display: flex;
+        align-items: center;
+        margin-bottom: 3px; /* Mais espaço entre items */
+        border-radius: 6px; /* Bordas mais arredondadas */
+    }
+    
+    .room-name {
+        font-size: 0.95rem; /* Fonte maior */
+        font-weight: 500;
+        line-height: 1.3;
+    }
+    
+    .room-type-badge {
+        padding: 4px 8px; /* Mais padding */
+        font-size: 0.7rem;
+        margin-left: 8px;
+    }
+    
+    .detail-btn {
+        padding: 10px 14px; /* Mais padding */
+        min-height: 44px; /* Área de toque adequada */
+        font-size: 0.8rem;
+    }
+    
+    .room-info h2 {
+        font-size: 1rem; /* Fonte maior */
+        margin-bottom: 8px;
+    }
+    
     .control-btn {
-        padding: 3px 6px;
-        font-size: 0.65rem;
-        width: 120px;
+        padding: 6px 12px; /* Mais padding */
+        font-size: 0.7rem;
+        width: 140px; /* Mais largo */
+        min-height: 44px; /* Área mínima de toque */
     }
 }
 
