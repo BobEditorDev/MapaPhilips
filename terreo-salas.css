@@ -884,10 +884,11 @@ header p {
     }
     
     .rooms-panel {
-        max-height: 200px;
+        max-height: 240px;
         order: 2;
         border-right: none;
         border-top: 1px solid #e0e0e0;
+        overflow-y: auto;
     }
     
     .map-container {
@@ -910,6 +911,11 @@ header p {
     .nav-link {
         padding: 3px 8px;
         font-size: 0.75rem;
+    }
+    
+    /* Ocultar ferramenta de coordenadas em tablets */
+    .nav-link[href="coordenadas.html"] {
+        display: none;
     }
     
     .room-actions {
@@ -947,6 +953,8 @@ header p {
     
     .rooms-panel {
         padding: 5px;
+        max-height: 180px;
+        overflow-y: auto;
     }
     
     .map-container {
@@ -954,7 +962,10 @@ header p {
     }
     
     .room-item {
-        padding: 6px;
+        padding: 10px 6px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
     
     .room-name {
@@ -962,8 +973,17 @@ header p {
     }
     
     .nav-link {
-        padding: 2px 6px;
+        padding: 8px 12px;
         font-size: 0.7rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Ocultar ferramenta de coordenadas em smartphones */
+    .nav-link[href="coordenadas.html"] {
+        display: none;
     }
     
     .control-btn {
