@@ -970,6 +970,15 @@ header p {
     .map-controls {
         display: none; /* Ocultar botões Todas/Ocultar em dispositivos móveis para mais espaço */
     }
+    
+    /* Reduzir tamanho dos ícones/emojis em tablets */
+    .room-hint {
+        font-size: 0.6rem; /* Reduzido de 0.7rem para 0.6rem */
+    }
+    
+    .room-item.selected::before {
+        font-size: 0.8rem; /* Reduzido de 0.9rem para 0.8rem */
+    }
 }
 
 @media (max-width: 480px) {
@@ -1081,6 +1090,15 @@ header p {
         font-size: 0.7rem;
         width: 140px; /* Mais largo */
         min-height: 44px; /* Área mínima de toque */
+    }
+    
+    /* Reduzir tamanho dos ícones/emojis em dispositivos móveis */
+    .room-hint {
+        font-size: 0.5rem; /* Reduzido de 0.7rem para 0.5rem */
+    }
+    
+    .room-item.selected::before {
+        font-size: 0.7rem; /* Reduzido de 0.9rem para 0.7rem */
     }
 }
 
