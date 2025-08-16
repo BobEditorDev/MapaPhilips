@@ -936,6 +936,12 @@ header p {
         display: none;
     }
     
+    /* Ocultar labels dos campos e sessões em tablets */
+    .search-section h2,
+    .rooms-list h2 {
+        display: none;
+    }
+    
     .search-section {
         margin-bottom: 15px; /* Mais espaço */
     }
@@ -978,6 +984,26 @@ header p {
     
     .room-item.selected::before {
         font-size: 0.8rem; /* Reduzido de 0.9rem para 0.8rem */
+    }
+    
+    /* Reduzir sinalização das salas em 50% em tablets */
+    .room-marker {
+        width: 15px; /* 50% do tamanho original (30px) */
+        height: 15px;
+    }
+    
+    .room-marker::before {
+        font-size: 7px; /* 50% do tamanho original (14px) */
+    }
+    
+    .room-marker.highlighted {
+        width: 20px; /* 50% do tamanho original (40px) */
+        height: 20px;
+        border-width: 2px; /* 50% do tamanho original (4px) */
+    }
+    
+    .room-marker.highlighted::before {
+        font-size: 9px; /* 50% do tamanho original (18px) */
     }
 }
 
@@ -1034,6 +1060,12 @@ header p {
         display: none;
     }
     
+    /* Ocultar labels dos campos e sessões em smartphones */
+    .search-section h2,
+    .rooms-list h2 {
+        display: none;
+    }
+    
     .main-content {
         height: calc(100vh - 35px); /* Muito menos espaço para header compacto */
     }
@@ -1052,21 +1084,11 @@ header p {
         margin-bottom: 4px; /* Drasticamente reduzido */
     }
     
-    .search-section h2 {
-        font-size: 0.75rem; /* Drasticamente reduzido */
-        margin-bottom: 2px; /* Drasticamente reduzido */
-    }
-    
     .search-input {
         padding: 3px 6px; /* Drasticamente reduzido */
         font-size: 0.7rem; /* Drasticamente reduzido */
         min-height: 20px; /* Drasticamente reduzido */
         border-radius: 3px;
-    }
-    
-    .rooms-list h2 {
-        font-size: 0.75rem; /* Drasticamente reduzido */
-        margin-bottom: 3px; /* Drasticamente reduzido */
     }
     
     .room-item {
@@ -1096,11 +1118,6 @@ header p {
         font-size: 0.6rem; /* Drasticamente reduzido */
     }
     
-    .room-info h2 {
-        font-size: 0.75rem; /* Drasticamente reduzido */
-        margin-bottom: 3px; /* Drasticamente reduzido */
-    }
-    
     .control-btn {
         padding: 2px 4px; /* Drasticamente reduzido */
         font-size: 0.6rem; /* Drasticamente reduzido */
@@ -1115,6 +1132,26 @@ header p {
     
     .room-item.selected::before {
         font-size: 0.5rem; /* Drasticamente reduzido */
+    }
+    
+    /* Reduzir sinalização das salas em 50% em smartphones */
+    .room-marker {
+        width: 15px; /* 50% do tamanho original (30px) */
+        height: 15px;
+    }
+    
+    .room-marker::before {
+        font-size: 7px; /* 50% do tamanho original (14px) */
+    }
+    
+    .room-marker.highlighted {
+        width: 20px; /* 50% do tamanho original (40px) */
+        height: 20px;
+        border-width: 2px; /* 50% do tamanho original (4px) */
+    }
+    
+    .room-marker.highlighted::before {
+        font-size: 9px; /* 50% do tamanho original (18px) */
     }
 }
 
