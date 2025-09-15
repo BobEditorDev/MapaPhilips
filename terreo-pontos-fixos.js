@@ -30,7 +30,10 @@ class TerreoLandmarks {
             { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 5366, "y": 5711 } },
             { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6941, "y": 4112 } },
             { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6953, "y": 1547 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6135, "y": 64 } }
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6135, "y": 64 } },
+            { "nome": "SEGURANÇA DO TRABALHO", "emoji": "🦺", "coordenadas": { "x": 6011, "y": 786 } },
+            { "nome": "BANHEIROS", "emoji": "🚻", "coordenadas": { "x": 5306, "y": 717 } },
+            { "nome": "VESTIÁRIOS", "emoji": "👔", "coordenadas": { "x": 6256, "y": 870 } }
         ];
         
         this.init();
