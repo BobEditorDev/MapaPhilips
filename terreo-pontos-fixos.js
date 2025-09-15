@@ -23,7 +23,14 @@ class TerreoLandmarks {
             { "nome": "RECEPÇÃO", "emoji": "👋", "coordenadas": { "x": 4462, "y": 562 } },
             { "nome": "MÁQUINA PONTO", "emoji": "📍", "coordenadas": { "x": 4517, "y": 874 } },
             { "nome": "INFRA", "emoji": "🔧", "coordenadas": { "x": 5039, "y": 218 } },
-            { "nome": "CORREDOR LARANJA", "emoji": "🍊", "coordenadas": { "x": 4127, "y": 5039 } }
+            { "nome": "CORREDOR LARANJA", "emoji": "🍊", "coordenadas": { "x": 4127, "y": 5039 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 1551, "y": 273 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 48, "y": 3475 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 1539, "y": 5330 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 5366, "y": 5711 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6941, "y": 4112 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6953, "y": 1547 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6135, "y": 64 } }
         ];
         
         this.init();

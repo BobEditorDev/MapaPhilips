@@ -13,7 +13,9 @@ class MezaninoLandmarks {
             { "nome": "CAFÉ", "emoji": "☕", "coordenadas": { "x": 1749, "y": 3434 } },
             { "nome": "ELEVADOR", "emoji": "🛗", "coordenadas": { "x": 663, "y": 3013 } },
             { "nome": "BANHEIROS", "emoji": "🚻", "coordenadas": { "x": 3733, "y": 5570 } },
-            { "nome": "STAND UP", "emoji": "🗣️", "coordenadas": { "x": 2275, "y": 1562 } }
+            { "nome": "STAND UP", "emoji": "🗣️", "coordenadas": { "x": 2275, "y": 1562 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 1092, "y": 4300 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 2288, "y": 4898 } }
         ];
         
         this.init();
