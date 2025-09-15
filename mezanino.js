@@ -7,19 +7,9 @@ class MezaninoRooms {
     constructor() {
         this.rooms = [
             {
-                "codigo": "M-MR01",
-                "nome": "HAMILTON",
-                "coordenadas": { "x": 2000, "y": 1500 }, // Coordenadas temporárias - precisam ser ajustadas conforme o mapa
-                "andar": "mezanino",
-                "codigoOutlook": "_R_BNU_MR_M_HAMILTON_01",
-                "capacidade": 4,
-                "equipamentos": "TV, Wireless",
-                "biografia": "Margaret Hamilton (1936-) é uma cientista da computação americana que desenvolveu o software de navegação da Apollo 11, cunhando o termo 'engenharia de software'."
-            },
-            {
                 "codigo": "M-MR02",
                 "nome": "DA VINCI",
-                "coordenadas": { "x": 2500, "y": 1500 },
+                "coordenadas": { "x": 783, "y": 1406 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_DAVINCI_02",
                 "capacidade": 6,
@@ -27,9 +17,19 @@ class MezaninoRooms {
                 "biografia": "Leonardo da Vinci (1452-1519) foi um polímata italiano do Renascimento, conhecido por suas contribuições à arte, ciência, engenharia e invenção."
             },
             {
+                "codigo": "M-MR01",
+                "nome": "HAMILTON",
+                "coordenadas": { "x": 2269, "y": 2191 },
+                "andar": "mezanino",
+                "codigoOutlook": "_R_BNU_MR_M_HAMILTON_01",
+                "capacidade": 4,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Margaret Hamilton (1936-) é uma cientista da computação americana que desenvolveu o software de navegação da Apollo 11, cunhando o termo 'engenharia de software'."
+            },
+            {
                 "codigo": "M-MR03",
                 "nome": "HOPPER",
-                "coordenadas": { "x": 3000, "y": 1500 },
+                "coordenadas": { "x": 2267, "y": 2506 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_HOPPER_03",
                 "capacidade": 4,
@@ -39,7 +39,7 @@ class MezaninoRooms {
             {
                 "codigo": "M-MR05",
                 "nome": "LAMARR",
-                "coordenadas": { "x": 2000, "y": 2000 },
+                "coordenadas": { "x": 2240, "y": 2933 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_LAMARR_05",
                 "capacidade": 8,
@@ -49,7 +49,7 @@ class MezaninoRooms {
             {
                 "codigo": "M-MR07",
                 "nome": "WILSON",
-                "coordenadas": { "x": 2500, "y": 2000 },
+                "coordenadas": { "x": 2627, "y": 2964 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_WILSON_07",
                 "capacidade": 6,
@@ -57,19 +57,19 @@ class MezaninoRooms {
                 "biografia": "Robert Wilson (1936-2002) foi um físico americano que co-descobriu a radiação cósmica de fundo em microondas, evidência do Big Bang."
             },
             {
-                "codigo": "M-MR09",
-                "nome": "HOOVER",
-                "coordenadas": { "x": 3000, "y": 2000 },
+                "codigo": "M-MR13",
+                "nome": "NEUMANN",
+                "coordenadas": { "x": 2664, "y": 4754 },
                 "andar": "mezanino",
-                "codigoOutlook": "_R_BNU_MR_M_HOOVER_09",
+                "codigoOutlook": "_R_BNU_MR_M_NEUMANN_13",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Erna Schneider Hoover (1926-) é uma matemática americana que inventou o sistema de comutação telefônica computadorizada, revolucionando as telecomunicações."
+                "biografia": "John von Neumann (1903-1957) foi um matemático húngaro-americano que fez contribuições fundamentais à ciência da computação, incluindo a arquitetura von Neumann."
             },
             {
                 "codigo": "M-MR11",
                 "nome": "LISKOV",
-                "coordenadas": { "x": 2000, "y": 2500 },
+                "coordenadas": { "x": 2976, "y": 4748 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_LISKOV_11",
                 "capacidade": 4,
@@ -77,14 +77,14 @@ class MezaninoRooms {
                 "biografia": "Barbara Liskov (1939-) é uma cientista da computação americana pioneira em linguagens de programação e sistemas distribuídos, ganhadora do Prêmio Turing."
             },
             {
-                "codigo": "M-MR13",
-                "nome": "NEUMANN",
-                "coordenadas": { "x": 2500, "y": 2500 },
+                "codigo": "M-MR09",
+                "nome": "HOOVER",
+                "coordenadas": { "x": 3285, "y": 4750 },
                 "andar": "mezanino",
-                "codigoOutlook": "_R_BNU_MR_M_NEUMANN_13",
+                "codigoOutlook": "_R_BNU_MR_M_HOOVER_09",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "John von Neumann (1903-1957) foi um matemático húngaro-americano que fez contribuições fundamentais à ciência da computação, incluindo a arquitetura von Neumann."
+                "biografia": "Erna Schneider Hoover (1926-) é uma matemática americana que inventou o sistema de comutação telefônica computadorizada, revolucionando as telecomunicações."
             }
         ];
         
