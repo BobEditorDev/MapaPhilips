@@ -1,11 +1,11 @@
 /**
  * Fixed Landmarks for Mezanino Floor Plan
- * Displays permanent reference points on the mezzanine floor plan with custom emojis and tooltips
+ * Displays permanent reference points on the mezanino floor plan with custom emojis and tooltips
  */
 
 class MezaninoLandmarks {
     constructor() {
-        // Pontos de referência fixos com coordenadas fornecidas pelo usuário
+        // Pontos de referência fixos com coordenadas exatas fornecidas pelo usuário
         this.landmarks = [
             { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 201, "y": 622 } },
             { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 1504, "y": 2601 } },
@@ -40,118 +40,186 @@ class MezaninoLandmarks {
     }
 
     /**
-     * Setup landmarks on the floor plan
+     * Setup all landmarks on the map
      */
     setupLandmarks() {
-        const overlay = document.getElementById('landmarks-overlay') || this.createLandmarksOverlay();
+        this.renderLandmarks();
+        this.setupAccessibility();
+        console.log(`Mezanino Landmarks: ${this.landmarks.length} pontos de referência adicionados`);
+    }
+
+    /**
+     * Render all landmark markers on the map
+     */
+    renderLandmarks() {
+        const overlay = document.getElementById('rooms-overlay');
         const floorPlan = document.getElementById('floor-plan');
         
-        // Clear existing landmarks
-        overlay.innerHTML = '';
-        
-        // Get the displayed dimensions of the image
-        const displayedWidth = floorPlan.offsetWidth;
-        const displayedHeight = floorPlan.offsetHeight;
-        
-        // Set overlay to match the exact displayed image size
-        overlay.style.width = `${displayedWidth}px`;
-        overlay.style.height = `${displayedHeight}px`;
-        
+        if (!overlay || !floorPlan) {
+            console.error('Mezanino Landmarks: Overlay ou floor plan não encontrado');
+            return;
+        }
+
         // Calculate scale factor: displayed size vs natural size
         const scaleX = floorPlan.offsetWidth / floorPlan.naturalWidth;
         const scaleY = floorPlan.offsetHeight / floorPlan.naturalHeight;
-        
-        console.log(`Mezanino Landmarks - Scale X: ${scaleX.toFixed(4)}, Scale Y: ${scaleY.toFixed(4)}`);
-        
-        // Add each landmark to the overlay
-        this.landmarks.forEach(landmark => {
-            this.addLandmarkMarker(landmark, scaleX, scaleY, overlay);
+
+        this.landmarks.forEach((landmark, index) => {
+            this.addLandmarkMarker(landmark, index, scaleX, scaleY, overlay);
         });
     }
 
     /**
-     * Create the landmarks overlay if it doesn't exist
+     * Add a single landmark marker to the map
+     * @param {Object} landmark - Landmark object with nome, emoji, and coordenadas
+     * @param {number} index - Index for unique identification
+     * @param {number} scaleX - Horizontal scale factor
+     * @param {number} scaleY - Vertical scale factor
+     * @param {HTMLElement} overlay - Overlay container element
      */
-    createLandmarksOverlay() {
-        const mapWrapper = document.querySelector('.map-wrapper');
-        const overlay = document.createElement('div');
-        overlay.id = 'landmarks-overlay';
-        overlay.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 5;
-        `;
-        mapWrapper.appendChild(overlay);
-        return overlay;
-    }
-
-    /**
-     * Add a landmark marker to the overlay
-     */
-    addLandmarkMarker(landmark, scaleX, scaleY, overlay) {
+    addLandmarkMarker(landmark, index, scaleX, scaleY, overlay) {
         // Apply scale to coordinates
         const displayX = landmark.coordenadas.x * scaleX;
         const displayY = landmark.coordenadas.y * scaleY;
-        
-        // Create marker element
+
+        // Create landmark marker element
         const marker = document.createElement('div');
         marker.className = 'landmark-marker';
-        marker.setAttribute('data-landmark', landmark.nome);
-        
-        // Position marker (centered on the point)
-        marker.style.cssText = `
-            position: absolute;
-            left: ${displayX - 12}px;
-            top: ${displayY - 12}px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #007bff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            cursor: help;
-            transition: all 0.3s ease;
-            pointer-events: auto;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        `;
-        
-        // Add emoji content
+        marker.setAttribute('data-landmark', `${landmark.nome}-${index}`);
+        marker.setAttribute('aria-label', `Ponto de referência: ${landmark.nome}`);
+        marker.setAttribute('role', 'button');
+        marker.setAttribute('tabindex', '0');
+
+        // Position marker (aplicar mesma lógica das salas para consistência no zoom)
+        marker.style.left = `${Math.round(displayX)}px`;
+        marker.style.top = `${Math.round(displayY)}px`;
+        // Transform removido do JavaScript - aplicado apenas via CSS para consistência no zoom
+
+        // Add emoji and tooltip content
         marker.innerHTML = `
-            <span class="landmark-emoji" title="${landmark.nome}">${landmark.emoji}</span>
-            <div class="landmark-tooltip">
-                <strong>${landmark.nome}</strong><br>
-                Mezanino
+            <span class="landmark-emoji">${landmark.emoji}</span>
+            <div class="landmark-tooltip" id="landmark-tooltip-${landmark.nome}-${index}">
+                <strong>${landmark.nome}</strong>
             </div>
         `;
-        
-        // Add hover effects
+
+        // Add hover and focus effects with tooltip positioning
         marker.addEventListener('mouseenter', () => {
-            marker.style.transform = 'scale(1.2)';
-            marker.style.zIndex = '10';
-            const tooltip = marker.querySelector('.landmark-tooltip');
-            if (tooltip) {
-                tooltip.style.display = 'block';
-            }
+            marker.classList.add('hovered');
+            this.adjustLandmarkTooltipPosition(marker, displayX, displayY);
         });
-        
+
         marker.addEventListener('mouseleave', () => {
-            marker.style.transform = 'scale(1)';
-            marker.style.zIndex = '5';
-            const tooltip = marker.querySelector('.landmark-tooltip');
-            if (tooltip) {
-                tooltip.style.display = 'none';
+            marker.classList.remove('hovered');
+        });
+
+        marker.addEventListener('focus', () => {
+            marker.classList.add('focused');
+            this.adjustLandmarkTooltipPosition(marker, displayX, displayY);
+        });
+
+        marker.addEventListener('blur', () => {
+            marker.classList.remove('focused');
+        });
+
+        // Add keyboard support
+        marker.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.highlightLandmark(marker);
             }
         });
-        
+
+        // Add click support for temporary highlight
+        marker.addEventListener('click', () => {
+            this.highlightLandmark(marker);
+        });
+
         // Add marker to overlay
         overlay.appendChild(marker);
+
+        console.log(`Landmark "${landmark.nome}" adicionado em (${displayX.toFixed(1)}, ${displayY.toFixed(1)}) - escala original (${landmark.coordenadas.x}, ${landmark.coordenadas.y})`);
+    }
+
+    /**
+     * Ajusta a posição do tooltip do landmark para não ultrapassar as bordas do mapa
+     * @param {HTMLElement} marker - Elemento do marcador
+     * @param {number} markerX - Coordenada X do marcador
+     * @param {number} markerY - Coordenada Y do marcador
+     */
+    adjustLandmarkTooltipPosition(marker, markerX, markerY) {
+        const tooltip = marker.querySelector('.landmark-tooltip');
+        if (!tooltip) return;
+
+        const floorPlan = document.getElementById('floor-plan');
         
-        console.log(`Added mezanino landmark ${landmark.nome} at scaled coordinates (${displayX.toFixed(1)}, ${displayY.toFixed(1)}) from original (${landmark.coordenadas.x}, ${landmark.coordenadas.y})`);
+        // Calculate position relative to the map
+        const relativeX = markerX;
+        const relativeY = markerY;
+        const mapWidth = floorPlan.offsetWidth;
+        const mapHeight = floorPlan.offsetHeight;
+        
+        // Reset all position classes
+        tooltip.classList.remove('top', 'bottom', 'left', 'right');
+        
+        // Define thresholds (80px from edges for landmarks)
+        const threshold = 80;
+        
+        // Check horizontal position
+        if (relativeX < threshold) {
+            // Near left edge - show tooltip to the right
+            tooltip.classList.add('right');
+        } else if (relativeX > mapWidth - threshold) {
+            // Near right edge - show tooltip to the left
+            tooltip.classList.add('left');
+        }
+        
+        // Check vertical position
+        if (relativeY < threshold) {
+            // Near top edge - show tooltip below
+            tooltip.classList.add('bottom');
+        } else if (relativeY > mapHeight - threshold) {
+            // Near bottom edge - show tooltip above
+            tooltip.classList.add('top');
+        }
+        
+        const landmarkName = marker.getAttribute('data-landmark');
+        console.log(`Landmark tooltip positioned for ${landmarkName} at (${relativeX.toFixed(1)}, ${relativeY.toFixed(1)}) - classes: ${tooltip.className}`);
+    }
+
+    /**
+     * Temporarily highlight a landmark
+     * @param {HTMLElement} marker - The marker element to highlight
+     */
+    highlightLandmark(marker) {
+        // Remove previous highlights
+        document.querySelectorAll('.landmark-marker.highlighted').forEach(m => {
+            m.classList.remove('highlighted');
+        });
+
+        // Add highlight to current marker
+        marker.classList.add('highlighted');
+
+        // Remove highlight after 3 seconds
+        setTimeout(() => {
+            marker.classList.remove('highlighted');
+        }, 3000);
+
+        // Announce to screen readers
+        const landmarkName = marker.getAttribute('aria-label');
+        this.announceToScreenReader(`${landmarkName} selecionado`);
+    }
+
+    /**
+     * Clear all landmark markers (for regeneration)
+     */
+    clearLandmarkMarkers() {
+        const overlay = document.getElementById('rooms-overlay');
+        if (overlay) {
+            overlay.querySelectorAll('.landmark-marker').forEach(marker => {
+                marker.remove();
+            });
+        }
     }
 
     /**
@@ -161,79 +229,55 @@ class MezaninoLandmarks {
         // Debounce resize handling
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
-            this.setupLandmarks();
+            // Clear and regenerate landmarks with new scale
+            this.clearLandmarkMarkers();
+            this.renderLandmarks();
         }, 250);
     }
 
     /**
+     * Setup accessibility features
+     */
+    setupAccessibility() {
+        // Add screen reader announcement area if it doesn't exist
+        if (!document.getElementById('landmarks-announcer')) {
+            const announcer = document.createElement('div');
+            announcer.id = 'landmarks-announcer';
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
+            announcer.style.cssText = 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;';
+            document.body.appendChild(announcer);
+        }
+
+        console.log('Mezanino Landmarks: Recursos de acessibilidade configurados');
+    }
+
+    /**
+     * Announce messages to screen readers
+     * @param {string} message - Message to announce
+     */
+    announceToScreenReader(message) {
+        const announcer = document.getElementById('landmarks-announcer');
+        if (announcer) {
+            announcer.textContent = message;
+        }
+    }
+
+    /**
      * Get all landmarks data
+     * @returns {Array} - Array of landmark objects
      */
     getAllLandmarks() {
         return this.landmarks;
     }
-
-    /**
-     * Show or hide landmarks
-     */
-    toggleLandmarks(show = true) {
-        const overlay = document.getElementById('landmarks-overlay');
-        if (overlay) {
-            overlay.style.display = show ? 'block' : 'none';
-        }
-    }
-}
-
-// CSS for landmark tooltips (added dynamically)
-const landmarkStyles = `
-    .landmark-tooltip {
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 12px;
-        white-space: nowrap;
-        z-index: 1000;
-        display: none;
-        margin-bottom: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-
-    .landmark-tooltip::after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border: 6px solid transparent;
-        border-top-color: rgba(0, 0, 0, 0.9);
-    }
-
-    .landmark-marker:hover {
-        border-color: #0056b3;
-        background: rgba(255, 255, 255, 1);
-    }
-`;
-
-// Add styles to document
-if (!document.getElementById('mezanino-landmarks-styles')) {
-    const styleSheet = document.createElement('style');
-    styleSheet.id = 'mezanino-landmarks-styles';
-    styleSheet.textContent = landmarkStyles;
-    document.head.appendChild(styleSheet);
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Only initialize if we're on a mezanino page
-    if (window.location.pathname.includes('mezanino') || 
-        document.getElementById('floor-plan')?.src?.includes('mezanino') ||
-        document.getElementById('floor-plan')?.src?.includes('Mesanino')) {
+    // Wait a bit to ensure the main rooms system is initialized first
+    setTimeout(() => {
         window.mezaninoLandmarks = new MezaninoLandmarks();
-    }
+    }, 100);
 });
 
 // Export for testing purposes
