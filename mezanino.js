@@ -7,19 +7,9 @@ class MezaninoRooms {
     constructor() {
         this.rooms = [
             {
-                "codigo": "M-MR01",
-                "nome": "HAMILTON",
-                "coordenadas": { "x": 2000, "y": 1500 }, // Coordenadas temporárias - precisam ser ajustadas conforme o mapa
-                "andar": "mezanino",
-                "codigoOutlook": "_R_BNU_MR_M_HAMILTON_01",
-                "capacidade": 4,
-                "equipamentos": "TV, Wireless",
-                "biografia": "Margaret Hamilton (1936-) é uma cientista da computação americana que desenvolveu o software de navegação da Apollo 11, cunhando o termo 'engenharia de software'."
-            },
-            {
                 "codigo": "M-MR02",
                 "nome": "DA VINCI",
-                "coordenadas": { "x": 2500, "y": 1500 },
+                "coordenadas": { "x": 783, "y": 1406 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_DAVINCI_02",
                 "capacidade": 6,
@@ -27,9 +17,19 @@ class MezaninoRooms {
                 "biografia": "Leonardo da Vinci (1452-1519) foi um polímata italiano do Renascimento, conhecido por suas contribuições à arte, ciência, engenharia e invenção."
             },
             {
+                "codigo": "M-MR01",
+                "nome": "HAMILTON",
+                "coordenadas": { "x": 2269, "y": 2191 },
+                "andar": "mezanino",
+                "codigoOutlook": "_R_BNU_MR_M_HAMILTON_01",
+                "capacidade": 4,
+                "equipamentos": "TV, Wireless",
+                "biografia": "Margaret Hamilton (1936-) é uma cientista da computação americana que desenvolveu o software de navegação da Apollo 11, cunhando o termo 'engenharia de software'."
+            },
+            {
                 "codigo": "M-MR03",
                 "nome": "HOPPER",
-                "coordenadas": { "x": 3000, "y": 1500 },
+                "coordenadas": { "x": 2267, "y": 2506 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_HOPPER_03",
                 "capacidade": 4,
@@ -39,7 +39,7 @@ class MezaninoRooms {
             {
                 "codigo": "M-MR05",
                 "nome": "LAMARR",
-                "coordenadas": { "x": 2000, "y": 2000 },
+                "coordenadas": { "x": 2240, "y": 2933 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_LAMARR_05",
                 "capacidade": 8,
@@ -49,7 +49,7 @@ class MezaninoRooms {
             {
                 "codigo": "M-MR07",
                 "nome": "WILSON",
-                "coordenadas": { "x": 2500, "y": 2000 },
+                "coordenadas": { "x": 2627, "y": 2964 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_WILSON_07",
                 "capacidade": 6,
@@ -57,19 +57,19 @@ class MezaninoRooms {
                 "biografia": "Robert Wilson (1936-2002) foi um físico americano que co-descobriu a radiação cósmica de fundo em microondas, evidência do Big Bang."
             },
             {
-                "codigo": "M-MR09",
-                "nome": "HOOVER",
-                "coordenadas": { "x": 3000, "y": 2000 },
+                "codigo": "M-MR13",
+                "nome": "NEUMANN",
+                "coordenadas": { "x": 2664, "y": 4754 },
                 "andar": "mezanino",
-                "codigoOutlook": "_R_BNU_MR_M_HOOVER_09",
+                "codigoOutlook": "_R_BNU_MR_M_NEUMANN_13",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "Erna Schneider Hoover (1926-) é uma matemática americana que inventou o sistema de comutação telefônica computadorizada, revolucionando as telecomunicações."
+                "biografia": "John von Neumann (1903-1957) foi um matemático húngaro-americano que fez contribuições fundamentais à ciência da computação, incluindo a arquitetura von Neumann."
             },
             {
                 "codigo": "M-MR11",
                 "nome": "LISKOV",
-                "coordenadas": { "x": 2000, "y": 2500 },
+                "coordenadas": { "x": 2976, "y": 4748 },
                 "andar": "mezanino",
                 "codigoOutlook": "_R_BNU_MR_M_LISKOV_11",
                 "capacidade": 4,
@@ -77,14 +77,14 @@ class MezaninoRooms {
                 "biografia": "Barbara Liskov (1939-) é uma cientista da computação americana pioneira em linguagens de programação e sistemas distribuídos, ganhadora do Prêmio Turing."
             },
             {
-                "codigo": "M-MR13",
-                "nome": "NEUMANN",
-                "coordenadas": { "x": 2500, "y": 2500 },
+                "codigo": "M-MR09",
+                "nome": "HOOVER",
+                "coordenadas": { "x": 3285, "y": 4750 },
                 "andar": "mezanino",
-                "codigoOutlook": "_R_BNU_MR_M_NEUMANN_13",
+                "codigoOutlook": "_R_BNU_MR_M_HOOVER_09",
                 "capacidade": 4,
                 "equipamentos": "TV, Wireless",
-                "biografia": "John von Neumann (1903-1957) foi um matemático húngaro-americano que fez contribuições fundamentais à ciência da computação, incluindo a arquitetura von Neumann."
+                "biografia": "Erna Schneider Hoover (1926-) é uma matemática americana que inventou o sistema de comutação telefônica computadorizada, revolucionando as telecomunicações."
             }
         ];
         
@@ -288,8 +288,12 @@ class MezaninoRooms {
         this.updateRoomDetails(room);
         this.highlightRoomOnMap(room);
         
+        // CORREÇÃO COPILOT: Centralizar automaticamente o mapa na sala selecionada
+        // MOTIVO: Melhora a experiência do usuário automatizando a navegação conforme térreo
+        this.centerOnRoom(roomName);
+        
         // Update instructions
-        this.updateInstructions(`Sala ${roomName} selecionada - localização destacada no mapa`);
+        this.updateInstructions(`Sala ${roomName} selecionada e centralizada no mapa`);
         
         console.log('Selected mezanino room:', room);
     }
@@ -320,6 +324,10 @@ class MezaninoRooms {
     updateRoomDetails(room) {
         const detailsContainer = document.getElementById('room-details');
         
+        // CORREÇÃO COPILOT: Suporte tanto para formato antigo quanto novo da biografia
+        // MOTIVO: Garantir compatibilidade com salas que ainda não foram atualizadas
+        const biografiaContent = this.renderBiografia(room);
+        
         detailsContainer.innerHTML = `
             <div class="selected-room-info">
                 <h3>${room.nome}</h3>
@@ -341,7 +349,7 @@ class MezaninoRooms {
                 </div>
                 <div class="room-biography">
                     <strong>Biografia:</strong>
-                    <p class="biography-text">${room.biografia}</p>
+                    ${biografiaContent}
                 </div>
                 <div class="room-actions">
                     <button class="detail-btn" onclick="mezaninoRooms.centerOnRoom('${room.nome}')">
@@ -353,6 +361,103 @@ class MezaninoRooms {
                 </div>
             </div>
         `;
+        
+        // Configurar eventos para o botão "Ler mais" se existir
+        const expandBtn = detailsContainer.querySelector('.expand-btn');
+        if (expandBtn) {
+            expandBtn.addEventListener('click', () => {
+                this.toggleBiografia(room.nome);
+            });
+        }
+    }
+
+    /**
+     * Renderiza o conteúdo da biografia baseado no formato (novo ou legado)
+     * @param {Object} room - O objeto da sala
+     * @returns {string} - HTML da biografia
+     */
+    renderBiografia(room) {
+        // Se biografia é objeto (novo formato)
+        if (typeof room.biografia === 'object' && room.biografia.resumo) {
+            const referencesHtml = room.biografia.referencias ? `
+                <div class="biography-references">
+                    <h4>Referências:</h4>
+                    <ul>
+                        ${room.biografia.referencias.map(ref => `<li>${ref}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : '';
+            
+            return `
+                <div class="biography-summary">
+                    ${room.biografia.resumo}
+                </div>
+                <div class="biography-expanded" id="biography-expanded-${room.nome}">
+                    ${room.biografia.completa}
+                    ${referencesHtml}
+                </div>
+                <button class="expand-btn" id="expand-btn-${room.nome}" aria-expanded="false" aria-controls="biography-expanded-${room.nome}">
+                    Ler mais
+                </button>
+            `;
+        } else {
+            // Formato legado - biografia como string
+            return `<p class="biography-text">${room.biografia}</p>`;
+        }
+    }
+
+    /**
+     * Alterna entre mostrar/ocultar biografia expandida
+     * @param {string} roomName - Nome da sala
+     */
+    toggleBiografia(roomName) {
+        const expandedElement = document.getElementById(`biography-expanded-${roomName}`);
+        const expandBtn = document.getElementById(`expand-btn-${roomName}`);
+        
+        if (!expandedElement || !expandBtn) return;
+        
+        const isExpanded = expandedElement.classList.contains('show');
+        
+        if (isExpanded) {
+            expandedElement.classList.remove('show');
+            expandBtn.textContent = 'Ler mais';
+            expandBtn.setAttribute('aria-expanded', 'false');
+        } else {
+            expandedElement.classList.add('show');
+            expandBtn.textContent = 'Ler menos';
+            expandBtn.setAttribute('aria-expanded', 'true');
+        }
+        
+        // Anunciar mudança para leitores de tela
+        const announcement = isExpanded ? 'Biografia recolhida' : 'Biografia expandida';
+        this.announceToScreenReader(announcement);
+    }
+
+    /**
+     * Anuncia informações para leitores de tela
+     * @param {string} message - Mensagem a ser anunciada
+     */
+    announceToScreenReader(message) {
+        // Criar elemento de anúncio temporário
+        const announcer = document.createElement('div');
+        announcer.setAttribute('aria-live', 'polite');
+        announcer.setAttribute('aria-atomic', 'true');
+        announcer.className = 'sr-only';
+        announcer.style.position = 'absolute';
+        announcer.style.left = '-10000px';
+        announcer.style.width = '1px';
+        announcer.style.height = '1px';
+        announcer.style.overflow = 'hidden';
+        
+        document.body.appendChild(announcer);
+        announcer.textContent = message;
+        
+        // Remover após 1 segundo
+        setTimeout(() => {
+            if (document.body.contains(announcer)) {
+                document.body.removeChild(announcer);
+            }
+        }, 1000);
     }
 
     /**
@@ -411,14 +516,15 @@ class MezaninoRooms {
         marker.className = `room-marker ${isHighlighted ? 'highlighted' : ''}`;
         marker.setAttribute('data-room', room.nome);
         
-        // Position marker (centrado no ponto)
-        marker.style.left = `${displayX - 6}px`;  
-        marker.style.top = `${displayY - 6}px`;   
+        // Position marker (centralizado exatamente no pixel da coordenada)
+        marker.style.left = `${Math.round(displayX)}px`;
+        marker.style.top = `${Math.round(displayY)}px`;
+        marker.style.transform = 'translate(-50%, -50%)';   
         
-        // Add content and tooltip
+        // Add content and tooltip with intelligent positioning
         marker.innerHTML = `
             <span class="marker-label">${room.nome}</span>
-            <div class="marker-tooltip">
+            <div class="marker-tooltip" id="tooltip-${room.nome}">
                 <strong>${room.nome}</strong><br>
                 Andar: Mezanino
             </div>
@@ -429,9 +535,10 @@ class MezaninoRooms {
             this.selectRoom(room.nome);
         });
         
-        // Add hover effects
+        // Add hover effects with tooltip positioning
         marker.addEventListener('mouseenter', () => {
             marker.classList.add('hovered');
+            this.adjustTooltipPosition(marker, displayX, displayY);
         });
         
         marker.addEventListener('mouseleave', () => {
@@ -445,11 +552,63 @@ class MezaninoRooms {
     }
 
     /**
-     * Clear all markers from the map
+     * Ajusta a posição do tooltip para não ultrapassar as bordas do mapa
+     * @param {HTMLElement} marker - Elemento do marcador
+     * @param {number} markerX - Coordenada X do marcador
+     * @param {number} markerY - Coordenada Y do marcador
+     */
+    adjustTooltipPosition(marker, markerX, markerY) {
+        const tooltip = marker.querySelector('.marker-tooltip');
+        if (!tooltip) return;
+
+        const mapWrapper = document.querySelector('.map-wrapper');
+        const mapRect = mapWrapper.getBoundingClientRect();
+        const floorPlan = document.getElementById('floor-plan');
+        const planRect = floorPlan.getBoundingClientRect();
+        
+        // Calculate position relative to the map container
+        const relativeX = markerX;
+        const relativeY = markerY;
+        const mapWidth = floorPlan.offsetWidth;
+        const mapHeight = floorPlan.offsetHeight;
+        
+        // Reset all position classes
+        tooltip.classList.remove('top', 'bottom', 'left', 'right');
+        
+        // Define thresholds (100px from edges)
+        const threshold = 100;
+        
+        // Check horizontal position
+        if (relativeX < threshold) {
+            // Near left edge - show tooltip to the right
+            tooltip.classList.add('right');
+        } else if (relativeX > mapWidth - threshold) {
+            // Near right edge - show tooltip to the left
+            tooltip.classList.add('left');
+        }
+        
+        // Check vertical position
+        if (relativeY < threshold) {
+            // Near top edge - show tooltip below
+            tooltip.classList.add('bottom');
+        } else if (relativeY > mapHeight - threshold) {
+            // Near bottom edge - show tooltip above
+            tooltip.classList.add('top');
+        }
+        
+        console.log(`Tooltip positioned for ${marker.getAttribute('data-room')} at (${relativeX.toFixed(1)}, ${relativeY.toFixed(1)}) - classes: ${tooltip.className}`);
+    }
+
+    /**
+     * Clear all room markers from the map (preserving landmarks)
      */
     clearMapMarkers() {
         const overlay = document.getElementById('rooms-overlay');
-        overlay.innerHTML = '';
+        // CORREÇÃO COPILOT: Preservar landmarks ao limpar marcadores de salas
+        // MOTIVO: Atender requisito de que landmarks devem permanecer sempre visíveis
+        overlay.querySelectorAll('.room-marker').forEach(marker => {
+            marker.remove();
+        });
     }
 
     /**

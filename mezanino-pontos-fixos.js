@@ -1,39 +1,21 @@
 /**
- * Fixed Landmarks for Térreo Floor Plan
- * Displays permanent reference points on the floor plan with custom emojis and tooltips
+ * Fixed Landmarks for Mezanino Floor Plan
+ * Displays permanent reference points on the mezanino floor plan with custom emojis and tooltips
  */
 
-class TerreoLandmarks {
+class MezaninoLandmarks {
     constructor() {
         // Pontos de referência fixos com coordenadas exatas fornecidas pelo usuário
         this.landmarks = [
-            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 3159, "y": 3604 } },
-            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 1872, "y": 1693 } },
-            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 5484, "y": 3713 } },
-            { "nome": "ELEVADOR", "emoji": "🛗", "coordenadas": { "x": 2200, "y": 4033 } },
-            { "nome": "MAQUINA DE CAFÉ", "emoji": "☕", "coordenadas": { "x": 5624, "y": 4431 } },
-            { "nome": "MAQUINA DE CAFÉ", "emoji": "☕", "coordenadas": { "x": 2052, "y": 1552 } },
-            { "nome": "MAQUINA DE CAFÉ", "emoji": "☕", "coordenadas": { "x": 2044, "y": 921 } },
-            { "nome": "GELADEIRAS", "emoji": "❄️", "coordenadas": { "x": 2036, "y": 491 } },
-            { "nome": "COZINHA", "emoji": "🍽️", "coordenadas": { "x": 2418, "y": 710 } },
-            { "nome": "AMBULATÓRIO", "emoji": "🏥", "coordenadas": { "x": 6444, "y": 367 } },
-            { "nome": "DECK", "emoji": "🌳", "coordenadas": { "x": 1919, "y": 117 } },
-            { "nome": "CAIXA D'ÁGUA", "emoji": "💧", "coordenadas": { "x": 577, "y": 6483 } },
-            { "nome": "LAVANDERIA", "emoji": "👕", "coordenadas": { "x": 5429, "y": 6990 } },
-            { "nome": "RECEPÇÃO", "emoji": "👋", "coordenadas": { "x": 4462, "y": 562 } },
-            { "nome": "MÁQUINA PONTO", "emoji": "📍", "coordenadas": { "x": 4517, "y": 874 } },
-            { "nome": "INFRA", "emoji": "🔧", "coordenadas": { "x": 5039, "y": 218 } },
-            { "nome": "CORREDOR LARANJA", "emoji": "🍊", "coordenadas": { "x": 4127, "y": 5039 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 1551, "y": 273 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 48, "y": 3475 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 1539, "y": 5330 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 5366, "y": 5711 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6941, "y": 4112 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6953, "y": 1547 } },
-            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 6135, "y": 64 } },
-            { "nome": "SEGURANÇA DO TRABALHO", "emoji": "🦺", "coordenadas": { "x": 6011, "y": 786 } },
-            { "nome": "BANHEIROS", "emoji": "🚻", "coordenadas": { "x": 5306, "y": 717 } },
-            { "nome": "VESTIÁRIOS", "emoji": "👔", "coordenadas": { "x": 6256, "y": 870 } }
+            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 201, "y": 622 } },
+            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 1504, "y": 2601 } },
+            { "nome": "ESCADA", "emoji": "🪜", "coordenadas": { "x": 3808, "y": 2707 } },
+            { "nome": "CAFÉ", "emoji": "☕", "coordenadas": { "x": 1749, "y": 3434 } },
+            { "nome": "ELEVADOR", "emoji": "🛗", "coordenadas": { "x": 663, "y": 3013 } },
+            { "nome": "BANHEIROS", "emoji": "🚻", "coordenadas": { "x": 3733, "y": 5570 } },
+            { "nome": "STAND UP", "emoji": "🗣️", "coordenadas": { "x": 2275, "y": 1562 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 1092, "y": 4300 } },
+            { "nome": "SAÍDA DE EMERGÊNCIA", "emoji": "🚨", "coordenadas": { "x": 2288, "y": 4898 } }
         ];
         
         this.init();
@@ -63,7 +45,7 @@ class TerreoLandmarks {
     setupLandmarks() {
         this.renderLandmarks();
         this.setupAccessibility();
-        console.log(`Terreo Landmarks: ${this.landmarks.length} pontos de referência adicionados`);
+        console.log(`Mezanino Landmarks: ${this.landmarks.length} pontos de referência adicionados`);
     }
 
     /**
@@ -74,7 +56,7 @@ class TerreoLandmarks {
         const floorPlan = document.getElementById('floor-plan');
         
         if (!overlay || !floorPlan) {
-            console.error('Terreo Landmarks: Overlay ou floor plan não encontrado');
+            console.error('Mezanino Landmarks: Overlay ou floor plan não encontrado');
             return;
         }
 
@@ -267,7 +249,7 @@ class TerreoLandmarks {
             document.body.appendChild(announcer);
         }
 
-        console.log('Terreo Landmarks: Recursos de acessibilidade configurados');
+        console.log('Mezanino Landmarks: Recursos de acessibilidade configurados');
     }
 
     /**
@@ -294,11 +276,11 @@ class TerreoLandmarks {
 document.addEventListener('DOMContentLoaded', () => {
     // Wait a bit to ensure the main rooms system is initialized first
     setTimeout(() => {
-        window.terreoLandmarks = new TerreoLandmarks();
+        window.mezaninoLandmarks = new MezaninoLandmarks();
     }, 100);
 });
 
 // Export for testing purposes
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TerreoLandmarks;
+    module.exports = MezaninoLandmarks;
 }
