@@ -288,8 +288,12 @@ class MezaninoRooms {
         this.updateRoomDetails(room);
         this.highlightRoomOnMap(room);
         
+        // CORREÇÃO COPILOT: Centralizar automaticamente o mapa na sala selecionada
+        // MOTIVO: Melhora a experiência do usuário automatizando a navegação conforme térreo
+        this.centerOnRoom(roomName);
+        
         // Update instructions
-        this.updateInstructions(`Sala ${roomName} selecionada - localização destacada no mapa`);
+        this.updateInstructions(`Sala ${roomName} selecionada e centralizada no mapa`);
         
         console.log('Selected mezanino room:', room);
     }
@@ -320,6 +324,10 @@ class MezaninoRooms {
     updateRoomDetails(room) {
         const detailsContainer = document.getElementById('room-details');
         
+        // CORREÇÃO COPILOT: Suporte tanto para formato antigo quanto novo da biografia
+        // MOTIVO: Garantir compatibilidade com salas que ainda não foram atualizadas
+        const biografiaContent = this.renderBiografia(room);
+        
         detailsContainer.innerHTML = `
             <div class="selected-room-info">
                 <h3>${room.nome}</h3>
@@ -341,7 +349,7 @@ class MezaninoRooms {
                 </div>
                 <div class="room-biography">
                     <strong>Biografia:</strong>
-                    <p class="biography-text">${room.biografia}</p>
+                    ${biografiaContent}
                 </div>
                 <div class="room-actions">
                     <button class="detail-btn" onclick="mezaninoRooms.centerOnRoom('${room.nome}')">
@@ -353,6 +361,103 @@ class MezaninoRooms {
                 </div>
             </div>
         `;
+        
+        // Configurar eventos para o botão "Ler mais" se existir
+        const expandBtn = detailsContainer.querySelector('.expand-btn');
+        if (expandBtn) {
+            expandBtn.addEventListener('click', () => {
+                this.toggleBiografia(room.nome);
+            });
+        }
+    }
+
+    /**
+     * Renderiza o conteúdo da biografia baseado no formato (novo ou legado)
+     * @param {Object} room - O objeto da sala
+     * @returns {string} - HTML da biografia
+     */
+    renderBiografia(room) {
+        // Se biografia é objeto (novo formato)
+        if (typeof room.biografia === 'object' && room.biografia.resumo) {
+            const referencesHtml = room.biografia.referencias ? `
+                <div class="biography-references">
+                    <h4>Referências:</h4>
+                    <ul>
+                        ${room.biografia.referencias.map(ref => `<li>${ref}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : '';
+            
+            return `
+                <div class="biography-summary">
+                    ${room.biografia.resumo}
+                </div>
+                <div class="biography-expanded" id="biography-expanded-${room.nome}">
+                    ${room.biografia.completa}
+                    ${referencesHtml}
+                </div>
+                <button class="expand-btn" id="expand-btn-${room.nome}" aria-expanded="false" aria-controls="biography-expanded-${room.nome}">
+                    Ler mais
+                </button>
+            `;
+        } else {
+            // Formato legado - biografia como string
+            return `<p class="biography-text">${room.biografia}</p>`;
+        }
+    }
+
+    /**
+     * Alterna entre mostrar/ocultar biografia expandida
+     * @param {string} roomName - Nome da sala
+     */
+    toggleBiografia(roomName) {
+        const expandedElement = document.getElementById(`biography-expanded-${roomName}`);
+        const expandBtn = document.getElementById(`expand-btn-${roomName}`);
+        
+        if (!expandedElement || !expandBtn) return;
+        
+        const isExpanded = expandedElement.classList.contains('show');
+        
+        if (isExpanded) {
+            expandedElement.classList.remove('show');
+            expandBtn.textContent = 'Ler mais';
+            expandBtn.setAttribute('aria-expanded', 'false');
+        } else {
+            expandedElement.classList.add('show');
+            expandBtn.textContent = 'Ler menos';
+            expandBtn.setAttribute('aria-expanded', 'true');
+        }
+        
+        // Anunciar mudança para leitores de tela
+        const announcement = isExpanded ? 'Biografia recolhida' : 'Biografia expandida';
+        this.announceToScreenReader(announcement);
+    }
+
+    /**
+     * Anuncia informações para leitores de tela
+     * @param {string} message - Mensagem a ser anunciada
+     */
+    announceToScreenReader(message) {
+        // Criar elemento de anúncio temporário
+        const announcer = document.createElement('div');
+        announcer.setAttribute('aria-live', 'polite');
+        announcer.setAttribute('aria-atomic', 'true');
+        announcer.className = 'sr-only';
+        announcer.style.position = 'absolute';
+        announcer.style.left = '-10000px';
+        announcer.style.width = '1px';
+        announcer.style.height = '1px';
+        announcer.style.overflow = 'hidden';
+        
+        document.body.appendChild(announcer);
+        announcer.textContent = message;
+        
+        // Remover após 1 segundo
+        setTimeout(() => {
+            if (document.body.contains(announcer)) {
+                document.body.removeChild(announcer);
+            }
+        }, 1000);
     }
 
     /**
@@ -411,14 +516,15 @@ class MezaninoRooms {
         marker.className = `room-marker ${isHighlighted ? 'highlighted' : ''}`;
         marker.setAttribute('data-room', room.nome);
         
-        // Position marker (centrado no ponto)
-        marker.style.left = `${displayX - 6}px`;  
-        marker.style.top = `${displayY - 6}px`;   
+        // Position marker (centralizado exatamente no pixel da coordenada)
+        marker.style.left = `${Math.round(displayX)}px`;
+        marker.style.top = `${Math.round(displayY)}px`;
+        marker.style.transform = 'translate(-50%, -50%)';   
         
-        // Add content and tooltip
+        // Add content and tooltip with intelligent positioning
         marker.innerHTML = `
             <span class="marker-label">${room.nome}</span>
-            <div class="marker-tooltip">
+            <div class="marker-tooltip" id="tooltip-${room.nome}">
                 <strong>${room.nome}</strong><br>
                 Andar: Mezanino
             </div>
@@ -429,9 +535,10 @@ class MezaninoRooms {
             this.selectRoom(room.nome);
         });
         
-        // Add hover effects
+        // Add hover effects with tooltip positioning
         marker.addEventListener('mouseenter', () => {
             marker.classList.add('hovered');
+            this.adjustTooltipPosition(marker, displayX, displayY);
         });
         
         marker.addEventListener('mouseleave', () => {
@@ -442,6 +549,54 @@ class MezaninoRooms {
         overlay.appendChild(marker);
         
         console.log(`Added mezanino marker for ${room.nome} at scaled coordinates (${displayX.toFixed(1)}, ${displayY.toFixed(1)}) from original (${room.coordenadas.x}, ${room.coordenadas.y})`);
+    }
+
+    /**
+     * Ajusta a posição do tooltip para não ultrapassar as bordas do mapa
+     * @param {HTMLElement} marker - Elemento do marcador
+     * @param {number} markerX - Coordenada X do marcador
+     * @param {number} markerY - Coordenada Y do marcador
+     */
+    adjustTooltipPosition(marker, markerX, markerY) {
+        const tooltip = marker.querySelector('.marker-tooltip');
+        if (!tooltip) return;
+
+        const mapWrapper = document.querySelector('.map-wrapper');
+        const mapRect = mapWrapper.getBoundingClientRect();
+        const floorPlan = document.getElementById('floor-plan');
+        const planRect = floorPlan.getBoundingClientRect();
+        
+        // Calculate position relative to the map container
+        const relativeX = markerX;
+        const relativeY = markerY;
+        const mapWidth = floorPlan.offsetWidth;
+        const mapHeight = floorPlan.offsetHeight;
+        
+        // Reset all position classes
+        tooltip.classList.remove('top', 'bottom', 'left', 'right');
+        
+        // Define thresholds (100px from edges)
+        const threshold = 100;
+        
+        // Check horizontal position
+        if (relativeX < threshold) {
+            // Near left edge - show tooltip to the right
+            tooltip.classList.add('right');
+        } else if (relativeX > mapWidth - threshold) {
+            // Near right edge - show tooltip to the left
+            tooltip.classList.add('left');
+        }
+        
+        // Check vertical position
+        if (relativeY < threshold) {
+            // Near top edge - show tooltip below
+            tooltip.classList.add('bottom');
+        } else if (relativeY > mapHeight - threshold) {
+            // Near bottom edge - show tooltip above
+            tooltip.classList.add('top');
+        }
+        
+        console.log(`Tooltip positioned for ${marker.getAttribute('data-room')} at (${relativeX.toFixed(1)}, ${relativeY.toFixed(1)}) - classes: ${tooltip.className}`);
     }
 
     /**
