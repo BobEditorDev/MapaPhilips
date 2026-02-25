@@ -181,8 +181,10 @@ class MezaninoRooms {
 
         // CORREÇÃO COPILOT: Captura de clique no overlay para exibir coordenadas relativas ao mapa
         // MOTIVO: Facilitar cadastro de novas salas e depuração visual
+        // NOTA: Ignorado durante o modo de compartilhamento para evitar conflito de mensagem
         const overlay = document.getElementById('rooms-overlay');
         overlay.addEventListener('click', (e) => {
+            if (this.isShareMode) return;
             const floorPlan = document.getElementById('floor-plan');
             // Posição do overlay na tela
             const rect = overlay.getBoundingClientRect();
@@ -886,17 +888,17 @@ Biografia: ${biografiaTexto}`;
     toggleShareMode() {
         this.isShareMode = !this.isShareMode;
         const btn = document.getElementById('share-location-btn');
-        const floorPlan = document.getElementById('floor-plan');
+        const mapWrapper = document.querySelector('.map-wrapper');
 
         if (this.isShareMode) {
             btn.textContent = '❌ Cancelar';
             btn.classList.add('active');
-            floorPlan.style.cursor = 'crosshair';
+            mapWrapper.style.cursor = 'crosshair';
             this.updateInstructions('📍 Clique em qualquer ponto do mapa para gerar o link de compartilhamento');
         } else {
             btn.textContent = '📍 Compartilhar';
             btn.classList.remove('active');
-            floorPlan.style.cursor = '';
+            mapWrapper.style.cursor = '';
             this.updateInstructions();
         }
     }

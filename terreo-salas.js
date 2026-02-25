@@ -1140,84 +1140,22 @@ Biografia: ${biografiaTexto}`;
     // ===== COMPARTILHAR LOCALIZAÇÃO =====
 
     /**
-     * Exibe o menu de contexto de compartilhamento na posição do mouse
-     * @param {MouseEvent} e - Evento de contextmenu
-     */
-    showShareContextMenu(e) {
-        this.hideShareContextMenu();
-
-        const floorPlan = document.getElementById('floor-plan');
-        const planRect   = floorPlan.getBoundingClientRect();
-
-        const displayX = e.clientX - planRect.left;
-        const displayY = e.clientY - planRect.top;
-
-        // Garantia de que o clique está dentro da imagem
-        if (displayX < 0 || displayY < 0 || displayX > planRect.width || displayY > planRect.height) return;
-
-        const scaleX   = floorPlan.naturalWidth  / floorPlan.offsetWidth;
-        const scaleY   = floorPlan.naturalHeight / floorPlan.offsetHeight;
-        const naturalX = Math.round(displayX * scaleX);
-        const naturalY = Math.round(displayY * scaleY);
-
-        const roomMarker = e.target.closest('.room-marker');
-        const roomName   = roomMarker ? roomMarker.getAttribute('data-room') : null;
-
-        const icon  = roomName ? '🏷️' : '📍';
-        const label = roomName ? `Compartilhar sala ${roomName}` : 'Compartilhar este local';
-
-        const menu = document.createElement('div');
-        menu.className = 'share-context-menu';
-        menu.style.left = `${e.clientX}px`;
-        menu.style.top  = `${e.clientY}px`;
-        menu.innerHTML  = `
-            <div class="share-context-item" id="share-context-action">
-                <span class="share-context-icon">${icon}</span>
-                <span>${label}</span>
-            </div>
-        `;
-
-        document.body.appendChild(menu);
-
-        // Ajustar posição se o menu ultrapassar a viewport
-        requestAnimationFrame(() => {
-            const menuRect = menu.getBoundingClientRect();
-            if (menuRect.right  > window.innerWidth)  menu.style.left = `${e.clientX - menuRect.width}px`;
-            if (menuRect.bottom > window.innerHeight) menu.style.top  = `${e.clientY - menuRect.height}px`;
-        });
-
-        menu.querySelector('#share-context-action').addEventListener('click', () => {
-            const url = this.generateShareLink(naturalX, naturalY, roomName);
-            this.copyShareLink(url);
-            this.hideShareContextMenu();
-        });
-    }
-
-    /**
-     * Remove o menu de contexto de compartilhamento
-     */
-    hideShareContextMenu() {
-        const existing = document.querySelector('.share-context-menu');
-        if (existing) existing.remove();
-    }
-
-    /**
      * Ativa/desativa o modo de seleção de local para compartilhamento
      */
     toggleShareMode() {
         this.isShareMode = !this.isShareMode;
         const btn = document.getElementById('share-location-btn');
-        const floorPlan = document.getElementById('floor-plan');
+        const mapWrapper = document.querySelector('.map-wrapper');
 
         if (this.isShareMode) {
             btn.textContent = '❌ Cancelar';
             btn.classList.add('active');
-            floorPlan.style.cursor = 'crosshair';
+            mapWrapper.style.cursor = 'crosshair';
             this.updateInstructions('📍 Clique em qualquer ponto do mapa para gerar o link de compartilhamento');
         } else {
             btn.textContent = '📍 Compartilhar';
             btn.classList.remove('active');
-            floorPlan.style.cursor = '';
+            mapWrapper.style.cursor = '';
             this.updateInstructions();
         }
     }
