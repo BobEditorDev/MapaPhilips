@@ -103,19 +103,26 @@ class MezaninoRooms {
      * Setup all components after image is loaded
      */
     setup() {
-        // Wait for image to load to get correct dimensions
-        const floorPlan = document.getElementById('floor-plan');
-        const overlay = document.getElementById('rooms-overlay');
-        
-        if (floorPlan.complete) {
-            this.setupOverlay();
-        } else {
-            floorPlan.addEventListener('load', () => this.setupOverlay());
+        try {
+            // Wait for image to load to get correct dimensions
+            const floorPlan = document.getElementById('floor-plan');
+            const overlay = document.getElementById('rooms-overlay');
+
+            console.log('[share] setup() → floorPlan =', floorPlan, '| complete =', floorPlan && floorPlan.complete);
+
+            if (floorPlan.complete) {
+                this.setupOverlay();
+            } else {
+                floorPlan.addEventListener('load', () => this.setupOverlay());
+            }
+
+            this.renderRoomsList();
+            this.bindEvents();
+            this.showAllRooms();
+            console.log('[share] MezaninoRooms inicializado com sucesso. window.mezaninoRooms =', window.mezaninoRooms);
+        } catch (err) {
+            console.error('[share] ERRO na inicialização de MezaninoRooms:', err);
         }
-        
-        this.renderRoomsList();
-        this.bindEvents();
-        this.showAllRooms();
     }
 
     /**
@@ -202,10 +209,10 @@ class MezaninoRooms {
         });
 
         // Botão de compartilhar localização
+        // NOTA: o handler primário é o onclick inline no HTML.
+        // O log abaixo confirma que o elemento existe no DOM.
         const shareBtn = document.getElementById('share-location-btn');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', () => this.toggleShareMode());
-        }
+        console.log('[share] bindEvents → shareBtn =', shareBtn);
 
         // Clique no mapa durante modo de compartilhamento
         // Listener no map-wrapper captura tanto a imagem quanto os marcadores
@@ -886,20 +893,29 @@ Biografia: ${biografiaTexto}`;
      * Ativa/desativa o modo de seleção de local para compartilhamento
      */
     toggleShareMode() {
-        this.isShareMode = !this.isShareMode;
-        const btn = document.getElementById('share-location-btn');
-        const mapWrapper = document.querySelector('.map-wrapper');
+        try {
+            this.isShareMode = !this.isShareMode;
+            console.log('[share] toggleShareMode → isShareMode =', this.isShareMode);
 
-        if (this.isShareMode) {
-            btn.textContent = '❌ Cancelar';
-            btn.classList.add('active');
-            mapWrapper.style.cursor = 'crosshair';
-            this.updateInstructions('📍 Clique em qualquer ponto do mapa para gerar o link de compartilhamento');
-        } else {
-            btn.textContent = '📍 Compartilhar';
-            btn.classList.remove('active');
-            mapWrapper.style.cursor = '';
-            this.updateInstructions();
+            const btn = document.getElementById('share-location-btn');
+            const mapWrapper = document.querySelector('.map-wrapper');
+
+            if (!btn)      { console.error('[share] botão #share-location-btn não encontrado'); return; }
+            if (!mapWrapper) { console.error('[share] .map-wrapper não encontrado'); return; }
+
+            if (this.isShareMode) {
+                btn.textContent = '❌ Cancelar';
+                btn.classList.add('active');
+                mapWrapper.style.cursor = 'crosshair';
+                this.updateInstructions('📍 Clique em qualquer ponto do mapa para gerar o link de compartilhamento');
+            } else {
+                btn.textContent = '📍 Compartilhar';
+                btn.classList.remove('active');
+                mapWrapper.style.cursor = '';
+                this.updateInstructions();
+            }
+        } catch (err) {
+            console.error('[share] Erro em toggleShareMode:', err);
         }
     }
 

@@ -55,7 +55,7 @@
                     <div class="map-controls">
                         <button id="show-all-btn" class="control-btn">Todas</button>
                         <button id="hide-all-btn" class="control-btn">Ocultar</button>
-                        <button id="share-location-btn" class="control-btn share-btn">📍 Compartilhar</button>
+                        <button id="share-location-btn" class="control-btn share-btn" onclick="if(window.terreoRooms){window.terreoRooms.toggleShareMode();}else{console.error('[share] window.terreoRooms não disponível');}">📍 Compartilhar</button>
                     </div>
                 </div>
             </section>
