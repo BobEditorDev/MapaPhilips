@@ -1853,7 +1853,28 @@ header p {
     font-weight: 600;
 }
 
-/* ===== COMPARTILHAR LOCALIZAÇÃO ===== */
+/* Botão compartilhar */
+.share-btn {
+    background: #0066cc;
+    color: white;
+    border-color: #0066cc;
+}
+.share-btn:hover {
+    background: #0051a3;
+    color: white;
+    border-color: #0051a3;
+}
+.share-btn.active {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+.share-btn.active:hover {
+    background: #b02a37;
+    border-color: #b02a37;
+}
+
+/* ===== COMPARTILHAR LOCALIZAÇÃO =====
 
 /* Menu de contexto (botão direito) */
 .share-context-menu {

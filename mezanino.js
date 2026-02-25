@@ -91,12 +91,9 @@ class MezaninoRooms {
         this.selectedRoom = null;
         this.filteredRooms = [...this.rooms];
         this.allMarkersVisible = false;
+        this.isShareMode = false;
         this.init();
     }
-
-    /**
-     * Initialize the room location tool
-     */
     init() {
         // Setup components immediately
         this.setup();
@@ -202,33 +199,23 @@ class MezaninoRooms {
             this.showTemporaryMessage(`Coordenada: x=${coordX}, y=${coordY}`);
         });
 
-        // Menu de contexto para compartilhar localização (botão direito em qualquer ponto do mapa)
-        // Usar capture:true no document garante que preventDefault() é chamado ANTES
-        // do browser processar o menu nativo da <img> ("Salvar imagem como...")
-        document.addEventListener('contextmenu', (e) => {
-            const floorPlan = document.getElementById('floor-plan');
-            if (!floorPlan) return;
-            const planRect = floorPlan.getBoundingClientRect();
-            const inside = (
-                e.clientX >= planRect.left && e.clientX <= planRect.right &&
-                e.clientY >= planRect.top  && e.clientY <= planRect.bottom
-            );
-            if (!inside) return;
-            e.preventDefault();
-            this.showShareContextMenu(e);
-        }, { capture: true });
+        // Botão de compartilhar localização
+        const shareBtn = document.getElementById('share-location-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => this.toggleShareMode());
+        }
 
-        // Fechar menu de contexto ao clicar fora
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.share-context-menu')) {
-                this.hideShareContextMenu();
-            }
+        // Clique no mapa durante modo de compartilhamento
+        // Listener no map-wrapper captura tanto a imagem quanto os marcadores
+        const mapWrapperEl = document.querySelector('.map-wrapper');
+        mapWrapperEl.addEventListener('click', (e) => {
+            if (!this.isShareMode) return;
+            // Ignorar cliques fora da área da imagem (barra de rolagem, área cinza)
+            const planRect = document.getElementById('floor-plan').getBoundingClientRect();
+            if (e.clientX < planRect.left || e.clientX > planRect.right ||
+                e.clientY < planRect.top  || e.clientY > planRect.bottom) return;
+            this.handleShareClick(e);
         });
-
-        // Fechar menu de contexto ao pressionar Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.hideShareContextMenu();
-        }, { capture: true });
     }
 
     /**
@@ -807,9 +794,13 @@ Biografia: ${biografiaTexto}`;
      * @param {KeyboardEvent} e - The keyboard event
      */
     handleKeyboardNavigation(e) {
-        // Escape key clears selection
+        // Escape key clears selection and cancels share mode
         if (e.key === 'Escape') {
-            this.clearSelection();
+            if (this.isShareMode) {
+                this.toggleShareMode();
+            } else {
+                this.clearSelection();
+            }
             return;
         }
         
@@ -890,20 +881,35 @@ Biografia: ${biografiaTexto}`;
     // ===== COMPARTILHAR LOCALIZAÇÃO =====
 
     /**
-     * Exibe o menu de contexto de compartilhamento na posição do mouse
-     * @param {MouseEvent} e - Evento de contextmenu
+     * Ativa/desativa o modo de seleção de local para compartilhamento
      */
-    showShareContextMenu(e) {
-        this.hideShareContextMenu();
+    toggleShareMode() {
+        this.isShareMode = !this.isShareMode;
+        const btn = document.getElementById('share-location-btn');
+        const floorPlan = document.getElementById('floor-plan');
 
+        if (this.isShareMode) {
+            btn.textContent = '❌ Cancelar';
+            btn.classList.add('active');
+            floorPlan.style.cursor = 'crosshair';
+            this.updateInstructions('📍 Clique em qualquer ponto do mapa para gerar o link de compartilhamento');
+        } else {
+            btn.textContent = '📍 Compartilhar';
+            btn.classList.remove('active');
+            floorPlan.style.cursor = '';
+            this.updateInstructions();
+        }
+    }
+
+    /**
+     * Processa o clique no mapa durante o modo de compartilhamento
+     * @param {MouseEvent} e
+     */
+    handleShareClick(e) {
         const floorPlan = document.getElementById('floor-plan');
         const planRect   = floorPlan.getBoundingClientRect();
-
-        const displayX = e.clientX - planRect.left;
-        const displayY = e.clientY - planRect.top;
-
-        // Garantia de que o clique está dentro da imagem
-        if (displayX < 0 || displayY < 0 || displayX > planRect.width || displayY > planRect.height) return;
+        const displayX   = e.clientX - planRect.left;
+        const displayY   = e.clientY - planRect.top;
 
         const scaleX   = floorPlan.naturalWidth  / floorPlan.offsetWidth;
         const scaleY   = floorPlan.naturalHeight / floorPlan.offsetHeight;
@@ -913,41 +919,17 @@ Biografia: ${biografiaTexto}`;
         const roomMarker = e.target.closest('.room-marker');
         const roomName   = roomMarker ? roomMarker.getAttribute('data-room') : null;
 
-        const icon  = roomName ? '🏷️' : '📍';
-        const label = roomName ? `Compartilhar sala ${roomName}` : 'Compartilhar este local';
+        const url = this.generateShareLink(naturalX, naturalY, roomName);
+        this.copyShareLink(url);
 
-        const menu = document.createElement('div');
-        menu.className = 'share-context-menu';
-        menu.style.left = `${e.clientX}px`;
-        menu.style.top  = `${e.clientY}px`;
-        menu.innerHTML  = `
-            <div class="share-context-item" id="share-context-action">
-                <span class="share-context-icon">${icon}</span>
-                <span>${label}</span>
-            </div>
-        `;
+        // Mostrar pin visual apenas para locais não cadastrados
+        // Para salas, o próprio marcador já serve como indicador visual
+        if (!roomName) {
+            this.showSharedPin(naturalX, naturalY);
+        }
 
-        document.body.appendChild(menu);
-
-        requestAnimationFrame(() => {
-            const menuRect = menu.getBoundingClientRect();
-            if (menuRect.right  > window.innerWidth)  menu.style.left = `${e.clientX - menuRect.width}px`;
-            if (menuRect.bottom > window.innerHeight) menu.style.top  = `${e.clientY - menuRect.height}px`;
-        });
-
-        menu.querySelector('#share-context-action').addEventListener('click', () => {
-            const url = this.generateShareLink(naturalX, naturalY, roomName);
-            this.copyShareLink(url);
-            this.hideShareContextMenu();
-        });
-    }
-
-    /**
-     * Remove o menu de contexto de compartilhamento
-     */
-    hideShareContextMenu() {
-        const existing = document.querySelector('.share-context-menu');
-        if (existing) existing.remove();
+        // Desativar modo após selecionar
+        this.toggleShareMode();
     }
 
     /**
