@@ -436,6 +436,15 @@ class TerreoRooms {
         });
 
         // Menu de contexto para compartilhar localização (botão direito em qualquer ponto do mapa)
+        // Listener na imagem captura cliques em área vazia do mapa
+        const floorPlanEl = document.getElementById('floor-plan');
+        floorPlanEl.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Evita disparar duas vezes no map-wrapper
+            this.showShareContextMenu(e);
+        });
+
+        // Listener no map-wrapper captura cliques sobre os marcadores (room-marker, landmark-marker)
         const mapWrapper = document.querySelector('.map-wrapper');
         mapWrapper.addEventListener('contextmenu', (e) => {
             e.preventDefault();
@@ -1147,19 +1156,13 @@ Biografia: ${biografiaTexto}`;
         this.hideShareContextMenu();
 
         const floorPlan = document.getElementById('floor-plan');
-        // Usar getBoundingClientRect da imagem para calcular coordenadas corretas
-        // independente de onde no map-wrapper o clique ocorreu
         const planRect   = floorPlan.getBoundingClientRect();
-
-        // Verificar se o clique foi dentro da área da imagem
-        const insidePlan = (
-            e.clientX >= planRect.left && e.clientX <= planRect.right &&
-            e.clientY >= planRect.top  && e.clientY <= planRect.bottom
-        );
-        if (!insidePlan) return;
 
         const displayX = e.clientX - planRect.left;
         const displayY = e.clientY - planRect.top;
+
+        // Garantia de que o clique está dentro da imagem
+        if (displayX < 0 || displayY < 0 || displayX > planRect.width || displayY > planRect.height) return;
 
         const scaleX   = floorPlan.naturalWidth  / floorPlan.offsetWidth;
         const scaleY   = floorPlan.naturalHeight / floorPlan.offsetHeight;
