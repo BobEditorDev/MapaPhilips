@@ -146,6 +146,9 @@ class MezaninoRooms {
         console.log(`Mezanino Displayed aspect ratio: ${displayedAspectRatio.toFixed(3)}`);
         console.log(`Mezanino Scale X: ${(displayedWidth / floorPlan.naturalWidth).toFixed(4)}`);
         console.log(`Mezanino Scale Y: ${(displayedHeight / floorPlan.naturalHeight).toFixed(4)}`);
+
+        // Verificar se há parâmetros de compartilhamento na URL após o overlay estar pronto
+        this.checkShareParams();
     }
 
     /**
@@ -198,6 +201,24 @@ class MezaninoRooms {
             console.log(`Coordenada clicada no mezanino: x=${coordX}, y=${coordY}`);
             this.showTemporaryMessage(`Coordenada: x=${coordX}, y=${coordY}`);
         });
+
+        // Menu de contexto para compartilhar localização (botão direito)
+        overlay.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.showShareContextMenu(e);
+        });
+
+        // Fechar menu de contexto ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.share-context-menu')) {
+                this.hideShareContextMenu();
+            }
+        });
+
+        // Fechar menu de contexto ao pressionar Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.hideShareContextMenu();
+        }, { capture: true });
     }
 
     /**
@@ -210,8 +231,12 @@ class MezaninoRooms {
         if (searchTerm === '') {
             this.filteredRooms = [...this.rooms];
         } else {
-            this.filteredRooms = this.rooms.filter(room => 
-                room.nome.toLowerCase().includes(searchTerm)
+            // CORREÇÃO COPILOT: Busca por nome, código e equipamentos
+            // MOTIVO: Usuários podem buscar por "M-MR01" ou "Wireless" além do nome
+            this.filteredRooms = this.rooms.filter(room =>
+                room.nome.toLowerCase().includes(searchTerm) ||
+                room.codigo.toLowerCase().includes(searchTerm) ||
+                (room.equipamentos && room.equipamentos.toLowerCase().includes(searchTerm))
             );
         }
         
@@ -438,26 +463,26 @@ class MezaninoRooms {
      * @param {string} message - Mensagem a ser anunciada
      */
     announceToScreenReader(message) {
-        // Criar elemento de anúncio temporário
-        const announcer = document.createElement('div');
-        announcer.setAttribute('aria-live', 'polite');
-        announcer.setAttribute('aria-atomic', 'true');
-        announcer.className = 'sr-only';
-        announcer.style.position = 'absolute';
-        announcer.style.left = '-10000px';
-        announcer.style.width = '1px';
-        announcer.style.height = '1px';
-        announcer.style.overflow = 'hidden';
-        
-        document.body.appendChild(announcer);
-        announcer.textContent = message;
-        
-        // Remover após 1 segundo
-        setTimeout(() => {
-            if (document.body.contains(announcer)) {
-                document.body.removeChild(announcer);
-            }
-        }, 1000);
+        // CORREÇÃO COPILOT: Reutilizar elemento de anúncio fixo no DOM em vez de criar/destruir a cada chamada
+        // MOTIVO: Evitar thrashing de DOM e garantir leitores de tela mais responsivos
+        let announcer = document.getElementById('sr-announcer');
+        if (!announcer) {
+            announcer = document.createElement('div');
+            announcer.id = 'sr-announcer';
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
+            announcer.style.position = 'absolute';
+            announcer.style.left = '-10000px';
+            announcer.style.width = '1px';
+            announcer.style.height = '1px';
+            announcer.style.overflow = 'hidden';
+            document.body.appendChild(announcer);
+        }
+        // Limpar antes de definir novo texto garante que leitores de tela re-anunciem
+        announcer.textContent = '';
+        requestAnimationFrame(() => {
+            announcer.textContent = message;
+        });
     }
 
     /**
@@ -522,11 +547,14 @@ class MezaninoRooms {
         marker.style.transform = 'translate(-50%, -50%)';   
         
         // Add content and tooltip with intelligent positioning
+        // CORREÇÃO COPILOT: Tooltip exibe capacidade e equipamentos além do nome
+        // MOTIVO: Informações úteis sem precisar clicar na sala
         marker.innerHTML = `
             <span class="marker-label">${room.nome}</span>
             <div class="marker-tooltip" id="tooltip-${room.nome}">
                 <strong>${room.nome}</strong><br>
-                Andar: Mezanino
+                Capacidade: ${room.capacidade} pessoas<br>
+                ${room.equipamentos}
             </div>
         `;
         
@@ -666,6 +694,12 @@ class MezaninoRooms {
         const room = this.rooms.find(r => r.nome === roomName);
         if (!room) return;
         
+        // CORREÇÃO COPILOT: Extrair texto da biografia independente do formato (objeto ou string)
+        // MOTIVO: Evitar que [object Object] seja copiado para a área de transferência
+        const biografiaTexto = typeof room.biografia === 'object' && room.biografia.resumo
+            ? room.biografia.resumo
+            : (room.biografia || 'Não disponível');
+
         const roomInfo = `Sala: ${room.nome}
 Código: ${room.codigo}
 Outlook: ${room.codigoOutlook}
@@ -673,7 +707,7 @@ Capacidade: ${room.capacidade} pessoas
 Equipamentos: ${room.equipamentos}
 Andar: Mezanino
         
-Biografia: ${room.biografia}`;
+Biografia: ${biografiaTexto}`;
         
         if (navigator.clipboard) {
             navigator.clipboard.writeText(roomInfo).then(() => {
@@ -841,6 +875,160 @@ Biografia: ${room.biografia}`;
      */
     getAllRooms() {
         return this.rooms;
+    }
+
+    // ===== COMPARTILHAR LOCALIZAÇÃO =====
+
+    /**
+     * Exibe o menu de contexto de compartilhamento na posição do mouse
+     * @param {MouseEvent} e - Evento de contextmenu
+     */
+    showShareContextMenu(e) {
+        this.hideShareContextMenu();
+
+        const floorPlan = document.getElementById('floor-plan');
+        const overlay   = document.getElementById('rooms-overlay');
+        const rect       = overlay.getBoundingClientRect();
+
+        const displayX = e.clientX - rect.left;
+        const displayY = e.clientY - rect.top;
+
+        const scaleX   = floorPlan.offsetWidth  / floorPlan.naturalWidth;
+        const scaleY   = floorPlan.offsetHeight / floorPlan.naturalHeight;
+        const naturalX = Math.round(displayX / scaleX);
+        const naturalY = Math.round(displayY / scaleY);
+
+        const roomMarker = e.target.closest('.room-marker');
+        const roomName   = roomMarker ? roomMarker.getAttribute('data-room') : null;
+
+        const icon  = roomName ? '🏷️' : '📍';
+        const label = roomName ? `Compartilhar sala ${roomName}` : 'Compartilhar este local';
+
+        const menu = document.createElement('div');
+        menu.className = 'share-context-menu';
+        menu.style.left = `${e.clientX}px`;
+        menu.style.top  = `${e.clientY}px`;
+        menu.innerHTML  = `
+            <div class="share-context-item" id="share-context-action">
+                <span class="share-context-icon">${icon}</span>
+                <span>${label}</span>
+            </div>
+        `;
+
+        document.body.appendChild(menu);
+
+        requestAnimationFrame(() => {
+            const menuRect = menu.getBoundingClientRect();
+            if (menuRect.right  > window.innerWidth)  menu.style.left = `${e.clientX - menuRect.width}px`;
+            if (menuRect.bottom > window.innerHeight) menu.style.top  = `${e.clientY - menuRect.height}px`;
+        });
+
+        menu.querySelector('#share-context-action').addEventListener('click', () => {
+            const url = this.generateShareLink(naturalX, naturalY, roomName);
+            this.copyShareLink(url);
+            this.hideShareContextMenu();
+        });
+    }
+
+    /**
+     * Remove o menu de contexto de compartilhamento
+     */
+    hideShareContextMenu() {
+        const existing = document.querySelector('.share-context-menu');
+        if (existing) existing.remove();
+    }
+
+    /**
+     * Gera o link de compartilhamento
+     * @param {number} naturalX - Coordenada X natural da imagem
+     * @param {number} naturalY - Coordenada Y natural da imagem
+     * @param {string|null} roomName - Nome da sala (se houver)
+     * @returns {string} URL de compartilhamento
+     */
+    generateShareLink(naturalX, naturalY, roomName) {
+        const base = `${window.location.origin}${window.location.pathname}`;
+        if (roomName) {
+            return `${base}?sala=${encodeURIComponent(roomName)}`;
+        }
+        return `${base}?px=${naturalX}&py=${naturalY}`;
+    }
+
+    /**
+     * Copia o link de compartilhamento para a área de transferência
+     * @param {string} url - URL a ser copiada
+     */
+    copyShareLink(url) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(url)
+                .then(() => this.showTemporaryMessage('🔗 Link copiado! Compartilhe para abrir este local no mapa.'))
+                .catch(() => this.fallbackCopyToClipboard(url));
+        } else {
+            this.fallbackCopyToClipboard(url);
+        }
+    }
+
+    /**
+     * Verifica os parâmetros de compartilhamento na URL e destaca o local
+     */
+    checkShareParams() {
+        const params = new URLSearchParams(window.location.search);
+        const sala   = params.get('sala');
+        const px     = params.get('px');
+        const py     = params.get('py');
+
+        if (sala) {
+            const roomName = decodeURIComponent(sala);
+            const room = this.rooms.find(r => r.nome === roomName);
+            if (room) {
+                setTimeout(() => {
+                    this.selectRoom(room.nome);
+                    this.showTemporaryMessage(`📍 Local compartilhado: sala ${room.nome}`);
+                }, 300);
+            }
+        } else if (px && py) {
+            const naturalX = parseInt(px, 10);
+            const naturalY = parseInt(py, 10);
+            if (!isNaN(naturalX) && !isNaN(naturalY)) {
+                setTimeout(() => this.showSharedPin(naturalX, naturalY), 300);
+            }
+        }
+    }
+
+    /**
+     * Exibe um pin de localização compartilhada no mapa
+     * @param {number} naturalX - Coordenada X natural da imagem
+     * @param {number} naturalY - Coordenada Y natural da imagem
+     */
+    showSharedPin(naturalX, naturalY) {
+        const overlay   = document.getElementById('rooms-overlay');
+        const floorPlan = document.getElementById('floor-plan');
+
+        overlay.querySelector('.shared-pin')?.remove();
+
+        const scaleX   = floorPlan.offsetWidth  / floorPlan.naturalWidth;
+        const scaleY   = floorPlan.offsetHeight / floorPlan.naturalHeight;
+        const displayX = Math.round(naturalX * scaleX);
+        const displayY = Math.round(naturalY * scaleY);
+
+        const pin = document.createElement('div');
+        pin.className  = 'shared-pin';
+        pin.style.left = `${displayX}px`;
+        pin.style.top  = `${displayY}px`;
+        pin.innerHTML  = `
+            <span class="shared-pin-icon">📍</span>
+            <div class="shared-pin-label">Local compartilhado</div>
+        `;
+
+        overlay.appendChild(pin);
+
+        const mapWrapper = document.querySelector('.map-wrapper');
+        mapWrapper.scrollTo({
+            top: Math.max(0, displayY - mapWrapper.clientHeight / 2),
+            behavior: 'smooth'
+        });
+
+        this.showTemporaryMessage('📍 Local compartilhado destacado no mapa.');
+        this.updateInstructions('📍 Local compartilhado destacado no mapa');
     }
 }
 
