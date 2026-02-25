@@ -203,20 +203,20 @@ class MezaninoRooms {
         });
 
         // Menu de contexto para compartilhar localização (botão direito em qualquer ponto do mapa)
-        // Listener na imagem captura cliques em área vazia do mapa
-        const floorPlanEl = document.getElementById('floor-plan');
-        floorPlanEl.addEventListener('contextmenu', (e) => {
+        // Usar capture:true no document garante que preventDefault() é chamado ANTES
+        // do browser processar o menu nativo da <img> ("Salvar imagem como...")
+        document.addEventListener('contextmenu', (e) => {
+            const floorPlan = document.getElementById('floor-plan');
+            if (!floorPlan) return;
+            const planRect = floorPlan.getBoundingClientRect();
+            const inside = (
+                e.clientX >= planRect.left && e.clientX <= planRect.right &&
+                e.clientY >= planRect.top  && e.clientY <= planRect.bottom
+            );
+            if (!inside) return;
             e.preventDefault();
-            e.stopPropagation(); // Evita disparar duas vezes no map-wrapper
             this.showShareContextMenu(e);
-        });
-
-        // Listener no map-wrapper captura cliques sobre os marcadores (room-marker, landmark-marker)
-        const mapWrapper = document.querySelector('.map-wrapper');
-        mapWrapper.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            this.showShareContextMenu(e);
-        });
+        }, { capture: true });
 
         // Fechar menu de contexto ao clicar fora
         document.addEventListener('click', (e) => {
