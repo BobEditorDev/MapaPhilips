@@ -435,9 +435,9 @@ class TerreoRooms {
             this.handleResize();
         });
 
-        // Menu de contexto para compartilhar localização (botão direito)
-        const overlay = document.getElementById('rooms-overlay');
-        overlay.addEventListener('contextmenu', (e) => {
+        // Menu de contexto para compartilhar localização (botão direito em qualquer ponto do mapa)
+        const mapWrapper = document.querySelector('.map-wrapper');
+        mapWrapper.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             this.showShareContextMenu(e);
         });
@@ -1147,20 +1147,25 @@ Biografia: ${biografiaTexto}`;
         this.hideShareContextMenu();
 
         const floorPlan = document.getElementById('floor-plan');
-        const overlay   = document.getElementById('rooms-overlay');
-        const rect       = overlay.getBoundingClientRect();
+        // Usar getBoundingClientRect da imagem para calcular coordenadas corretas
+        // independente de onde no map-wrapper o clique ocorreu
+        const planRect   = floorPlan.getBoundingClientRect();
 
-        // Coordenadas dentro do overlay (exibidas)
-        const displayX = e.clientX - rect.left;
-        const displayY = e.clientY - rect.top;
+        // Verificar se o clique foi dentro da área da imagem
+        const insidePlan = (
+            e.clientX >= planRect.left && e.clientX <= planRect.right &&
+            e.clientY >= planRect.top  && e.clientY <= planRect.bottom
+        );
+        if (!insidePlan) return;
 
-        // Converter para coordenadas naturais da imagem
-        const scaleX   = floorPlan.offsetWidth  / floorPlan.naturalWidth;
-        const scaleY   = floorPlan.offsetHeight / floorPlan.naturalHeight;
-        const naturalX = Math.round(displayX / scaleX);
-        const naturalY = Math.round(displayY / scaleY);
+        const displayX = e.clientX - planRect.left;
+        const displayY = e.clientY - planRect.top;
 
-        // Verificar se o clique foi sobre um marcador de sala
+        const scaleX   = floorPlan.naturalWidth  / floorPlan.offsetWidth;
+        const scaleY   = floorPlan.naturalHeight / floorPlan.offsetHeight;
+        const naturalX = Math.round(displayX * scaleX);
+        const naturalY = Math.round(displayY * scaleY);
+
         const roomMarker = e.target.closest('.room-marker');
         const roomName   = roomMarker ? roomMarker.getAttribute('data-room') : null;
 
