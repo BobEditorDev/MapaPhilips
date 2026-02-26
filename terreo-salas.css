@@ -587,25 +587,35 @@ header p {
     background: #f0f0f0;
 }
 
-/* Floor plan image sizing */
-#floor-plan {
-    width: 95%;
-    /* height: 100%; */
-    object-fit: contain;
+/* Container interno do mapa - controla o zoom real */
+.map-inner {
+    position: relative;
     display: block;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
+    /* Largura inicial: 95% do map-wrapper, sobrescrita em px pelo JS ao inicializar */
+    width: 95%;
+    /* Sem transition para manter marcadores sincronizados com a imagem */
 }
 
-/* Rooms overlay - matches exact image dimensions */
+/* Floor plan image sizing */
+#floor-plan {
+    width: 100%; /* sempre 100% do map-inner */
+    height: auto;
+    display: block;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Rooms overlay - cobre exatamente o map-inner */
 .rooms-overlay {
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    height: auto;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 100;
 }
@@ -668,6 +678,29 @@ header p {
     background: #0066cc;
     color: white;
     transform: translateY(-1px);
+}
+
+/* Botões de zoom */
+.zoom-btn {
+    padding: 3px 7px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    min-width: 24px;
+    line-height: 1;
+}
+
+/* Indicador do nível de zoom */
+.zoom-level-display {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #0066cc;
+    min-width: 36px;
+    text-align: center;
+    padding: 2px 2px;
+    background: #e8f0ff;
+    border: 1px solid #cce0ff;
+    border-radius: 3px;
+    line-height: 1.6;
 }
 
 /* Room markers */

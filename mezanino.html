@@ -46,13 +46,19 @@
             
             <!-- Floor Plan Map -->
             <section class="map-container">
-                <div class="map-wrapper">
-                    <img id="floor-plan" src="Mesanino.png" alt="Planta Baixa do Mezanino">
-                    <div id="rooms-overlay" class="rooms-overlay"></div>
+                <div class="map-wrapper" id="map-wrapper">
+                    <div class="map-inner" id="map-inner">
+                        <img id="floor-plan" src="Mesanino.png" alt="Planta Baixa do Mezanino">
+                        <div id="rooms-overlay" class="rooms-overlay"></div>
+                    </div>
                 </div>
                 <div class="map-footer">
                     <span id="instruction-text" class="instruction-text">Clique em uma sala da lista para destacar sua localização</span>
                     <div class="map-controls">
+                        <button id="zoom-out-btn" class="control-btn zoom-btn" title="Diminuir zoom (Ctrl+Scroll)">−</button>
+                        <span id="zoom-level" class="zoom-level-display">100%</span>
+                        <button id="zoom-in-btn" class="control-btn zoom-btn" title="Aumentar zoom (Ctrl+Scroll)">+</button>
+                        <button id="zoom-reset-btn" class="control-btn zoom-btn" title="Resetar zoom">⊙</button>
                         <button id="show-all-btn" class="control-btn">Todas</button>
                         <button id="hide-all-btn" class="control-btn">Ocultar</button>
                         <button id="share-location-btn" class="control-btn share-btn" onclick="if(window.mezaninoRooms){window.mezaninoRooms.toggleShareMode();}else{console.error('[share] window.mezaninoRooms não disponível');}">📍 Compartilhar</button>

@@ -345,6 +345,13 @@ class TerreoRooms {
         this.filteredRooms = [...this.rooms];
         this.allMarkersVisible = false;
         this.isShareMode = false;
+        // Controle de zoom
+        this.zoomLevel = 1.0;
+        this.minZoom = 0.5;
+        this.maxZoom = 4.0;
+        this.zoomStep = 0.25;
+        this.baseImageWidth = 0;
+        this.baseImageHeight = 0;
         this.init();
     }
     init() {
@@ -383,24 +390,24 @@ class TerreoRooms {
      */
     setupOverlay() {
         const floorPlan = document.getElementById('floor-plan');
-        const overlay = document.getElementById('rooms-overlay');
-        
-        // Get the displayed dimensions of the image (95% width, auto height)
+        const mapInner = document.getElementById('map-inner');
+
+        // Limpa qualquer largura inline anterior para ler o tamanho base real
+        mapInner.style.width = '';
+
+        // Lê as dimensões reais do mapa exibidas pelo CSS (95% do wrapper)
         const displayedWidth = floorPlan.offsetWidth;
         const displayedHeight = floorPlan.offsetHeight;
-        
-        // Set overlay to match the exact displayed image size
-        overlay.style.width = `${displayedWidth}px`;
-        overlay.style.height = `${displayedHeight}px`;
-        
-        // Calculate aspect ratio to ensure proper scaling
-        const naturalAspectRatio = floorPlan.naturalWidth / floorPlan.naturalHeight;
-        const displayedAspectRatio = displayedWidth / displayedHeight;
-        
-        console.log(`Overlay set to: ${displayedWidth}x${displayedHeight}px`);
+
+        // Salva as dimensões base (zoom = 1)
+        this.baseImageWidth = displayedWidth;
+        this.baseImageHeight = displayedHeight;
+
+        // Aplica o zoom atual (se já estava aumentado antes de um resize)
+        this.applyZoom(this.zoomLevel, false);
+
+        console.log(`[zoom] Overlay inicializado: ${displayedWidth}x${displayedHeight}px | zoom: ${this.zoomLevel}`);
         console.log(`Image natural size: ${floorPlan.naturalWidth}x${floorPlan.naturalHeight}px`);
-        console.log(`Natural aspect ratio: ${naturalAspectRatio.toFixed(3)}`);
-        console.log(`Displayed aspect ratio: ${displayedAspectRatio.toFixed(3)}`);
         console.log(`Scale X: ${(displayedWidth / floorPlan.naturalWidth).toFixed(4)}`);
         console.log(`Scale Y: ${(displayedHeight / floorPlan.naturalHeight).toFixed(4)}`);
 
@@ -438,6 +445,26 @@ class TerreoRooms {
         window.addEventListener('resize', () => {
             this.handleResize();
         });
+
+        // Zoom controls
+        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const zoomOutBtn = document.getElementById('zoom-out-btn');
+        const zoomResetBtn = document.getElementById('zoom-reset-btn');
+        if (zoomInBtn) zoomInBtn.addEventListener('click', () => this.zoomIn());
+        if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => this.zoomOut());
+        if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => this.resetZoom());
+
+        // Ctrl + scroll do mouse para zoom
+        const mapWrapperEl2 = document.getElementById('map-wrapper');
+        if (mapWrapperEl2) {
+            mapWrapperEl2.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    if (e.deltaY < 0) this.zoomIn();
+                    else this.zoomOut();
+                }
+            }, { passive: false });
+        }
 
         // Botão de compartilhar localização
         // NOTA: o handler primário é o onclick inline no HTML.
@@ -896,8 +923,9 @@ class TerreoRooms {
         
         const mapWrapper = document.querySelector('.map-wrapper');
         const floorPlan = document.getElementById('floor-plan');
+        const mapInner = document.getElementById('map-inner');
         
-        // Calculate scale factor: displayed size vs natural size
+        // Calculate scale factor: displayed size vs natural size (inclui zoom)
         const scaleX = floorPlan.offsetWidth / floorPlan.naturalWidth;
         const scaleY = floorPlan.offsetHeight / floorPlan.naturalHeight;
         
@@ -905,14 +933,19 @@ class TerreoRooms {
         const roomX = room.coordenadas.x * scaleX;
         const roomY = room.coordenadas.y * scaleY;
         
+        // Offset do map-inner dentro da área de scroll (quando centralizado por margin: auto)
+        const mapInnerLeft = mapInner ? mapInner.offsetLeft : 0;
+        const absoluteRoomX = mapInnerLeft + roomX;
+        
         // Center the map on the room
         const containerRect = mapWrapper.getBoundingClientRect();
-        const centerX = roomX - containerRect.width / 2;
-        const centerY = roomY - containerRect.height / 2;
+        const scrollLeft = absoluteRoomX - containerRect.width / 2;
+        const scrollTop = roomY - containerRect.height / 2;
         
-        // Smooth scroll to the room (only vertical)
+        // Smooth scroll com suporte horizontal para zoom > 1
         mapWrapper.scrollTo({
-            top: Math.max(0, centerY),
+            top: Math.max(0, scrollTop),
+            left: Math.max(0, scrollLeft),
             behavior: 'smooth'
         });
         
@@ -1124,9 +1157,9 @@ Biografia: ${biografiaTexto}`;
         // Debounce resize handling
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
-            // Recalculate overlay dimensions
+            // Recalculate overlay dimensions (recalculates baseImageWidth)
             this.setupOverlay();
-            
+
             // Recalculate marker positions
             if (this.selectedRoom) {
                 this.highlightRoomOnMap(this.selectedRoom);
@@ -1134,6 +1167,82 @@ Biografia: ${biografiaTexto}`;
                 this.showAllRooms();
             }
         }, 250);
+    }
+
+    // ===== ZOOM =====
+
+    /**
+     * Aplica o nível de zoom ao mapa, redimensionando o map-inner
+     * @param {number} zoom - Nível de zoom desejado
+     * @param {boolean} rerenderMarkers - Se deve re-renderizar os marcadores (default: true)
+     */
+    applyZoom(zoom, rerenderMarkers = true) {
+        const clampedZoom = Math.min(this.maxZoom, Math.max(this.minZoom, zoom));
+        this.zoomLevel = clampedZoom;
+
+        const mapInner = document.getElementById('map-inner');
+        if (!mapInner || !this.baseImageWidth) return;
+
+        const newWidth = Math.round(this.baseImageWidth * clampedZoom);
+        mapInner.style.width = newWidth + 'px';
+
+        this.updateZoomDisplay();
+
+        if (rerenderMarkers) {
+            // Re-renderiza marcadores visíveis com novas posições
+            requestAnimationFrame(() => {
+                // Re-renderiza landmarks (escadas, elevadores etc.) com novas posições
+                if (window.terreoLandmarks) {
+                    window.terreoLandmarks.clearLandmarkMarkers();
+                    window.terreoLandmarks.renderLandmarks();
+                }
+                if (this.allMarkersVisible) {
+                    this.showAllRooms();
+                } else if (this.selectedRoom) {
+                    this.highlightRoomOnMap(this.selectedRoom);
+                }
+            });
+        }
+
+        console.log(`[zoom] Nível: ${(clampedZoom * 100).toFixed(0)}% | map-inner: ${newWidth}px`);
+    }
+
+    /**
+     * Aumenta o zoom em um passo
+     */
+    zoomIn() {
+        this.applyZoom(this.zoomLevel + this.zoomStep);
+    }
+
+    /**
+     * Diminui o zoom em um passo
+     */
+    zoomOut() {
+        this.applyZoom(this.zoomLevel - this.zoomStep);
+    }
+
+    /**
+     * Reseta o zoom para 100%
+     */
+    resetZoom() {
+        this.applyZoom(1.0);
+        // Rola o mapa de volta ao topo esquerdo
+        const mapWrapper = document.getElementById('map-wrapper');
+        if (mapWrapper) mapWrapper.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * Atualiza o display do nível de zoom na interface
+     */
+    updateZoomDisplay() {
+        const display = document.getElementById('zoom-level');
+        if (display) display.textContent = `${Math.round(this.zoomLevel * 100)}%`;
+
+        // Habilita/desabilita botões nos limites
+        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const zoomOutBtn = document.getElementById('zoom-out-btn');
+        if (zoomInBtn) zoomInBtn.disabled = this.zoomLevel >= this.maxZoom;
+        if (zoomOutBtn) zoomOutBtn.disabled = this.zoomLevel <= this.minZoom;
     }
 
     /**
