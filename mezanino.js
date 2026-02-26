@@ -213,6 +213,9 @@ class MezaninoRooms {
             }, { passive: false });
         }
 
+        // Arrastar o mapa com o mouse
+        this.setupDrag();
+
         // CORREÇÃO COPILOT: Captura de clique no overlay para exibir coordenadas relativas ao mapa
         // MOTIVO: Facilitar cadastro de novas salas e depuração visual
         // NOTA: Ignorado durante o modo de compartilhamento para evitar conflito de mensagem
@@ -986,6 +989,58 @@ Biografia: ${biografiaTexto}`;
         const zoomOutBtn = document.getElementById('zoom-out-btn');
         if (zoomInBtn) zoomInBtn.disabled = this.zoomLevel >= this.maxZoom;
         if (zoomOutBtn) zoomOutBtn.disabled = this.zoomLevel <= this.minZoom;
+    }
+
+    // ===== DRAG TO PAN =====
+
+    /**
+     * Ativa o arrasto do mapa com o mouse (drag-to-pan)
+     * Distingue arrasto de clique: movimentos < 4px são tratados como clique
+     */
+    setupDrag() {
+        const mapWrapper = document.getElementById('map-wrapper');
+        if (!mapWrapper) return;
+
+        let isDragging = false;
+        let hasMoved   = false;
+        let startX = 0, startY = 0;
+        let scrollLeft = 0, scrollTop = 0;
+
+        mapWrapper.addEventListener('mousedown', (e) => {
+            // Ignorar cliques em botões, marcadores e elementos interativos
+            if (e.target.closest('.room-marker, .landmark-marker, .control-btn, .shared-pin')) return;
+            // Apenas botão principal do mouse
+            if (e.button !== 0) return;
+
+            isDragging = true;
+            hasMoved   = false;
+            startX     = e.clientX;
+            startY     = e.clientY;
+            scrollLeft = mapWrapper.scrollLeft;
+            scrollTop  = mapWrapper.scrollTop;
+
+            mapWrapper.classList.add('is-dragging');
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            // Marca como arrasto real após 4px de movimento
+            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) hasMoved = true;
+
+            mapWrapper.scrollLeft = scrollLeft - dx;
+            mapWrapper.scrollTop  = scrollTop  - dy;
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            mapWrapper.classList.remove('is-dragging');
+        });
     }
 
     /**
