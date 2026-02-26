@@ -995,51 +995,59 @@ Biografia: ${biografiaTexto}`;
 
     /**
      * Ativa o arrasto do mapa com o mouse (drag-to-pan)
-     * Distingue arrasto de clique: movimentos < 4px são tratados como clique
+     * Distingue arrasto de clique: movimentos < 5px são tratados como clique
      */
     setupDrag() {
         const mapWrapper = document.getElementById('map-wrapper');
         if (!mapWrapper) return;
 
         let isDragging = false;
-        let hasMoved   = false;
         let startX = 0, startY = 0;
         let scrollLeft = 0, scrollTop = 0;
 
+        // Impede o drag nativo do browser (imagem, texto)
+        mapWrapper.addEventListener('dragstart', (e) => e.preventDefault());
+
         mapWrapper.addEventListener('mousedown', (e) => {
-            // Ignorar cliques em botões, marcadores e elementos interativos
-            if (e.target.closest('.room-marker, .landmark-marker, .control-btn, .shared-pin')) return;
-            // Apenas botão principal do mouse
+            // Apenas botão esquerdo do mouse
             if (e.button !== 0) return;
+            // Ignorar cliques em elementos interativos
+            if (e.target.closest('button, a, .room-marker, .landmark-marker, .shared-pin')) return;
+
+            e.preventDefault();
 
             isDragging = true;
-            hasMoved   = false;
-            startX     = e.clientX;
-            startY     = e.clientY;
+            startX     = e.pageX - mapWrapper.offsetLeft;
+            startY     = e.pageY - mapWrapper.offsetTop;
             scrollLeft = mapWrapper.scrollLeft;
             scrollTop  = mapWrapper.scrollTop;
 
             mapWrapper.classList.add('is-dragging');
-            e.preventDefault();
         });
 
         document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
+            e.preventDefault();
 
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
+            const x = e.pageX - mapWrapper.offsetLeft;
+            const y = e.pageY - mapWrapper.offsetTop;
 
-            // Marca como arrasto real após 4px de movimento
-            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) hasMoved = true;
-
-            mapWrapper.scrollLeft = scrollLeft - dx;
-            mapWrapper.scrollTop  = scrollTop  - dy;
+            mapWrapper.scrollLeft = scrollLeft - (x - startX);
+            mapWrapper.scrollTop  = scrollTop  - (y - startY);
         });
 
-        document.addEventListener('mouseup', (e) => {
+        document.addEventListener('mouseup', () => {
             if (!isDragging) return;
             isDragging = false;
             mapWrapper.classList.remove('is-dragging');
+        });
+
+        // Garante que o cursor volte se o mouse sair da janela
+        document.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                mapWrapper.classList.remove('is-dragging');
+            }
         });
     }
 
