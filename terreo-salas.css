@@ -179,6 +179,21 @@ header p {
     box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
+/* Contador de resultados da busca */
+.search-results-count {
+    font-size: 0.68rem;
+    color: #999;
+    text-align: right;
+    padding: 1px 0;
+    min-height: 14px;
+    transition: color 0.2s ease;
+}
+
+.search-results-count.has-filter {
+    color: #0066cc;
+    font-weight: 600;
+}
+
 /* Rooms list */
 .rooms-list {
     /* flex-grow: 1; */
@@ -312,6 +327,46 @@ header p {
 .room-type-badge.other {
     background: #f8d7da;
     color: #721c24;
+}
+
+/* Metadados inline na lista (capacidade e status) */
+.room-meta {
+    display: flex;
+    gap: 4px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Tag de capacidade */
+.room-capacity-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    border-radius: 8px;
+    background: #e8f0ff;
+    color: #0066cc;
+    font-weight: 500;
+}
+
+/* Badge de sala indisponível (Fechada / Trancada) */
+.room-unavailable-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    border-radius: 8px;
+    background: #f8d7da;
+    color: #721c24;
+    font-weight: 600;
+}
+
+/* Sala indisponível aparece levemente opaca na lista */
+.room-item.unavailable {
+    opacity: 0.6;
+}
+
+.room-item.unavailable:hover {
+    opacity: 0.85;
 }
 
 /* Room info section */
@@ -1153,6 +1208,16 @@ header p {
         font-size: 0.65rem; /* Drasticamente reduzido */
         font-weight: 400;
         line-height: 1.1;
+    }
+
+    /* Ocultar metadados (capacidade/status) em smartphones */
+    .room-meta {
+        display: none;
+    }
+
+    /* Ocultar contador de resultados em smartphones */
+    .search-results-count {
+        display: none;
     }
     
     .room-type-badge {

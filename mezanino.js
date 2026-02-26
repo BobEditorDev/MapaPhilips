@@ -166,10 +166,25 @@ class MezaninoRooms {
      * Bind event listeners to controls and elements
      */
     bindEvents() {
-        // Search input
+        // Search input com debounce de 250ms para evitar re-renders excessivos
         const searchInput = document.getElementById('room-search');
+        let searchDebounce;
         searchInput.addEventListener('input', (e) => {
-            this.filterRooms(e.target.value);
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(() => this.filterRooms(e.target.value), 250);
+        });
+        // ESC no campo de busca limpa o filtro e remove o foco
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation(); // Impede que o handler global esvazie a seleção ainda
+                if (searchInput.value !== '') {
+                    searchInput.value = '';
+                    clearTimeout(searchDebounce);
+                    this.filterRooms('');
+                }
+                searchInput.blur();
+            }
         });
 
         // Map controls
@@ -267,12 +282,14 @@ class MezaninoRooms {
         if (searchTerm === '') {
             this.filteredRooms = [...this.rooms];
         } else {
-            // CORREÇÃO COPILOT: Busca por nome, código e equipamentos
-            // MOTIVO: Usuários podem buscar por "M-MR01" ou "Wireless" além do nome
+            // CORREÇÃO COPILOT: Busca por nome, código, equipamentos e capacidade
+            // MOTIVO: Usuários podem buscar por "M-MR01", "Wireless" ou "10" (pessoas)
+            const capacidadeNum = parseInt(searchTerm, 10);
             this.filteredRooms = this.rooms.filter(room =>
                 room.nome.toLowerCase().includes(searchTerm) ||
                 room.codigo.toLowerCase().includes(searchTerm) ||
-                (room.equipamentos && room.equipamentos.toLowerCase().includes(searchTerm))
+                (room.equipamentos && room.equipamentos.toLowerCase().includes(searchTerm)) ||
+                (!isNaN(capacidadeNum) && capacidadeNum > 0 && room.capacidade >= capacidadeNum)
             );
         }
         
@@ -296,20 +313,50 @@ class MezaninoRooms {
         
         if (this.filteredRooms.length === 0) {
             container.innerHTML = '<p class="empty-message">Nenhuma sala encontrada.</p>';
+            const countEl = document.getElementById('rooms-count');
+            if (countEl) {
+                countEl.textContent = `0 de ${this.rooms.length}`;
+                countEl.classList.add('has-filter');
+            }
             return;
         }
         
         // Sort rooms alphabetically
         const sortedRooms = [...this.filteredRooms].sort((a, b) => a.nome.localeCompare(b.nome));
+
+        // Atualiza o contador de resultados
+        const countEl = document.getElementById('rooms-count');
+        if (countEl) {
+            const total = this.rooms.length;
+            const filtered = sortedRooms.length;
+            if (filtered === total) {
+                countEl.textContent = `${total} sala${total !== 1 ? 's' : ''}`;
+                countEl.classList.remove('has-filter');
+            } else {
+                countEl.textContent = `${filtered} de ${total} sala${total !== 1 ? 's' : ''}`;
+                countEl.classList.add('has-filter');
+            }
+        }
         
-        const roomsHTML = sortedRooms.map(room => `
-            <div class="room-item" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${room.biografia}">
+        const roomsHTML = sortedRooms.map(room => {
+            const isUnavailable = room.equipamentos &&
+                /^(fechada|trancada)$/i.test(room.equipamentos.trim());
+            const capacityTag = !isUnavailable
+                ? `<span class="room-capacity-tag">👥 ${room.capacidade}</span>`
+                : '';
+            const unavailableBadge = isUnavailable
+                ? `<span class="room-unavailable-badge">🔒 ${room.equipamentos}</span>`
+                : '';
+            return `
+            <div class="room-item${isUnavailable ? ' unavailable' : ''}" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${room.biografia}">
                 <div class="room-header">
                     <strong class="room-name">${room.nome}</strong>
                     <span class="room-hint">💡</span>
                 </div>
+                <div class="room-meta">${capacityTag}${unavailableBadge}</div>
             </div>
-        `).join('');
+        `;
+        }).join('');
         
         container.innerHTML = roomsHTML;
         
@@ -839,8 +886,24 @@ Biografia: ${biografiaTexto}`;
      * @param {KeyboardEvent} e - The keyboard event
      */
     handleKeyboardNavigation(e) {
-        // Escape key clears selection and cancels share mode
+        // Tecla "/" foca no campo de busca (padrão de apps de busca)
+        if (e.key === '/' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            const searchInput = document.getElementById('room-search');
+            if (searchInput) searchInput.focus();
+            return;
+        }
+
+        // Escape key: se a busca tem texto, limpa a busca mas não a seleção
         if (e.key === 'Escape') {
+            const searchInput = document.getElementById('room-search');
+            if (searchInput && searchInput.value !== '') {
+                if (document.activeElement !== searchInput) {
+                    searchInput.value = '';
+                    this.filterRooms('');
+                }
+                return;
+            }
             if (this.isShareMode) {
                 this.toggleShareMode();
             } else {
