@@ -1144,7 +1144,7 @@ Biografia: ${biografiaTexto}`;
                 mapWrapper.style.cursor = 'crosshair';
                 this.updateInstructions('📍 Clique em qualquer ponto do mapa para gerar o link de compartilhamento');
             } else {
-                btn.textContent = '📍 Compartilhar';
+                btn.textContent = '📍 Compartilhar local';
                 btn.classList.remove('active');
                 mapWrapper.style.cursor = '';
                 this.updateInstructions();
