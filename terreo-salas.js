@@ -586,12 +586,18 @@ class TerreoRooms {
             const unavailableBadge = isUnavailable
                 ? `<span class="room-unavailable-badge">🔒 ${room.equipamentos}</span>`
                 : '';
+
+            // Tipo da sala para barra lateral colorida (item 1)
+            const roomType = room.codigo.includes('-MR') ? 'reuniao'
+                : room.codigo.includes('-PR') ? 'apresentacao'
+                : room.codigo.includes('-TR') ? 'treinamento'
+                : 'outro';
                 
             return `
-                <div class="room-item${isUnavailable ? ' unavailable' : ''}" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${tooltipText}">
+                <div class="room-item${isUnavailable ? ' unavailable' : ''}" data-room="${room.nome}" data-type="${roomType}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${tooltipText}">
                     <div class="room-header">
                         <strong class="room-name">${room.nome}</strong>
-                        <span class="room-hint">💡</span>
+                        <span class="room-hint" aria-hidden="true"></span>
                     </div>
                     <div class="room-meta">${capacityTag}${unavailableBadge}</div>
                 </div>
@@ -863,7 +869,8 @@ class TerreoRooms {
         
         // Create marker element
         const marker = document.createElement('div');
-        marker.className = `room-marker ${isHighlighted ? 'highlighted' : ''}`;
+        const isUnavailable = room.equipamentos && /^(fechada|trancada)$/i.test(room.equipamentos.trim());
+        marker.className = ['room-marker', isHighlighted ? 'highlighted' : '', isUnavailable ? 'unavailable' : ''].filter(Boolean).join(' ');
         marker.setAttribute('data-room', room.nome);
         
         // Position marker (centralizado exatamente no pixel da coordenada)
