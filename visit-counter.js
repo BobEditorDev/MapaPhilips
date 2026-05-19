@@ -24,7 +24,7 @@ class VisitCounter {
      * Conta apenas uma vez por sessão de navegação
      */
     async incrementVisitCountIntelligent() {
-        const sessionKey = 'mapa-philips-session-counted';
+        const sessionKey = 'mapa-bionexo-tasy-session-counted';
         const hasCountedThisSession = sessionStorage.getItem(sessionKey);
         
         // Só incrementa se não contou nesta sessão ainda
@@ -46,7 +46,7 @@ class VisitCounter {
                     sessionStorage.setItem(sessionKey, 'true');
                     
                     // Sincronizar com localStorage para compatibilidade
-                    localStorage.setItem('mapa-philips-visits', data.visits.toString());
+                    localStorage.setItem('mapa-bionexo-tasy-visits', data.visits.toString());
                 } else {
                     throw new Error('API PostgreSQL não disponível');
                 }
@@ -69,7 +69,7 @@ class VisitCounter {
     incrementVisitCountFallback() {
         let visits = this.getVisitCountFallback();
         visits++;
-        localStorage.setItem('mapa-philips-visits', visits.toString());
+        localStorage.setItem('mapa-bionexo-tasy-visits', visits.toString());
         console.log(`Nova visita registrada localmente (fallback): ${visits}`);
     }
 
@@ -104,7 +104,7 @@ class VisitCounter {
      * @returns {number} - Número de visitas
      */
     getVisitCountFallback() {
-        const visits = localStorage.getItem('mapa-philips-visits');
+        const visits = localStorage.getItem('mapa-bionexo-tasy-visits');
         return visits ? parseInt(visits, 10) : 0;
     }
 
@@ -150,8 +150,8 @@ class VisitCounter {
         }
 
         // Limpar armazenamento local
-        localStorage.removeItem('mapa-philips-visits');
-        sessionStorage.removeItem('mapa-philips-session-counted');
+        localStorage.removeItem('mapa-bionexo-tasy-visits');
+        sessionStorage.removeItem('mapa-bionexo-tasy-session-counted');
         console.log('Visit counter and session reset locally');
     }
 
@@ -159,7 +159,7 @@ class VisitCounter {
      * Forçar nova contagem (útil para testes)
      */
     async forceNewVisit() {
-        sessionStorage.removeItem('mapa-philips-session-counted');
+        sessionStorage.removeItem('mapa-bionexo-tasy-session-counted');
         await this.incrementVisitCountIntelligent();
         await this.displayVisitCount();
         console.log('Forced new visit count');

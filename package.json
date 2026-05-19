@@ -1,7 +1,7 @@
 {
-  "name": "mapa-philips",
+  "name": "mapa-bionexo-tasy",
   "version": "1.0.0",
-  "description": "Mapa interativo do escritório Philips - Térreo e Mezanino",
+  "description": "Mapa interativo do escritório Bionexo Tasy - Térreo e Mezanino",
   "main": "index.html",
   "scripts": {
     "dev": "python3 -m http.server 8000",
@@ -11,7 +11,7 @@
   "keywords": [
     "mapa",
     "escritorio",
-    "philips",
+    "bionexo-tasy",
     "navegacao",
     "terreo",
     "mezanino"
