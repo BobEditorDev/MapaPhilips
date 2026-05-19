@@ -128,10 +128,10 @@ header p {
 .main-content {
     display: grid;
     grid-template-columns: minmax(200px, 280px) 1fr;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 92px); /* 60px header + 32px rodapé fixo (item 9) */
     overflow: hidden;
     min-width: 0; /* Permite que o grid encolha quando necessário */
-    max-height: calc(100vh - 60px); /* Garante que nunca ultrapasse a viewport */
+    max-height: calc(100vh - 92px); /* Garante que nunca ultrapasse a viewport */
 }
 
 /* Rooms panel sidebar */
@@ -170,6 +170,43 @@ header p {
     outline: none;
     border-color: #00838f;
     box-shadow: 0 0 0 3px rgba(0, 131, 143, 0.1);
+}
+
+/* Search input com ícone de lupa (item 3) */
+.search-input-wrapper {
+    position: relative;
+}
+
+.search-input-wrapper::before {
+    content: "🔍";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    pointer-events: none;
+    z-index: 1;
+    line-height: 1;
+    opacity: 0.55;
+}
+
+.search-input-wrapper .search-input {
+    padding-left: 28px;
+}
+
+/* Contador de resultados da busca */
+.search-results-count {
+    font-size: 0.68rem;
+    color: #999;
+    text-align: right;
+    padding: 1px 0;
+    min-height: 14px;
+    transition: color 0.2s ease;
+}
+
+.search-results-count.has-filter {
+    color: #00838f;
+    font-weight: 600;
 }
 
 /* Rooms list */
@@ -241,6 +278,19 @@ header p {
     font-size: 0.9rem;
 }
 
+/* Barra lateral colorida por categoria de sala (item 1) */
+.room-item[data-type="reuniao"] {
+    border-left: 3px solid #00838f;
+}
+
+.room-item[data-type="apresentacao"] {
+    border-left: 3px solid #6f42c1;
+}
+
+.room-item[data-type="treinamento"] {
+    border-left: 3px solid #fd7e14;
+}
+
 .room-header {
     display: flex;
     justify-content: space-between;
@@ -254,21 +304,22 @@ header p {
     font-weight: 600;
 }
 
+/* .room-hint removido */
+
 .room-hint {
-    font-size: 0.7rem;
-    opacity: 0.6;
+    font-size: 0.75rem;
+    color: #adb5bd;
+    opacity: 0;
     transition: opacity 0.2s ease;
+    line-height: 1;
+}
+
+.room-hint::after {
+    content: "›";
 }
 
 .room-item:hover .room-hint {
     opacity: 1;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
 }
 
 .room-coords {
@@ -305,6 +356,46 @@ header p {
 .room-type-badge.other {
     background: #f8d7da;
     color: #721c24;
+}
+
+/* Metadados inline na lista (capacidade e status) */
+.room-meta {
+    display: flex;
+    gap: 4px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Tag de capacidade */
+.room-capacity-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    border-radius: 8px;
+    background: #e8f0ff;
+    color: #00838f;
+    font-weight: 500;
+}
+
+/* Badge de sala indisponível (Fechada / Trancada) */
+.room-unavailable-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    border-radius: 8px;
+    background: #f8d7da;
+    color: #721c24;
+    font-weight: 600;
+}
+
+/* Sala indisponível aparece levemente opaca na lista */
+.room-item.unavailable {
+    opacity: 0.6;
+}
+
+.room-item.unavailable:hover {
+    opacity: 0.85;
 }
 
 /* Room info section */
@@ -354,7 +445,7 @@ header p {
     border-radius: 2px;
     font-weight: bold;
     font-size: 0.8rem;
-    word-break: break-all;
+    overflow-wrap: break-word; /* item 8: quebra no underline em vez de posição arbitrária */
 }
 
 .room-biography {
@@ -580,25 +671,51 @@ header p {
     background: #f0f0f0;
 }
 
-/* Floor plan image sizing */
-#floor-plan {
-    width: 95%;
-    /* height: 100%; */
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
+/* Cursor de arrasto no mapa */
+#map-wrapper {
+    cursor: grab;
 }
 
-/* Rooms overlay - matches exact image dimensions */
+#map-wrapper.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+    /* Desativa cliques nos marcadores durante arrasto */
+}
+
+#map-wrapper.is-dragging .room-marker,
+#map-wrapper.is-dragging .landmark-marker {
+    pointer-events: none;
+}
+
+/* Container interno do mapa - controla o zoom real */
+.map-inner {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    /* Largura inicial: 95% do map-wrapper, sobrescrita em px pelo JS ao inicializar */
+    width: 95%;
+    /* Sem transition para manter marcadores sincronizados com a imagem */
+}
+
+/* Floor plan image sizing */
+#floor-plan {
+    width: 100%; /* sempre 100% do map-inner */
+    height: auto;
+    display: block;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Rooms overlay - cobre exatamente o map-inner */
 .rooms-overlay {
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    height: auto;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 100;
 }
@@ -663,6 +780,54 @@ header p {
     transform: translateY(-1px);
 }
 
+/* Diferenciação visual Todas/Ocultar (item 5) */
+#show-all-btn {
+    background: #00838f;
+    color: white;
+}
+
+#show-all-btn:hover {
+    background: #006f79;
+    color: white;
+}
+
+#hide-all-btn {
+    background: white;
+    color: #00838f;
+}
+
+/* Botões de zoom */
+.zoom-btn {
+    padding: 3px 7px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    min-width: 24px;
+    line-height: 1;
+}
+
+/* Indicador do nível de zoom */
+.zoom-level-display {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #00838f;
+    min-width: 36px;
+    text-align: center;
+    padding: 2px 2px;
+    background: #e8f0ff;
+    border: 1px solid #cce0ff;
+    border-radius: 3px;
+    line-height: 1.6;
+}
+
+/* Botões de zoom desabilitados nos limites (item 7) */
+#zoom-in-btn:disabled,
+#zoom-out-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+    pointer-events: none;
+}
+
 /* Room markers */
 .room-marker {
     position: absolute;
@@ -701,6 +866,19 @@ header p {
     font-size: 18px;
 }
 
+/* Marcador de sala indisponível (Fechada/Trancada) — item 6 */
+.room-marker.unavailable:not(.highlighted) {
+    background: #6c757d;
+    border-color: rgba(255,255,255,0.7);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+    opacity: 0.6;
+}
+
+.room-marker.unavailable:not(.highlighted)::before {
+    content: "🔒";
+    font-size: 12px;
+}
+
 .room-marker:hover,
 .room-marker.hovered {
     transform: translate(-50%, -50%) scale(1.2);
@@ -734,7 +912,7 @@ header p {
     pointer-events: none;
 }
 
-.room-marker:hover .marker-label,
+/* Label só aparece em marcadores destacados — no hover o tooltip já cobre as infos (item 4) */
 .room-marker.highlighted .marker-label {
     opacity: 1;
 }
@@ -875,7 +1053,7 @@ header p {
     
     .main-content {
         grid-template-columns: 1fr;
-        height: calc(100vh - 80px); /* Mais espaço para header maior */
+        height: calc(100vh - 112px); /* 80px header + 32px rodapé fixo (item 9) */
     }
     
     .rooms-panel {
@@ -968,11 +1146,6 @@ header p {
     
     .map-controls {
         display: none; /* Ocultar botões Todas/Ocultar em dispositivos móveis para mais espaço */
-    }
-    
-    /* Reduzir tamanho dos ícones/emojis em tablets */
-    .room-hint {
-        font-size: 0.6rem; /* Reduzido de 0.7rem para 0.6rem */
     }
     
     .room-item.selected::before {
@@ -1098,6 +1271,16 @@ header p {
         font-weight: 400;
         line-height: 1.1;
     }
+
+    /* Ocultar metadados (capacidade/status) em smartphones */
+    .room-meta {
+        display: none;
+    }
+
+    /* Ocultar contador de resultados em smartphones */
+    .search-results-count {
+        display: none;
+    }
     
     .room-type-badge {
         padding: 1px 3px; /* Drasticamente reduzido */
@@ -1116,11 +1299,6 @@ header p {
         font-size: 0.6rem; /* Drasticamente reduzido */
         width: 80px; /* Drasticamente reduzido */
         min-height: 18px; /* Drasticamente reduzido */
-    }
-    
-    /* Reduzir drasticamente ícones/emojis em dispositivos móveis */
-    .room-hint {
-        font-size: 0.35rem; /* Drasticamente reduzido */
     }
     
     .room-item.selected::before {
@@ -1201,7 +1379,7 @@ header p {
     justify-content: center;
     box-shadow: 0 3px 10px rgba(0, 131, 143, 0.3);
     z-index: 150; /* Below room markers but above map */
-    transform: translate(-140%, 0%); /* Posicionamento base - mesma lógica das salas */
+    transform: translate(-50%, -50%); /* Centralizar o marcador exatamente na coordenada */
 }
 
 .landmark-emoji {
@@ -1214,7 +1392,7 @@ header p {
 .landmark-marker.hovered,
 .landmark-marker:focus,
 .landmark-marker.focused {
-    transform: translate(-140%, 0%) scale(1.15); /* Manter posicionamento base + escala */
+    transform: translate(-50%, -50%) scale(1.15);
     border-color: #006f79;
     box-shadow: 0 4px 15px rgba(0, 131, 143, 0.5);
     z-index: 250;
@@ -1229,8 +1407,8 @@ header p {
 }
 
 @keyframes landmarkPulse {
-    0%, 100% { transform: translate(-220%, -0%) scale(1.15); }
-    50% { transform: translate(-220%, -0%) scale(1.3); }
+    0%, 100% { transform: translate(-50%, -50%) scale(1.15); }
+    50% { transform: translate(-50%, -50%) scale(1.3); }
 }
 
 /* Landmark tooltip - posicionamento inteligente */
@@ -1404,7 +1582,7 @@ header p {
     
     .room-marker:hover,
     .landmark-marker:hover {
-        transform: translate(-220%, -0%); /* Manter posicionamento sem escala no reduced motion */
+        transform: translate(-50%, -50%); /* Manter posicionamento sem escala no reduced motion */
     }
     
     .control-btn:hover,
@@ -1844,4 +2022,113 @@ header p {
 .visit-number {
     color: #00838f;
     font-weight: 600;
+}
+
+/* Botão compartilhar */
+.share-btn {
+    background: #00838f;
+    color: white;
+    border-color: #00838f;
+}
+.share-btn:hover {
+    background: #006f79;
+    color: white;
+    border-color: #006f79;
+}
+.share-btn.active {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    animation: shareActivate 0.25s ease; /* item 2: feedback visual de ativação */
+}
+
+@keyframes shareActivate {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.07); }
+    100% { transform: scale(1); }
+}
+.share-btn.active:hover {
+    background: #b02a37;
+    border-color: #b02a37;
+}
+
+/* ===== COMPARTILHAR LOCALIZAÇÃO =====
+
+/* Menu de contexto (botão direito) */
+.share-context-menu {
+    position: fixed;
+    z-index: 9999;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    border: 1px solid #e0e0e0;
+    padding: 4px 0;
+    min-width: 210px;
+    animation: contextMenuFadeIn 0.12s ease;
+    user-select: none;
+}
+
+@keyframes contextMenuFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+    to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+.share-context-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #333;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.share-context-item:hover {
+    background: #f0f7ff;
+    color: #00838f;
+}
+
+.share-context-icon {
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+/* Pin de local compartilhado */
+.shared-pin {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    z-index: 350;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: sharedPinDrop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes sharedPinDrop {
+    from { transform: translate(-50%, -180%); opacity: 0; }
+    to   { transform: translate(-50%, -100%); opacity: 1; }
+}
+
+.shared-pin-icon {
+    font-size: 34px;
+    line-height: 1;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+}
+
+.shared-pin-label {
+    background: #dc3545; /* item 10: alinhado à paleta principal */
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    text-align: center;
+    margin-top: 3px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }

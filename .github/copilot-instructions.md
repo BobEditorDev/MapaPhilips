@@ -46,9 +46,11 @@
 - Responsividade completa para dispositivos móveis
 
 **Testes:**
-- Testes manuais de interação
-- Verificação de console
-- Testes de acessibilidade e responsividade
+- O ambiente de testes é o **Vercel** (deploy automático via `git push`)
+- Testes manuais de interação realizados no deploy do Vercel
+- Verificação de console no browser após deploy
+- Testes de acessibilidade e responsividade no ambiente Vercel
+- **NUNCA sugerir ou executar servidores locais** (python, npx http-server, etc.)
 
 ### Padrões de Implementação
 
@@ -68,6 +70,8 @@
 
 ## 4. Fluxo de Desenvolvimento
 
+> ⚠️ **IMPORTANTE:** O ambiente de testes é o **Vercel**. **Nunca** executar ou sugerir servidores locais (`python3 -m http.server`, `npx http-server`, `live-server`, etc.). Após as alterações, o usuário faz o deploy via `push.sh`.
+
 ### Ao Receber uma Pergunta sobre Implementação
 
 1. **Consulte as instruções existentes** primeiro
@@ -86,22 +90,13 @@
 
 ## 5. Comandos e Scripts Úteis
 
-**Quando sugerir comandos para execução local:**
+**Ambiente de Testes: Vercel**
+- Todo teste é realizado via deploy no **Vercel** após `git push`
+- **NUNCA executar ou sugerir servidores locais** como `python3 -m http.server`, `npx http-server`, etc.
+- O script `push.sh` realiza o commit e push para o repositório, acionando o deploy automático no Vercel
 
-**Desenvolvimento:**
-- `python3 -m http.server 8000` - Método mais rápido (~17ms)
-- `npx http-server -p 8000` - Alternativa (requer download inicial)
-
-**Testes:**
-- Abrir `http://localhost:8000` em navegadores modernos
-- Verificar console para mensagens e erros
-- Redimensionar para teste responsivo (768px para mobile)
-
-**Validação:**
+**Validação de arquivos (sem servidor):**
 ```bash
-# Teste de resposta do servidor
-curl -I http://localhost:8000/
-
 # Verificar tamanhos dos arquivos
 ls -la *.html *.css *.js
 
@@ -134,7 +129,7 @@ html5validator index.html
 
 ### Métricas de Performance
 - **Tamanho Total**: ~23KB (7.8KB HTML + 5.4KB CSS + 9.9KB JS)
-- **Tempo de Carregamento**: <20ms em servidor local
+- **Tempo de Carregamento**: <100ms no Vercel
 - **Requisitos de Navegador**: Chrome 60+, Firefox 55+, Safari 12+, Edge 79+
 - **Sem Dependências**: Zero bibliotecas ou frameworks externos
 

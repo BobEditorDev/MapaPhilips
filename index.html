@@ -26,7 +26,10 @@
             <aside class="rooms-panel">
                 <div class="search-section">
                     <h2>Buscar Sala</h2>
-                    <input type="text" id="room-search" class="search-input" placeholder="Digite o nome da sala...">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="room-search" class="search-input" placeholder="Digite o nome, código ou nº de pessoas...">
+                    </div>
+                    <div id="rooms-count" class="search-results-count"></div>
                 </div>
                 
                 <div class="rooms-list">
@@ -46,15 +49,22 @@
             
             <!-- Floor Plan Map -->
             <section class="map-container">
-                <div class="map-wrapper">
-                    <img id="floor-plan" src="terreo.png" alt="Planta Baixa do Térreo">
-                    <div id="rooms-overlay" class="rooms-overlay"></div>
+                <div class="map-wrapper" id="map-wrapper">
+                    <div class="map-inner" id="map-inner">
+                        <img id="floor-plan" src="terreo.png" alt="Planta Baixa do Térreo" draggable="false">
+                        <div id="rooms-overlay" class="rooms-overlay"></div>
+                    </div>
                 </div>
                 <div class="map-footer">
                     <span id="instruction-text" class="instruction-text">Clique em uma sala da lista para destacar sua localização</span>
                     <div class="map-controls">
+                        <button id="zoom-out-btn" class="control-btn zoom-btn" title="Diminuir zoom (Ctrl+Scroll)">−</button>
+                        <span id="zoom-level" class="zoom-level-display">100%</span>
+                        <button id="zoom-in-btn" class="control-btn zoom-btn" title="Aumentar zoom (Ctrl+Scroll)">+</button>
+                        <button id="zoom-reset-btn" class="control-btn zoom-btn" title="Resetar zoom">⊙</button>
                         <button id="show-all-btn" class="control-btn">Todas</button>
                         <button id="hide-all-btn" class="control-btn">Ocultar</button>
+                        <button id="share-location-btn" class="control-btn share-btn" title="Clique para selecionar um ponto no mapa e copiar o link de compartilhamento" onclick="if(window.terreoRooms){window.terreoRooms.toggleShareMode();}else{console.error('[share] window.terreoRooms não disponível');}">📍 Compartilhar local</button>
                     </div>
                 </div>
             </section>

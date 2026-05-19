@@ -91,12 +91,16 @@ class MezaninoRooms {
         this.selectedRoom = null;
         this.filteredRooms = [...this.rooms];
         this.allMarkersVisible = false;
+        this.isShareMode = false;
+        // Controle de zoom
+        this.zoomLevel = 1.0;
+        this.minZoom = 0.5;
+        this.maxZoom = 4.0;
+        this.zoomStep = 0.25;
+        this.baseImageWidth = 0;
+        this.baseImageHeight = 0;
         this.init();
     }
-
-    /**
-     * Initialize the room location tool
-     */
     init() {
         // Setup components immediately
         this.setup();
@@ -106,19 +110,26 @@ class MezaninoRooms {
      * Setup all components after image is loaded
      */
     setup() {
-        // Wait for image to load to get correct dimensions
-        const floorPlan = document.getElementById('floor-plan');
-        const overlay = document.getElementById('rooms-overlay');
-        
-        if (floorPlan.complete) {
-            this.setupOverlay();
-        } else {
-            floorPlan.addEventListener('load', () => this.setupOverlay());
+        try {
+            // Wait for image to load to get correct dimensions
+            const floorPlan = document.getElementById('floor-plan');
+            const overlay = document.getElementById('rooms-overlay');
+
+            console.log('[share] setup() → floorPlan =', floorPlan, '| complete =', floorPlan && floorPlan.complete);
+
+            if (floorPlan.complete) {
+                this.setupOverlay();
+            } else {
+                floorPlan.addEventListener('load', () => this.setupOverlay());
+            }
+
+            this.renderRoomsList();
+            this.bindEvents();
+            this.showAllRooms();
+            console.log('[share] MezaninoRooms inicializado com sucesso. window.mezaninoRooms =', window.mezaninoRooms);
+        } catch (err) {
+            console.error('[share] ERRO na inicialização de MezaninoRooms:', err);
         }
-        
-        this.renderRoomsList();
-        this.bindEvents();
-        this.showAllRooms();
     }
 
     /**
@@ -126,36 +137,54 @@ class MezaninoRooms {
      */
     setupOverlay() {
         const floorPlan = document.getElementById('floor-plan');
-        const overlay = document.getElementById('rooms-overlay');
-        
-        // Get the displayed dimensions of the image (95% width, auto height)
+        const mapInner = document.getElementById('map-inner');
+
+        // Limpa qualquer largura inline anterior para ler o tamanho base real
+        mapInner.style.width = '';
+
+        // Lê as dimensões reais do mapa exibidas pelo CSS (95% do wrapper)
         const displayedWidth = floorPlan.offsetWidth;
         const displayedHeight = floorPlan.offsetHeight;
-        
-        // Set overlay to match the exact displayed image size
-        overlay.style.width = `${displayedWidth}px`;
-        overlay.style.height = `${displayedHeight}px`;
-        
-        // Calculate aspect ratio to ensure proper scaling
-        const naturalAspectRatio = floorPlan.naturalWidth / floorPlan.naturalHeight;
-        const displayedAspectRatio = displayedWidth / displayedHeight;
-        
-        console.log(`Mezanino Overlay set to: ${displayedWidth}x${displayedHeight}px`);
+
+        // Salva as dimensões base (zoom = 1)
+        this.baseImageWidth = displayedWidth;
+        this.baseImageHeight = displayedHeight;
+
+        // Aplica o zoom atual (se já estava aumentado antes de um resize)
+        this.applyZoom(this.zoomLevel, false);
+
+        console.log(`[zoom] Mezanino overlay inicializado: ${displayedWidth}x${displayedHeight}px | zoom: ${this.zoomLevel}`);
         console.log(`Mezanino Image natural size: ${floorPlan.naturalWidth}x${floorPlan.naturalHeight}px`);
-        console.log(`Mezanino Natural aspect ratio: ${naturalAspectRatio.toFixed(3)}`);
-        console.log(`Mezanino Displayed aspect ratio: ${displayedAspectRatio.toFixed(3)}`);
         console.log(`Mezanino Scale X: ${(displayedWidth / floorPlan.naturalWidth).toFixed(4)}`);
         console.log(`Mezanino Scale Y: ${(displayedHeight / floorPlan.naturalHeight).toFixed(4)}`);
+
+        // Verificar se há parâmetros de compartilhamento na URL após o overlay estar pronto
+        this.checkShareParams();
     }
 
     /**
      * Bind event listeners to controls and elements
      */
     bindEvents() {
-        // Search input
+        // Search input com debounce de 250ms para evitar re-renders excessivos
         const searchInput = document.getElementById('room-search');
+        let searchDebounce;
         searchInput.addEventListener('input', (e) => {
-            this.filterRooms(e.target.value);
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(() => this.filterRooms(e.target.value), 250);
+        });
+        // ESC no campo de busca limpa o filtro e remove o foco
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation(); // Impede que o handler global esvazie a seleção ainda
+                if (searchInput.value !== '') {
+                    searchInput.value = '';
+                    clearTimeout(searchDebounce);
+                    this.filterRooms('');
+                }
+                searchInput.blur();
+            }
         });
 
         // Map controls
@@ -179,10 +208,35 @@ class MezaninoRooms {
             this.handleResize();
         });
 
+        // Zoom controls
+        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const zoomOutBtn = document.getElementById('zoom-out-btn');
+        const zoomResetBtn = document.getElementById('zoom-reset-btn');
+        if (zoomInBtn) zoomInBtn.addEventListener('click', () => this.zoomIn());
+        if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => this.zoomOut());
+        if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => this.resetZoom());
+
+        // Ctrl + scroll do mouse para zoom
+        const mapWrapperEl2 = document.getElementById('map-wrapper');
+        if (mapWrapperEl2) {
+            mapWrapperEl2.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    if (e.deltaY < 0) this.zoomIn();
+                    else this.zoomOut();
+                }
+            }, { passive: false });
+        }
+
+        // Arrastar o mapa com o mouse
+        this.setupDrag();
+
         // CORREÇÃO COPILOT: Captura de clique no overlay para exibir coordenadas relativas ao mapa
         // MOTIVO: Facilitar cadastro de novas salas e depuração visual
+        // NOTA: Ignorado durante o modo de compartilhamento para evitar conflito de mensagem
         const overlay = document.getElementById('rooms-overlay');
         overlay.addEventListener('click', (e) => {
+            if (this.isShareMode) return;
             const floorPlan = document.getElementById('floor-plan');
             // Posição do overlay na tela
             const rect = overlay.getBoundingClientRect();
@@ -198,6 +252,24 @@ class MezaninoRooms {
             console.log(`Coordenada clicada no mezanino: x=${coordX}, y=${coordY}`);
             this.showTemporaryMessage(`Coordenada: x=${coordX}, y=${coordY}`);
         });
+
+        // Botão de compartilhar localização
+        // NOTA: o handler primário é o onclick inline no HTML.
+        // O log abaixo confirma que o elemento existe no DOM.
+        const shareBtn = document.getElementById('share-location-btn');
+        console.log('[share] bindEvents → shareBtn =', shareBtn);
+
+        // Clique no mapa durante modo de compartilhamento
+        // Listener no map-wrapper captura tanto a imagem quanto os marcadores
+        const mapWrapperEl = document.querySelector('.map-wrapper');
+        mapWrapperEl.addEventListener('click', (e) => {
+            if (!this.isShareMode) return;
+            // Ignorar cliques fora da área da imagem (barra de rolagem, área cinza)
+            const planRect = document.getElementById('floor-plan').getBoundingClientRect();
+            if (e.clientX < planRect.left || e.clientX > planRect.right ||
+                e.clientY < planRect.top  || e.clientY > planRect.bottom) return;
+            this.handleShareClick(e);
+        });
     }
 
     /**
@@ -210,8 +282,14 @@ class MezaninoRooms {
         if (searchTerm === '') {
             this.filteredRooms = [...this.rooms];
         } else {
-            this.filteredRooms = this.rooms.filter(room => 
-                room.nome.toLowerCase().includes(searchTerm)
+            // CORREÇÃO COPILOT: Busca por nome, código, equipamentos e capacidade
+            // MOTIVO: Usuários podem buscar por "M-MR01", "Wireless" ou "10" (pessoas)
+            const capacidadeNum = parseInt(searchTerm, 10);
+            this.filteredRooms = this.rooms.filter(room =>
+                room.nome.toLowerCase().includes(searchTerm) ||
+                room.codigo.toLowerCase().includes(searchTerm) ||
+                (room.equipamentos && room.equipamentos.toLowerCase().includes(searchTerm)) ||
+                (!isNaN(capacidadeNum) && capacidadeNum > 0 && room.capacidade >= capacidadeNum)
             );
         }
         
@@ -235,20 +313,56 @@ class MezaninoRooms {
         
         if (this.filteredRooms.length === 0) {
             container.innerHTML = '<p class="empty-message">Nenhuma sala encontrada.</p>';
+            const countEl = document.getElementById('rooms-count');
+            if (countEl) {
+                countEl.textContent = `0 de ${this.rooms.length}`;
+                countEl.classList.add('has-filter');
+            }
             return;
         }
         
         // Sort rooms alphabetically
         const sortedRooms = [...this.filteredRooms].sort((a, b) => a.nome.localeCompare(b.nome));
+
+        // Atualiza o contador de resultados
+        const countEl = document.getElementById('rooms-count');
+        if (countEl) {
+            const total = this.rooms.length;
+            const filtered = sortedRooms.length;
+            if (filtered === total) {
+                countEl.textContent = `${total} sala${total !== 1 ? 's' : ''}`;
+                countEl.classList.remove('has-filter');
+            } else {
+                countEl.textContent = `${filtered} de ${total} sala${total !== 1 ? 's' : ''}`;
+                countEl.classList.add('has-filter');
+            }
+        }
         
-        const roomsHTML = sortedRooms.map(room => `
-            <div class="room-item" data-room="${room.nome}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${room.biografia}">
+        const roomsHTML = sortedRooms.map(room => {
+            const isUnavailable = room.equipamentos &&
+                /^(fechada|trancada)$/i.test(room.equipamentos.trim());
+            const capacityTag = !isUnavailable
+                ? `<span class="room-capacity-tag">👥 ${room.capacidade}</span>`
+                : '';
+            const unavailableBadge = isUnavailable
+                ? `<span class="room-unavailable-badge">🔒 ${room.equipamentos}</span>`
+                : '';
+
+            // Tipo da sala para barra lateral colorida (item 1)
+            const roomType = room.codigo.includes('-MR') ? 'reuniao'
+                : room.codigo.includes('-PR') ? 'apresentacao'
+                : room.codigo.includes('-TR') ? 'treinamento'
+                : 'outro';
+            return `
+            <div class="room-item${isUnavailable ? ' unavailable' : ''}" data-room="${room.nome}" data-type="${roomType}" tabindex="0" role="button" aria-label="Selecionar sala ${room.nome}" title="${room.biografia}">
                 <div class="room-header">
                     <strong class="room-name">${room.nome}</strong>
-                    <span class="room-hint">💡</span>
+                    <span class="room-hint" aria-hidden="true"></span>
                 </div>
+                <div class="room-meta">${capacityTag}${unavailableBadge}</div>
             </div>
-        `).join('');
+        `;
+        }).join('');
         
         container.innerHTML = roomsHTML;
         
@@ -438,26 +552,26 @@ class MezaninoRooms {
      * @param {string} message - Mensagem a ser anunciada
      */
     announceToScreenReader(message) {
-        // Criar elemento de anúncio temporário
-        const announcer = document.createElement('div');
-        announcer.setAttribute('aria-live', 'polite');
-        announcer.setAttribute('aria-atomic', 'true');
-        announcer.className = 'sr-only';
-        announcer.style.position = 'absolute';
-        announcer.style.left = '-10000px';
-        announcer.style.width = '1px';
-        announcer.style.height = '1px';
-        announcer.style.overflow = 'hidden';
-        
-        document.body.appendChild(announcer);
-        announcer.textContent = message;
-        
-        // Remover após 1 segundo
-        setTimeout(() => {
-            if (document.body.contains(announcer)) {
-                document.body.removeChild(announcer);
-            }
-        }, 1000);
+        // CORREÇÃO COPILOT: Reutilizar elemento de anúncio fixo no DOM em vez de criar/destruir a cada chamada
+        // MOTIVO: Evitar thrashing de DOM e garantir leitores de tela mais responsivos
+        let announcer = document.getElementById('sr-announcer');
+        if (!announcer) {
+            announcer = document.createElement('div');
+            announcer.id = 'sr-announcer';
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
+            announcer.style.position = 'absolute';
+            announcer.style.left = '-10000px';
+            announcer.style.width = '1px';
+            announcer.style.height = '1px';
+            announcer.style.overflow = 'hidden';
+            document.body.appendChild(announcer);
+        }
+        // Limpar antes de definir novo texto garante que leitores de tela re-anunciem
+        announcer.textContent = '';
+        requestAnimationFrame(() => {
+            announcer.textContent = message;
+        });
     }
 
     /**
@@ -513,7 +627,8 @@ class MezaninoRooms {
         
         // Create marker element
         const marker = document.createElement('div');
-        marker.className = `room-marker ${isHighlighted ? 'highlighted' : ''}`;
+        const isUnavailable = room.equipamentos && /^(fechada|trancada)$/i.test(room.equipamentos.trim());
+        marker.className = ['room-marker', isHighlighted ? 'highlighted' : '', isUnavailable ? 'unavailable' : ''].filter(Boolean).join(' ');
         marker.setAttribute('data-room', room.nome);
         
         // Position marker (centralizado exatamente no pixel da coordenada)
@@ -522,11 +637,14 @@ class MezaninoRooms {
         marker.style.transform = 'translate(-50%, -50%)';   
         
         // Add content and tooltip with intelligent positioning
+        // CORREÇÃO COPILOT: Tooltip exibe capacidade e equipamentos além do nome
+        // MOTIVO: Informações úteis sem precisar clicar na sala
         marker.innerHTML = `
             <span class="marker-label">${room.nome}</span>
             <div class="marker-tooltip" id="tooltip-${room.nome}">
                 <strong>${room.nome}</strong><br>
-                Andar: Mezanino
+                Capacidade: ${room.capacidade} pessoas<br>
+                ${room.equipamentos}
             </div>
         `;
         
@@ -621,8 +739,9 @@ class MezaninoRooms {
         
         const mapWrapper = document.querySelector('.map-wrapper');
         const floorPlan = document.getElementById('floor-plan');
+        const mapInner = document.getElementById('map-inner');
         
-        // Calculate scale factor: displayed size vs natural size
+        // Calculate scale factor: displayed size vs natural size (inclui zoom)
         const scaleX = floorPlan.offsetWidth / floorPlan.naturalWidth;
         const scaleY = floorPlan.offsetHeight / floorPlan.naturalHeight;
         
@@ -630,14 +749,19 @@ class MezaninoRooms {
         const roomX = room.coordenadas.x * scaleX;
         const roomY = room.coordenadas.y * scaleY;
         
+        // Offset do map-inner dentro da área de scroll (quando centralizado por margin: auto)
+        const mapInnerLeft = mapInner ? mapInner.offsetLeft : 0;
+        const absoluteRoomX = mapInnerLeft + roomX;
+        
         // Center the map on the room
         const containerRect = mapWrapper.getBoundingClientRect();
-        const centerX = roomX - containerRect.width / 2;
-        const centerY = roomY - containerRect.height / 2;
+        const scrollLeft = absoluteRoomX - containerRect.width / 2;
+        const scrollTop = roomY - containerRect.height / 2;
         
-        // Smooth scroll to the room (only vertical)
+        // Smooth scroll com suporte horizontal para zoom > 1
         mapWrapper.scrollTo({
-            top: Math.max(0, centerY),
+            top: Math.max(0, scrollTop),
+            left: Math.max(0, scrollLeft),
             behavior: 'smooth'
         });
         
@@ -666,6 +790,12 @@ class MezaninoRooms {
         const room = this.rooms.find(r => r.nome === roomName);
         if (!room) return;
         
+        // CORREÇÃO COPILOT: Extrair texto da biografia independente do formato (objeto ou string)
+        // MOTIVO: Evitar que [object Object] seja copiado para a área de transferência
+        const biografiaTexto = typeof room.biografia === 'object' && room.biografia.resumo
+            ? room.biografia.resumo
+            : (room.biografia || 'Não disponível');
+
         const roomInfo = `Sala: ${room.nome}
 Código: ${room.codigo}
 Outlook: ${room.codigoOutlook}
@@ -673,7 +803,7 @@ Capacidade: ${room.capacidade} pessoas
 Equipamentos: ${room.equipamentos}
 Andar: Mezanino
         
-Biografia: ${room.biografia}`;
+Biografia: ${biografiaTexto}`;
         
         if (navigator.clipboard) {
             navigator.clipboard.writeText(roomInfo).then(() => {
@@ -763,9 +893,29 @@ Biografia: ${room.biografia}`;
      * @param {KeyboardEvent} e - The keyboard event
      */
     handleKeyboardNavigation(e) {
-        // Escape key clears selection
+        // Tecla "/" foca no campo de busca (padrão de apps de busca)
+        if (e.key === '/' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            const searchInput = document.getElementById('room-search');
+            if (searchInput) searchInput.focus();
+            return;
+        }
+
+        // Escape key: se a busca tem texto, limpa a busca mas não a seleção
         if (e.key === 'Escape') {
-            this.clearSelection();
+            const searchInput = document.getElementById('room-search');
+            if (searchInput && searchInput.value !== '') {
+                if (document.activeElement !== searchInput) {
+                    searchInput.value = '';
+                    this.filterRooms('');
+                }
+                return;
+            }
+            if (this.isShareMode) {
+                this.toggleShareMode();
+            } else {
+                this.clearSelection();
+            }
             return;
         }
         
@@ -823,9 +973,9 @@ Biografia: ${room.biografia}`;
         // Debounce resize handling
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
-            // Recalculate overlay dimensions
+            // Recalculate overlay dimensions (recalculates baseImageWidth)
             this.setupOverlay();
-            
+
             // Recalculate marker positions
             if (this.selectedRoom) {
                 this.highlightRoomOnMap(this.selectedRoom);
@@ -835,12 +985,304 @@ Biografia: ${room.biografia}`;
         }, 250);
     }
 
+    // ===== ZOOM =====
+
+    /**
+     * Aplica o nível de zoom ao mapa, redimensionando o map-inner
+     * @param {number} zoom - Nível de zoom desejado
+     * @param {boolean} rerenderMarkers - Se deve re-renderizar os marcadores (default: true)
+     */
+    applyZoom(zoom, rerenderMarkers = true) {
+        const clampedZoom = Math.min(this.maxZoom, Math.max(this.minZoom, zoom));
+        this.zoomLevel = clampedZoom;
+
+        const mapInner = document.getElementById('map-inner');
+        if (!mapInner || !this.baseImageWidth) return;
+
+        const newWidth = Math.round(this.baseImageWidth * clampedZoom);
+        mapInner.style.width = newWidth + 'px';
+
+        this.updateZoomDisplay();
+
+        if (rerenderMarkers) {
+            // Re-renderiza marcadores visíveis com novas posições
+            requestAnimationFrame(() => {
+                // Re-renderiza landmarks (escadas, elevadores etc.) com novas posições
+                if (window.mezaninoLandmarks) {
+                    window.mezaninoLandmarks.clearLandmarkMarkers();
+                    window.mezaninoLandmarks.renderLandmarks();
+                }
+                if (this.allMarkersVisible) {
+                    this.showAllRooms();
+                } else if (this.selectedRoom) {
+                    this.highlightRoomOnMap(this.selectedRoom);
+                }
+            });
+        }
+
+        console.log(`[zoom] Mezanino nível: ${(clampedZoom * 100).toFixed(0)}% | map-inner: ${newWidth}px`);
+    }
+
+    /**
+     * Aumenta o zoom em um passo
+     */
+    zoomIn() {
+        this.applyZoom(this.zoomLevel + this.zoomStep);
+    }
+
+    /**
+     * Diminui o zoom em um passo
+     */
+    zoomOut() {
+        this.applyZoom(this.zoomLevel - this.zoomStep);
+    }
+
+    /**
+     * Reseta o zoom para 100%
+     */
+    resetZoom() {
+        this.applyZoom(1.0);
+        // Rola o mapa de volta ao topo esquerdo
+        const mapWrapper = document.getElementById('map-wrapper');
+        if (mapWrapper) mapWrapper.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * Atualiza o display do nível de zoom na interface
+     */
+    updateZoomDisplay() {
+        const display = document.getElementById('zoom-level');
+        if (display) display.textContent = `${Math.round(this.zoomLevel * 100)}%`;
+
+        // Habilita/desabilita botões nos limites
+        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const zoomOutBtn = document.getElementById('zoom-out-btn');
+        if (zoomInBtn) zoomInBtn.disabled = this.zoomLevel >= this.maxZoom;
+        if (zoomOutBtn) zoomOutBtn.disabled = this.zoomLevel <= this.minZoom;
+    }
+
+    // ===== DRAG TO PAN =====
+
+    /**
+     * Ativa o arrasto do mapa com o mouse (drag-to-pan)
+     * Distingue arrasto de clique: movimentos < 5px são tratados como clique
+     */
+    setupDrag() {
+        const mapWrapper = document.getElementById('map-wrapper');
+        if (!mapWrapper) return;
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let scrollLeft = 0, scrollTop = 0;
+
+        // Impede o drag nativo do browser (imagem, texto)
+        mapWrapper.addEventListener('dragstart', (e) => e.preventDefault());
+
+        mapWrapper.addEventListener('mousedown', (e) => {
+            // Apenas botão esquerdo do mouse
+            if (e.button !== 0) return;
+            // Ignorar cliques em elementos interativos
+            if (e.target.closest('button, a, .room-marker, .landmark-marker, .shared-pin')) return;
+
+            e.preventDefault();
+
+            isDragging = true;
+            startX     = e.pageX - mapWrapper.offsetLeft;
+            startY     = e.pageY - mapWrapper.offsetTop;
+            scrollLeft = mapWrapper.scrollLeft;
+            scrollTop  = mapWrapper.scrollTop;
+
+            mapWrapper.classList.add('is-dragging');
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            const x = e.pageX - mapWrapper.offsetLeft;
+            const y = e.pageY - mapWrapper.offsetTop;
+
+            mapWrapper.scrollLeft = scrollLeft - (x - startX);
+            mapWrapper.scrollTop  = scrollTop  - (y - startY);
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            mapWrapper.classList.remove('is-dragging');
+        });
+
+        // Garante que o cursor volte se o mouse sair da janela
+        document.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                mapWrapper.classList.remove('is-dragging');
+            }
+        });
+    }
+
     /**
      * Get all rooms data
      * @returns {Array} - Array of room objects
      */
     getAllRooms() {
         return this.rooms;
+    }
+
+    // ===== COMPARTILHAR LOCALIZAÇÃO =====
+
+    /**
+     * Ativa/desativa o modo de seleção de local para compartilhamento
+     */
+    toggleShareMode() {
+        try {
+            this.isShareMode = !this.isShareMode;
+            console.log('[share] toggleShareMode → isShareMode =', this.isShareMode);
+
+            const btn = document.getElementById('share-location-btn');
+            const mapWrapper = document.querySelector('.map-wrapper');
+
+            if (!btn)      { console.error('[share] botão #share-location-btn não encontrado'); return; }
+            if (!mapWrapper) { console.error('[share] .map-wrapper não encontrado'); return; }
+
+            if (this.isShareMode) {
+                btn.textContent = '❌ Cancelar';
+                btn.classList.add('active');
+                mapWrapper.style.cursor = 'crosshair';
+                this.updateInstructions('📍 Clique em qualquer ponto do mapa para gerar o link de compartilhamento');
+            } else {
+                btn.textContent = '📍 Compartilhar local';
+                btn.classList.remove('active');
+                mapWrapper.style.cursor = '';
+                this.updateInstructions();
+            }
+        } catch (err) {
+            console.error('[share] Erro em toggleShareMode:', err);
+        }
+    }
+
+    /**
+     * Processa o clique no mapa durante o modo de compartilhamento
+     * @param {MouseEvent} e
+     */
+    handleShareClick(e) {
+        const floorPlan = document.getElementById('floor-plan');
+        const planRect   = floorPlan.getBoundingClientRect();
+        const displayX   = e.clientX - planRect.left;
+        const displayY   = e.clientY - planRect.top;
+
+        const scaleX   = floorPlan.naturalWidth  / floorPlan.offsetWidth;
+        const scaleY   = floorPlan.naturalHeight / floorPlan.offsetHeight;
+        const naturalX = Math.round(displayX * scaleX);
+        const naturalY = Math.round(displayY * scaleY);
+
+        const roomMarker = e.target.closest('.room-marker');
+        const roomName   = roomMarker ? roomMarker.getAttribute('data-room') : null;
+
+        const url = this.generateShareLink(naturalX, naturalY, roomName);
+        this.copyShareLink(url);
+
+        // Mostrar pin visual apenas para locais não cadastrados
+        // Para salas, o próprio marcador já serve como indicador visual
+        if (!roomName) {
+            this.showSharedPin(naturalX, naturalY);
+        }
+
+        // Desativar modo após selecionar
+        this.toggleShareMode();
+    }
+
+    /**
+     * Gera o link de compartilhamento
+     * @param {number} naturalX - Coordenada X natural da imagem
+     * @param {number} naturalY - Coordenada Y natural da imagem
+     * @param {string|null} roomName - Nome da sala (se houver)
+     * @returns {string} URL de compartilhamento
+     */
+    generateShareLink(naturalX, naturalY, roomName) {
+        const base = `${window.location.origin}${window.location.pathname}`;
+        if (roomName) {
+            return `${base}?sala=${encodeURIComponent(roomName)}`;
+        }
+        return `${base}?px=${naturalX}&py=${naturalY}`;
+    }
+
+    /**
+     * Copia o link de compartilhamento para a área de transferência
+     * @param {string} url - URL a ser copiada
+     */
+    copyShareLink(url) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(url)
+                .then(() => this.showTemporaryMessage('🔗 Link copiado! Compartilhe para abrir este local no mapa.'))
+                .catch(() => this.fallbackCopyToClipboard(url));
+        } else {
+            this.fallbackCopyToClipboard(url);
+        }
+    }
+
+    /**
+     * Verifica os parâmetros de compartilhamento na URL e destaca o local
+     */
+    checkShareParams() {
+        const params = new URLSearchParams(window.location.search);
+        const sala   = params.get('sala');
+        const px     = params.get('px');
+        const py     = params.get('py');
+
+        if (sala) {
+            const roomName = decodeURIComponent(sala);
+            const room = this.rooms.find(r => r.nome === roomName);
+            if (room) {
+                setTimeout(() => {
+                    this.selectRoom(room.nome);
+                    this.showTemporaryMessage(`📍 Local compartilhado: sala ${room.nome}`);
+                }, 300);
+            }
+        } else if (px && py) {
+            const naturalX = parseInt(px, 10);
+            const naturalY = parseInt(py, 10);
+            if (!isNaN(naturalX) && !isNaN(naturalY)) {
+                setTimeout(() => this.showSharedPin(naturalX, naturalY), 300);
+            }
+        }
+    }
+
+    /**
+     * Exibe um pin de localização compartilhada no mapa
+     * @param {number} naturalX - Coordenada X natural da imagem
+     * @param {number} naturalY - Coordenada Y natural da imagem
+     */
+    showSharedPin(naturalX, naturalY) {
+        const overlay   = document.getElementById('rooms-overlay');
+        const floorPlan = document.getElementById('floor-plan');
+
+        overlay.querySelector('.shared-pin')?.remove();
+
+        const scaleX   = floorPlan.offsetWidth  / floorPlan.naturalWidth;
+        const scaleY   = floorPlan.offsetHeight / floorPlan.naturalHeight;
+        const displayX = Math.round(naturalX * scaleX);
+        const displayY = Math.round(naturalY * scaleY);
+
+        const pin = document.createElement('div');
+        pin.className  = 'shared-pin';
+        pin.style.left = `${displayX}px`;
+        pin.style.top  = `${displayY}px`;
+        pin.innerHTML  = `
+            <span class="shared-pin-icon">📍</span>
+            <div class="shared-pin-label">Local compartilhado</div>
+        `;
+
+        overlay.appendChild(pin);
+
+        const mapWrapper = document.querySelector('.map-wrapper');
+        mapWrapper.scrollTo({
+            top: Math.max(0, displayY - mapWrapper.clientHeight / 2),
+            behavior: 'smooth'
+        });
+
+        this.showTemporaryMessage('📍 Local compartilhado destacado no mapa.');
+        this.updateInstructions('📍 Local compartilhado destacado no mapa');
     }
 }
 
