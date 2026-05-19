@@ -5,7 +5,7 @@
 
 import { Pool } from 'pg';
 
-const VISITS_KEY = 'mapa-philips-visits';
+const VISITS_KEY = 'mapa-bionexo-tasy-visits';
 
 // Configuração do pool de conexões PostgreSQL
 const pool = new Pool({

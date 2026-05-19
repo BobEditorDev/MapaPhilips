@@ -43,26 +43,19 @@ header {
     position: relative;
 }
 
-/* Logo Philips */
-.philips-logo {
+/* Logo Bionexo Tasy */
+.bionexo-logo {
     position: absolute;
-    top: 8px;
+    top: 14px;
     left: 15px;
-    font-size: 26px;
-    font-weight: bold;
-    color: #0066cc;
+    height: 36px;
+    width: auto;
+    object-fit: contain;
     z-index: 10;
-    background: linear-gradient(45deg, #0066cc, #004499);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 1px 2px rgba(0, 102, 204, 0.3);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    letter-spacing: 1px;
 }
 
 header h1 {
-    color: #0066cc;
+    color: #00838f;
     margin-bottom: 4px;
     font-size: 1.3rem;
 }
@@ -86,7 +79,7 @@ header p {
     align-items: center;
     padding: 3px 8px;
     background: #f8f9fa;
-    color: #0066cc;
+    color: #00838f;
     text-decoration: none;
     border-radius: 3px;
     border: 1px solid #e9ecef;
@@ -101,9 +94,9 @@ header p {
 }
 
 .nav-link.active {
-    background: #0066cc;
+    background: #00838f;
     color: white;
-    border-color: #0066cc;
+    border-color: #00838f;
 }
 
 /* Repository button */
@@ -128,7 +121,7 @@ header p {
 }
 
 .repo-btn:focus {
-    outline: 2px solid #0066cc;
+    outline: 2px solid #00838f;
     outline-offset: 2px;
 }
 
@@ -156,7 +149,7 @@ header p {
 }
 
 .rooms-panel h2 {
-    color: #0066cc;
+    color: #00838f;
     font-size: 1rem;
     margin-bottom: 5px;
     border-bottom: 1px solid #e0e0e0;
@@ -175,8 +168,8 @@ header p {
 
 .search-input:focus {
     outline: none;
-    border-color: #0066cc;
-    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    border-color: #00838f;
+    box-shadow: 0 0 0 3px rgba(0, 131, 143, 0.1);
 }
 
 /* Search input com ícone de lupa (item 3) */
@@ -212,7 +205,7 @@ header p {
 }
 
 .search-results-count.has-filter {
-    color: #0066cc;
+    color: #00838f;
     font-weight: 600;
 }
 
@@ -262,19 +255,19 @@ header p {
 .room-item:hover {
     background: #e9ecef;
     transform: translateX(2px);
-    border-color: #0066cc;
+    border-color: #00838f;
 }
 
 .room-item:focus {
     outline: none;
-    border-color: #0066cc;
-    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    border-color: #00838f;
+    box-shadow: 0 0 0 3px rgba(0, 131, 143, 0.1);
 }
 
 .room-item.selected {
     background: #e8f4f8;
-    border-color: #0066cc;
-    box-shadow: 0 4px 8px rgba(0, 102, 204, 0.2);
+    border-color: #00838f;
+    box-shadow: 0 4px 8px rgba(0, 131, 143, 0.2);
 }
 
 .room-item.selected::before {
@@ -287,7 +280,7 @@ header p {
 
 /* Barra lateral colorida por categoria de sala (item 1) */
 .room-item[data-type="reuniao"] {
-    border-left: 3px solid #0066cc;
+    border-left: 3px solid #00838f;
 }
 
 .room-item[data-type="apresentacao"] {
@@ -381,7 +374,7 @@ header p {
     padding: 1px 4px;
     border-radius: 8px;
     background: #e8f0ff;
-    color: #0066cc;
+    color: #00838f;
     font-weight: 500;
 }
 
@@ -430,7 +423,7 @@ header p {
 }
 
 .selected-room-info h3 {
-    color: #0066cc;
+    color: #00838f;
     margin-bottom: 8px; /* Mais espaço */
     font-size: 1.1rem; /* Fonte maior */
 }
@@ -460,7 +453,7 @@ header p {
     padding: 6px; /* Reduzido de 8px */
     background: #f8f9fa;
     border-radius: 4px;
-    border-left: 3px solid #0066cc;
+    border-left: 3px solid #00838f;
     max-height: calc(100vh - 450px); /* Altura fixa para garantir que não saia da viewport */
     overflow-y: auto; /* Permitir scroll interno quando conteúdo for muito longo */
 }
@@ -488,7 +481,7 @@ header p {
 }
 
 .expand-btn {
-    background: #0066cc;
+    background: #00838f;
     color: white;
     border: none;
     padding: 4px 8px;
@@ -501,12 +494,12 @@ header p {
 }
 
 .expand-btn:hover {
-    background: #0056b3;
+    background: #006f79;
     transform: translateY(-1px);
 }
 
 .expand-btn:focus {
-    outline: 2px solid #0066cc;
+    outline: 2px solid #00838f;
     outline-offset: 2px;
 }
 
@@ -521,7 +514,7 @@ header p {
 .biography-references h4 {
     font-size: 0.75rem;
     margin-bottom: 4px;
-    color: #0066cc;
+    color: #00838f;
     font-weight: 600;
 }
 
@@ -539,7 +532,7 @@ header p {
 
 .biography-references li:before {
     content: "•";
-    color: #0066cc;
+    color: #00838f;
     position: absolute;
     left: 0;
 }
@@ -572,7 +565,7 @@ header p {
 .room-details::-webkit-scrollbar-thumb,
 .room-biography::-webkit-scrollbar-thumb,
 .biography-expanded::-webkit-scrollbar-thumb {
-    background: #0066cc;
+    background: #00838f;
     border-radius: 3px;
 }
 
@@ -615,7 +608,7 @@ header p {
     padding: 4px 6px;
     border: none;
     border-radius: 2px;
-    background: #0066cc;
+    background: #00838f;
     color: white;
     cursor: pointer;
     font-size: 0.7rem;
@@ -623,7 +616,7 @@ header p {
 }
 
 .detail-btn:hover {
-    background: #0056b3;
+    background: #006f79;
     transform: translateY(-1px);
 }
 
@@ -650,7 +643,7 @@ header p {
     min-height: 0;
     /* Custom scrollbars */
     scrollbar-width: thin;
-    scrollbar-color: #0066cc #f0f0f0;
+    scrollbar-color: #00838f #f0f0f0;
 }
 
 /* Custom scrollbar styling for webkit browsers */
@@ -665,13 +658,13 @@ header p {
 }
 
 .map-wrapper::-webkit-scrollbar-thumb {
-    background: #0066cc;
+    background: #00838f;
     border-radius: 6px;
     border: 2px solid #f0f0f0;
 }
 
 .map-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #0056b3;
+    background: #006f79;
 }
 
 .map-wrapper::-webkit-scrollbar-corner {
@@ -738,12 +731,12 @@ header p {
 }
 
 .map-wrapper::-webkit-scrollbar-thumb {
-    background: #0066cc;
+    background: #00838f;
     border-radius: 4px;
 }
 
 .map-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #0056b3;
+    background: #006f79;
 }
 
 /* Minimal footer */
@@ -771,9 +764,9 @@ header p {
 
 .control-btn {
     padding: 3px 8px;
-    border: 1px solid #0066cc;
+    border: 1px solid #00838f;
     background: white;
-    color: #0066cc;
+    color: #00838f;
     border-radius: 3px;
     cursor: pointer;
     font-size: 0.7rem;
@@ -782,25 +775,25 @@ header p {
 }
 
 .control-btn:hover {
-    background: #0066cc;
+    background: #00838f;
     color: white;
     transform: translateY(-1px);
 }
 
 /* Diferenciação visual Todas/Ocultar (item 5) */
 #show-all-btn {
-    background: #0066cc;
+    background: #00838f;
     color: white;
 }
 
 #show-all-btn:hover {
-    background: #0051a3;
+    background: #006f79;
     color: white;
 }
 
 #hide-all-btn {
     background: white;
-    color: #0066cc;
+    color: #00838f;
 }
 
 /* Botões de zoom */
@@ -816,7 +809,7 @@ header p {
 .zoom-level-display {
     font-size: 0.7rem;
     font-weight: 600;
-    color: #0066cc;
+    color: #00838f;
     min-width: 36px;
     text-align: center;
     padding: 2px 2px;
@@ -1191,9 +1184,9 @@ header p {
         padding: 3px 8px; /* Drasticamente reduzido */
     }
     
-    .philips-logo {
-        font-size: 14px; /* Drasticamente reduzido */
-        top: 2px; /* Ajustado */
+    .bionexo-logo {
+        height: 20px; /* Drasticamente reduzido */
+        top: 4px; /* Ajustado */
         left: 8px; /* Ajustado */
     }
     
@@ -1339,7 +1332,7 @@ header p {
 .control-btn:focus,
 .detail-btn:focus,
 .nav-link:focus {
-    outline: 2px solid #0066cc;
+    outline: 2px solid #00838f;
     outline-offset: 2px;
 }
 
@@ -1374,7 +1367,7 @@ header p {
 .landmark-marker {
     position: absolute;
     background: #ffffff;
-    border: 2px solid #0066cc;
+    border: 2px solid #00838f;
     border-radius: 50%;
     width: 36px;
     height: 36px;
@@ -1384,7 +1377,7 @@ header p {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 10px rgba(0, 102, 204, 0.3);
+    box-shadow: 0 3px 10px rgba(0, 131, 143, 0.3);
     z-index: 150; /* Below room markers but above map */
     transform: translate(-50%, -50%); /* Centralizar o marcador exatamente na coordenada */
 }
@@ -1400,8 +1393,8 @@ header p {
 .landmark-marker:focus,
 .landmark-marker.focused {
     transform: translate(-50%, -50%) scale(1.15);
-    border-color: #0056b3;
-    box-shadow: 0 4px 15px rgba(0, 102, 204, 0.5);
+    border-color: #006f79;
+    box-shadow: 0 4px 15px rgba(0, 131, 143, 0.5);
     z-index: 250;
 }
 
@@ -1424,7 +1417,7 @@ header p {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background: #0066cc;
+    background: #00838f;
     color: white;
     padding: 6px 10px;
     border-radius: 4px;
@@ -1446,7 +1439,7 @@ header p {
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: #0066cc;
+    border-top-color: #00838f;
 }
 
 /* Posicionamento de landmark tooltip - à direita */
@@ -1464,7 +1457,7 @@ header p {
     left: 0;
     transform: translate(-100%, -50%);
     border: 5px solid transparent;
-    border-right-color: #0066cc;
+    border-right-color: #00838f;
 }
 
 /* Posicionamento de landmark tooltip - à esquerda */
@@ -1483,7 +1476,7 @@ header p {
     left: 100%;
     transform: translateY(-50%);
     border: 5px solid transparent;
-    border-left-color: #0066cc;
+    border-left-color: #00838f;
 }
 
 /* Posicionamento de landmark tooltip - abaixo */
@@ -1501,7 +1494,7 @@ header p {
     left: 50%;
     transform: translate(-50%, -100%);
     border: 5px solid transparent;
-    border-bottom-color: #0066cc;
+    border-bottom-color: #00838f;
 }
 
 .landmark-marker:hover .landmark-tooltip,
@@ -1555,7 +1548,7 @@ header p {
 
 /* Accessibility improvements for landmarks */
 .landmark-marker:focus {
-    outline: 3px solid #0066cc;
+    outline: 3px solid #00838f;
     outline-offset: 3px;
 }
 
@@ -1627,7 +1620,7 @@ header p {
 }
 
 .footer-content .developer {
-    color: #0066cc;
+    color: #00838f;
     font-weight: 500;
 }
 
@@ -1687,7 +1680,7 @@ header p {
 }
 
 .controls-panel h2 {
-    color: #0066cc;
+    color: #00838f;
     font-size: 1rem;
     margin-bottom: 8px;
     border-bottom: 1px solid #e0e0e0;
@@ -1707,9 +1700,9 @@ header p {
 .floor-btn {
     flex: 1;
     padding: 8px 12px;
-    border: 2px solid #0066cc;
+    border: 2px solid #00838f;
     background: white;
-    color: #0066cc;
+    color: #00838f;
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.8rem;
@@ -1722,7 +1715,7 @@ header p {
 }
 
 .floor-btn.active {
-    background: #0066cc;
+    background: #00838f;
     color: white;
 }
 
@@ -1857,7 +1850,7 @@ header p {
 }
 
 .coordinate-floor {
-    background: #0066cc;
+    background: #00838f;
     color: white;
     padding: 2px 6px;
     border-radius: 10px;
@@ -1912,7 +1905,7 @@ header p {
     padding: 8px 15px;
     background: #f8f9fa;
     border-radius: 4px;
-    border-left: 3px solid #0066cc;
+    border-left: 3px solid #00838f;
     flex-shrink: 0;
 }
 
@@ -1976,12 +1969,12 @@ header p {
 
 /* Accessibility para página de coordenadas */
 .coordinate-controls .control-btn:focus {
-    outline: 2px solid #0066cc;
+    outline: 2px solid #00838f;
     outline-offset: 2px;
 }
 
 .floor-btn:focus {
-    outline: 2px solid #0066cc;
+    outline: 2px solid #00838f;
     outline-offset: 2px;
 }
 
@@ -2027,20 +2020,20 @@ header p {
 }
 
 .visit-number {
-    color: #0066cc;
+    color: #00838f;
     font-weight: 600;
 }
 
 /* Botão compartilhar */
 .share-btn {
-    background: #0066cc;
+    background: #00838f;
     color: white;
-    border-color: #0066cc;
+    border-color: #00838f;
 }
 .share-btn:hover {
-    background: #0051a3;
+    background: #006f79;
     color: white;
-    border-color: #0051a3;
+    border-color: #006f79;
 }
 .share-btn.active {
     background: #dc3545;
@@ -2094,7 +2087,7 @@ header p {
 
 .share-context-item:hover {
     background: #f0f7ff;
-    color: #0066cc;
+    color: #00838f;
 }
 
 .share-context-icon {
